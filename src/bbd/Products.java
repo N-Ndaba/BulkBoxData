@@ -12,15 +12,22 @@ public class Products
 		this.quantity = quantity; 
 	}
 	
-	public void process()
+	public String process()
 	{
-		/*if(this.name.equals("Flare") &&  this.quantity == 1)
+		switch(this.name)
 		{
-			this.boxType = "BOX: CH1EF4D or CH1EF4P"; 
-			System.out.println(this.boxType);
-		}*/
-		
-		
+			case "Flare": 
+			{
+				if(this.quantity == 1)
+					return "CH1EF4D | CH1EF4P"; 
+				
+			}
+		}
+		return null;
+	}
+	
+	/*public void process()
+	{
 		switch(this.name)
 		{
 			case "Flare": 
@@ -293,55 +300,63 @@ public class Products
 			
 			case "AL112": 
 			{
-				if(this.quantity == 1)
-					boxType = Box.CH1EF4D.toString(); 
-				System.out.println(boxType);
+				if(this.quantity == 3)
+					boxType = Box.PAC0001.toString(); 
+				else if(this.quantity == 1)
+					boxType = Box.PAC0012.toString(); 
+				else if(this.quantity == 2)
+					boxType = Box.PAC0018.toString(); 
 			}
 			break;
 			
 			
 			case "AL121": 
 			{
-				if(this.quantity == 1)
-					System.out.println("BOX: CH1EF4D or CH1EF4P");
+				if(this.quantity == 2)
+					boxType = Box.PAC0001.toString(); 
+				else if(this.quantity == 1)
+					boxType = "PAC0008";
+				else if(this.quantity == 2)
+					boxType = "PAC0018";
 			}
 			break;
 			
 			
 			case "B300": 
 			{
-				if(this.quantity == 1)
-					System.out.println("BOX: CH1EF4D or CH1EF4P");
+				if(this.quantity == 6)
+					boxType = "PAC0024";  
 			}
 			break;
 			
 			case "B400": 
 			{
-				if(this.quantity == 1)
-					System.out.println("BOX: CH1EF4D or CH1EF4P");
+				if(this.quantity == 4)
+					boxType = "PAC0001"; 
+				else if(this.quantity == 2)
+					boxType = "PAC0024";
 			}
 			break;
 			
 			case "H100": 
 			{
-				if(this.quantity == 1)
-					System.out.println("BOX: CH1EF4D or CH1EF4P");
+				if(this.quantity == 8)
+					boxType = "PAC0001"; 
 			}
 			break;
 			
 			case "H150": 
 			{
-				if(this.quantity == 1)
-					System.out.println("BOX: CH1EF4D or CH1EF4P");
+				
 			}
 			break;
 			
 			case "H200": 
 			{
-				if(this.quantity == 1)
-					System.out.println("BOX: CH1EF4D or CH1EF4P");
+				if(this.quantity == 2)
+					boxType = "PAC0001"; 
 			}
 			break;
 		}
-	}
+	}*/
 }
