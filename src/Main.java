@@ -80,26 +80,64 @@ public class Main extends Application
 		 
 		 pane.add(new Label("Flare:"), 0, 1);
 		 pane.add(new TextField(), 1, 1);
-		 
 		 TextField flare = new TextField(); 
 		 pane.add(flare, 1, 1);
-		 
 		 TextField flareBox = new TextField(); 
 		 pane.add(flareBox, 2, 1);
 		 
-		/*pane.add(new Label("Flare 6 Pack:"), 0, 1);
-		 pane.add(new TextField(), 1, 1);
-		 pane.add(new Label("Last Name:"), 0, 2);
-		 pane.add(new TextField(), 1, 2);*/
-		 Button btAdd = new Button("Add Name");
-		 pane.add(btAdd, 1, 3);
-		 GridPane.setHalignment(btAdd, HPos.RIGHT);
+		pane.add(new Label("Flare 6 Pack:"), 0, 2);
+		 pane.add(new TextField(), 1, 2);
+		 TextField flareSix = new TextField(); 
+		 pane.add(flareSix, 1, 2);
+		 TextField flareSixBox= new TextField(); 
+		 pane.add(flareSixBox, 2, 2);
 		 
+			pane.add(new Label("Total Items:"), 0, 5);
+			 pane.add(new TextField(), 1, 5);
+			 TextField TotalItems = new TextField(); 
+			 pane.add(TotalItems, 1, 5);
+			 TextField TotalItemsBox = new TextField(); 
+			 pane.add(TotalItemsBox, 2, 5);
+		 
+	
+		 
+			 TotalItems.setOnKeyReleased(e -> 
+			 {
+				 
+			 });
 		 
 		 flare.setOnKeyReleased(e -> 
 		 {
-			 Products products = new Products("Flare", Integer.valueOf(flare.getText())); 
+			 Products products = null; 
+			 try
+			 {
+				 products = new Products("Flare", Integer.valueOf(flare.getText())); 
+				 //products = new Products("Flare 6 Pack", Integer.valueOf(flareSix.getText())); 
+			 }
+			 catch(Exception ex)
+			 {
+				ex.printStackTrace();  
+			 }
+			 
 			 flareBox.setText(products.process()); 
+			// flareSixBox.setText(products.process());
+		 });
+		 
+		 flareSix.setOnKeyReleased(e -> 
+		 {
+			 Products products = null; 
+			 try
+			 {
+				 //products = new Products("Flare", Integer.valueOf(flare.getText())); 
+				 products = new Products("Flare 6 pack", Integer.valueOf(flareSix.getText())); 
+			 }
+			 catch(Exception ex)
+			 {
+				ex.printStackTrace();  
+			 }
+			 
+			 //flareBox.setText(products.process()); 
+			flareSixBox.setText(products.process());
 		 });
 		 
 		 /*btAdd.setOnAction(e -> 
@@ -127,8 +165,8 @@ public class Main extends Application
 		
 		//Set the Scene
 		Scene scene = new Scene(pane);
-		arg0.setWidth(400);
-		arg0.setHeight(600);
+		arg0.setWidth(900);
+		arg0.setHeight(700);
 		arg0.setScene(scene);
 		//Open the Curtains
 		arg0.show();
