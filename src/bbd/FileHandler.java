@@ -11,11 +11,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 
 public class FileHandler 
 {
+	private static List<Products> list = new ArrayList<Products>(); 
+	
 	public static void saveToFile(String boxCode, int length, int weight, int height)
 	{
+		list.add(new Products("1",1 )); 
+		
 		DataOutputStream output =  null;
 		try {
 			output = new DataOutputStream(new BufferedOutputStream(new FileOutputStream("data/bulkboxdata.dat", true)));

@@ -12,8 +12,11 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
@@ -58,6 +61,8 @@ public class Main extends Application
         
         //scanner.close();
 	}
+	
+	private TableView table = new TableView();
 
 	@Override
 	public void start(Stage arg0) throws Exception 
@@ -85,34 +90,63 @@ public class Main extends Application
 		 TextField flareBox = new TextField(); 
 		 pane.add(flareBox, 2, 1);
 		 
-		pane.add(new Label("Flare 6 Pack:"), 0, 2);
+		 pane.add(new Label("Flare 6 Pack:"), 0, 2);
 		 pane.add(new TextField(), 1, 2);
 		 TextField flareSix = new TextField(); 
 		 pane.add(flareSix, 1, 2);
 		 TextField flareSixBox= new TextField(); 
 		 pane.add(flareSixBox, 2, 2);
 		 
-			pane.add(new Label("Total Items:"), 0, 5);
-			 pane.add(new TextField(), 1, 5);
-			 TextField TotalItems = new TextField(); 
-			 pane.add(TotalItems, 1, 5);
-			 TextField TotalItemsBox = new TextField(); 
-			 pane.add(TotalItemsBox, 2, 5);
+		 pane.add(new Label("Ban Beacon:"), 0, 3);
+		 pane.add(new TextField(), 1, 3);
+		 TextField BanBeacon  = new TextField(); 
+		 pane.add(BanBeacon, 1, 3);
+		 TextField BanBeaconBox= new TextField(); 
+		 pane.add(BanBeaconBox, 2, 3);
 		 
-	
+		 pane.add(new Label("Sir Beacon / portable:"), 0, 4);
+		 pane.add(new TextField(), 1, 4);
+		 TextField SirBeaconportable  = new TextField(); 
+		 pane.add(SirBeaconportable, 1, 4);
+		 TextField SirBeaconportableBox= new TextField(); 
+		 pane.add(SirBeaconportableBox, 2, 4);
 		 
-			 TotalItems.setOnKeyReleased(e -> 
+		 SirBeaconportable.setOnKeyReleased(e -> 
+		 {
+			 Products products = null; 
+			 try
 			 {
-				 
-			 });
+				 products = new Products("Sir Beacon / portable", Integer.valueOf(SirBeaconportable.getText()));  
+			 }
+			 catch(Exception ex)
+			 {
+				ex.printStackTrace();  
+			 }
+			 
+			 SirBeaconportableBox.setText(products.process()); 
+		 });
+		 
+		 BanBeacon.setOnKeyReleased(e -> 
+		 {
+			 Products products = null; 
+			 try
+			 {
+				 products = new Products("Ban Beacon", Integer.valueOf(BanBeacon.getText()));  
+			 }
+			 catch(Exception ex)
+			 {
+				ex.printStackTrace();  
+			 }
+			 
+			 BanBeaconBox.setText(products.process()); 
+		 });
 		 
 		 flare.setOnKeyReleased(e -> 
 		 {
 			 Products products = null; 
 			 try
 			 {
-				 products = new Products("Flare", Integer.valueOf(flare.getText())); 
-				 //products = new Products("Flare 6 Pack", Integer.valueOf(flareSix.getText())); 
+				 products = new Products("Flare", Integer.valueOf(flare.getText()));  
 			 }
 			 catch(Exception ex)
 			 {
@@ -120,7 +154,6 @@ public class Main extends Application
 			 }
 			 
 			 flareBox.setText(products.process()); 
-			// flareSixBox.setText(products.process());
 		 });
 		 
 		 flareSix.setOnKeyReleased(e -> 
@@ -128,15 +161,12 @@ public class Main extends Application
 			 Products products = null; 
 			 try
 			 {
-				 //products = new Products("Flare", Integer.valueOf(flare.getText())); 
 				 products = new Products("Flare 6 pack", Integer.valueOf(flareSix.getText())); 
 			 }
 			 catch(Exception ex)
 			 {
 				ex.printStackTrace();  
-			 }
-			 
-			 //flareBox.setText(products.process()); 
+			 }			 
 			flareSixBox.setText(products.process());
 		 });
 		 
@@ -162,7 +192,24 @@ public class Main extends Application
 	      Group root = new Group();
 	      root.getChildren().add(label);
 	      //Setting the stage*/
-		
+		 
+		 final Label label = new Label("Box & Bulk TQY");
+	        label.setFont(new Font("Arial", 20));
+	 
+	        table.setEditable(true);
+	 
+	        TableColumn firstNameCol = new TableColumn("Products");
+	        TableColumn lastNameCol = new TableColumn("Quantity");
+	        TableColumn emailCol = new TableColumn("Box Type");
+	        
+	        table.getColumns().addAll(firstNameCol, lastNameCol, emailCol);
+	 
+	        final VBox vbox = new VBox();
+	        vbox.setSpacing(5);
+	        vbox.setPadding(new Insets(10, 0, 0, 10));
+	        vbox.getChildren().addAll(label, table);
+	 
+	        pane.add(vbox, 4, 4);
 		//Set the Scene
 		Scene scene = new Scene(pane);
 		arg0.setWidth(900);

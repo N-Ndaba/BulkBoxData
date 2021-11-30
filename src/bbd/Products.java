@@ -41,13 +41,12 @@ public class Products
 			{
 				if(this.quantity == 1)
 					return "CH1EF4D | CH1EF4P";
-					//this.boxType = "CH1EF4D | CH1EF4P"; 
 				else if(this.quantity == 15)
-					this.boxType = "PAC0004";
+					return "PAC0004";
 				else if(this.quantity == 20)
-					this.boxType = "PAC0018";
+					return "PAC0018";
 				else if(this.quantity == 45)
-					this.boxType = "PAC0024";				
+					return "PAC0024";				
 			}
 			break; 
 			
@@ -57,6 +56,32 @@ public class Products
 					return "0";
 			}
 			break;
+			
+			case "Ban Beacon":
+			{
+				if(this.quantity == 1)
+					return "PAC0002 | PAC0011 | PACACD02";
+				else if(this.quantity == 10)
+					return "PAC0004"; 
+				else if(this.quantity == 8)
+					return "PAC0008";
+				else if(this.quantity == 25)
+					return "PAC0025";
+			}
+			break; 
+			
+			case "Sir Beacon / portable":
+			{
+				if(this.quantity == 1)
+					return "PAC0017";
+				else if(this.quantity == 6)
+					return "PAC0018"; 
+				else if(this.quantity == 10)
+					return "PAC0024";
+				/*else if(this.quantity == 25)
+					return "PAC0025";*/
+			}
+			break; 
 		}
 		return null;
 	}
