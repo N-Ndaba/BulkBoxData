@@ -12,8 +12,11 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
@@ -58,6 +61,8 @@ public class Main extends Application
         
         //scanner.close();
 	}
+	
+	private TableView table = new TableView();
 
 	@Override
 	public void start(Stage arg0) throws Exception 
@@ -80,26 +85,89 @@ public class Main extends Application
 		 
 		 pane.add(new Label("Flare:"), 0, 1);
 		 pane.add(new TextField(), 1, 1);
-		 
 		 TextField flare = new TextField(); 
 		 pane.add(flare, 1, 1);
-		 
 		 TextField flareBox = new TextField(); 
 		 pane.add(flareBox, 2, 1);
 		 
-		/*pane.add(new Label("Flare 6 Pack:"), 0, 1);
-		 pane.add(new TextField(), 1, 1);
-		 pane.add(new Label("Last Name:"), 0, 2);
-		 pane.add(new TextField(), 1, 2);*/
-		 Button btAdd = new Button("Add Name");
-		 pane.add(btAdd, 1, 3);
-		 GridPane.setHalignment(btAdd, HPos.RIGHT);
+		 pane.add(new Label("Flare 6 Pack:"), 0, 2);
+		 pane.add(new TextField(), 1, 2);
+		 TextField flareSix = new TextField(); 
+		 pane.add(flareSix, 1, 2);
+		 TextField flareSixBox= new TextField(); 
+		 pane.add(flareSixBox, 2, 2);
 		 
+		 pane.add(new Label("Ban Beacon:"), 0, 3);
+		 pane.add(new TextField(), 1, 3);
+		 TextField BanBeacon  = new TextField(); 
+		 pane.add(BanBeacon, 1, 3);
+		 TextField BanBeaconBox= new TextField(); 
+		 pane.add(BanBeaconBox, 2, 3);
+		 
+		 pane.add(new Label("Sir Beacon / portable:"), 0, 4);
+		 pane.add(new TextField(), 1, 4);
+		 TextField SirBeaconportable  = new TextField(); 
+		 pane.add(SirBeaconportable, 1, 4);
+		 TextField SirBeaconportableBox= new TextField(); 
+		 pane.add(SirBeaconportableBox, 2, 4);
+		 
+		 SirBeaconportable.setOnKeyReleased(e -> 
+		 {
+			 Products products = null; 
+			 try
+			 {
+				 products = new Products("Sir Beacon / portable", Integer.valueOf(SirBeaconportable.getText()));  
+			 }
+			 catch(Exception ex)
+			 {
+				ex.printStackTrace();  
+			 }
+			 
+			 SirBeaconportableBox.setText(products.process()); 
+		 });
+		 
+		 BanBeacon.setOnKeyReleased(e -> 
+		 {
+			 Products products = null; 
+			 try
+			 {
+				 products = new Products("Ban Beacon", Integer.valueOf(BanBeacon.getText()));  
+			 }
+			 catch(Exception ex)
+			 {
+				ex.printStackTrace();  
+			 }
+			 
+			 BanBeaconBox.setText(products.process()); 
+		 });
 		 
 		 flare.setOnKeyReleased(e -> 
 		 {
-			 Products products = new Products("Flare", Integer.valueOf(flare.getText())); 
+			 Products products = null; 
+			 try
+			 {
+				 products = new Products("Flare", Integer.valueOf(flare.getText()));  
+			 }
+			 catch(Exception ex)
+			 {
+				ex.printStackTrace();  
+			 }
+			 
 			 flareBox.setText(products.process()); 
+		 });
+		 
+		 flareSix.setOnKeyReleased(e -> 
+		 {
+			 Products products = null; 
+			 try
+			 {
+				 products = new Products("Flare 6 pack", Integer.valueOf(flareSix.getText())); 
+			 }
+			 catch(Exception ex)
+			 {
+				ex.printStackTrace();  
+			 }			 
+			flareSixBox.setText(products.process());
 		 });
 		 
 		 /*btAdd.setOnAction(e -> 
@@ -124,11 +192,28 @@ public class Main extends Application
 	      Group root = new Group();
 	      root.getChildren().add(label);
 	      //Setting the stage*/
-		
+		 
+		 final Label label = new Label("Box & Bulk TQY");
+	        label.setFont(new Font("Arial", 20));
+	 
+	        table.setEditable(true);
+	 
+	        TableColumn firstNameCol = new TableColumn("Products");
+	        TableColumn lastNameCol = new TableColumn("Quantity");
+	        TableColumn emailCol = new TableColumn("Box Type");
+	        
+	        table.getColumns().addAll(firstNameCol, lastNameCol, emailCol);
+	 
+	        final VBox vbox = new VBox();
+	        vbox.setSpacing(5);
+	        vbox.setPadding(new Insets(10, 0, 0, 10));
+	        vbox.getChildren().addAll(label, table);
+	 
+	        pane.add(vbox, 4, 4);
 		//Set the Scene
 		Scene scene = new Scene(pane);
-		arg0.setWidth(400);
-		arg0.setHeight(600);
+		arg0.setWidth(900);
+		arg0.setHeight(700);
 		arg0.setScene(scene);
 		//Open the Curtains
 		arg0.show();
