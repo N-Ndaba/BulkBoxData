@@ -1,4 +1,4 @@
-package bbd;
+package bulk.box.data;
 
 public class Products 
 {
@@ -77,9 +77,7 @@ public class Products
 				else if(this.quantity == 6)
 					return "PAC0018"; 
 				else if(this.quantity == 10)
-					return "PAC0024";
-				/*else if(this.quantity == 25)
-					return "PAC0025";*/
+					return "PAC0024";	
 			}
 			break; 
 		}

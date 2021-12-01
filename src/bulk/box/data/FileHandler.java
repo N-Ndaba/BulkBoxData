@@ -1,4 +1,4 @@
-package bbd;
+package bulk.box.data;
 
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
