@@ -3,6 +3,7 @@ package bulk.box.data;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -12,9 +13,27 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class FileHandler 
 {
+	private static final Pattern productHeaderPattern = Pattern.compile("(\\w+\\s?)+\\|\\w"); 
+	
+	//-> P03
+	
+	
+	/*public static Products readProduct(File productFile)
+	{
+		Products products = null; 
+		if(!productFile.exists())
+		{
+			return products;
+		}
+		
+		//Scanner scProduct = null; 
+	}*/
+	
+	
 	private static List<Products> list = new ArrayList<Products>(); 
 	
 	public static void saveToFile(String boxCode, int length, int weight, int height)
@@ -87,14 +106,15 @@ public class FileHandler
 			}
 	}
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		
-		saveToFile("Luke", 1, 34, 4); 
-		try {
-			readBoxData();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-	}
+		if("Flare				|322	g".matches("(\\w+\\s?)+\\|\\w")) 
+		{
+			System.out.println("Horay!!");
+		}
+		else 
+		{
+			System.out.println("<>");
+		}
+	}*/
 }
