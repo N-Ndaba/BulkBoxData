@@ -52,8 +52,8 @@ public class Products
 			
 			case "Flare 6 pack": 
 			{
-				if(this.quantity == 100)
-					return "0";
+				if(this.quantity >= 2 && this.quantity <= 7)
+					return "PAC0002";
 			}
 			break;
 			
