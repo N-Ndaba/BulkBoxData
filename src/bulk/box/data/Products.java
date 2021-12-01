@@ -41,12 +41,14 @@ public class Products
 			{
 				if(this.quantity == 1)
 					return "CH1EF4D | CH1EF4P";
-				else if(this.quantity == 15)
-					return "PAC0004";
+				else if(this.quantity >= 5 && this.quantity <= 15)
+					return "PAC0002";
 				else if(this.quantity == 20)
-					return "PAC0018";
+					return "PAC0019";
 				else if(this.quantity == 45)
-					return "PAC0024";				
+					return "PAC0025";	
+				else if(this.quantity == 60)
+					return "PAC0002"; 
 			}
 			break; 
 			
@@ -60,7 +62,11 @@ public class Products
 			case "Ban Beacon":
 			{
 				if(this.quantity == 1)
-					return "PAC0002 | PAC0011 | PACACD02";
+					return "PAC0001";
+				else if(this.quantity > 1 && this.quantity <= 4)
+					return "PAC0010";
+				else if(this.quantity >= 6 && this.quantity <= 10)
+					return "PAC0005";
 				else if(this.quantity == 10)
 					return "PAC0004"; 
 				else if(this.quantity == 8)
@@ -75,13 +81,13 @@ public class Products
 				if(this.quantity == 1)
 					return "PAC0017";
 				else if(this.quantity == 6)
-					return "PAC0018"; 
+					return "PAC0019"; 
 				else if(this.quantity == 10)
 					return "PAC0024";	
 			}
 			break; 
 		}
-		return null;
+		return "No box available";
 	}
 	
 	public String getBoxType()

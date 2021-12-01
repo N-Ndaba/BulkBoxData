@@ -29,7 +29,7 @@ public class Box
 				return "230 x 120 x 230";
 				
 			case "PAC0005":
-				return "650 X 280 X 130";
+				return "650 x 280 x 130";
 			
 			case "PAC0006":
 				return "270 x 150 x 150";
@@ -44,10 +44,10 @@ public class Box
 				return "390 x 150 x 140";
 				
 			case "PAC0012":
-				return "120 X 120 X 130";
+				return "120 x 120 x 130";
 			
 			case "PAC0013":
-				return "270 X 220 X 220";
+				return "270 x 220 x 220";
 			
 			case "PAC0018":
 				return "200 x 140 x 140";
@@ -62,7 +62,7 @@ public class Box
 				return "390 x 320 x 480";
 				
 			case "PAC0027":
-				return "460 X 460 X 520";
+				return "460 x 460 x 520";
 			
 			case "PAC0031":
 				return "290 x 60 x 60";  
@@ -71,10 +71,10 @@ public class Box
 				return "240 x 60 x 60";
 				
 			case "PACACD03":
-				return "120 X 120 X 130";
+				return "120 x 120 x 130";
 			
 			default: 
-				return "Invalid Box dimension"; 
+				return "\t-"; 
 		} 
 	}
 }

@@ -177,8 +177,12 @@ public class BulkBoxPane extends StackPane
 			 }
 			 
 			 totalSixWeight.setText(String.valueOf((Integer.valueOf(flareSix.getText()) * 1.9) + "kg")); 
-			 FlareSixDimensions.setText("45 x 37 x 8");
 			flareSixBox.setText(products.process());
+			
+			if(products.process().equals("No box available"))
+				FlareSixDimensions.setText(" 		- 		");
+			else
+				 FlareSixDimensions.setText("45 x 37 x 8");
 		 });
 		 
 		 tpcrisis.setContent(pane); 
