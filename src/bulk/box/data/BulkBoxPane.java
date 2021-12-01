@@ -47,6 +47,10 @@ public class BulkBoxPane extends StackPane
 		 TextField flareSixBox= new TextField(); 
 		 flareSixBox.setEditable(false);
 		 pane.add(flareSixBox, 2, 2);
+		 TextField FlareSixDimensions  = new TextField(); 
+		 pane.add(FlareSixDimensions, 3, 2);
+		 TextField totalSixWeight  = new TextField(); 
+		 pane.add(totalSixWeight , 4, 2);
 		 
 		 pane.add(new Label("Ban Beacon:"), 0, 3);
 		 pane.add(new TextField(), 1, 3);
@@ -55,6 +59,10 @@ public class BulkBoxPane extends StackPane
 		 TextField BanBeaconBox= new TextField(); 
 		 BanBeaconBox.setEditable(false);
 		 pane.add(BanBeaconBox, 2, 3);
+		 TextField BanBeaconDimensions  = new TextField(); 
+		 pane.add(BanBeaconDimensions, 3, 3);
+		 TextField totalBanBeaconWeight  = new TextField(); 
+		 pane.add(totalBanBeaconWeight , 4, 3);
 		 
 		 pane.add(new Label("Sir Beacon / portable:"), 0, 4);
 		 pane.add(new TextField(), 1, 4);
@@ -63,12 +71,16 @@ public class BulkBoxPane extends StackPane
 		 TextField SirBeaconportableBox= new TextField(); 
 		 SirBeaconportableBox.setEditable(false); 
 		 pane.add(SirBeaconportableBox, 2, 4);
+		 TextField SirBeaconportableDimensions  = new TextField(); 
+		 pane.add(SirBeaconportableDimensions, 3, 4);
+		 TextField totalSirBeaconportableWeight  = new TextField(); 
+		 pane.add(totalSirBeaconportableWeight , 4, 4);
 		 
 		 
 
 		 
 		 
-		
+		 Box box = new Box(); 
 		 SirBeaconportable.setOnKeyReleased(e -> 
 		 {
 			 Products products = null; 
@@ -81,6 +93,17 @@ public class BulkBoxPane extends StackPane
 				ex.printStackTrace();  
 			 }
 			 
+			 if(SirBeaconportable.getText().isEmpty())
+			 {
+				 SirBeaconportableBox.clear();
+				 SirBeaconportableDimensions.clear(); 
+				 totalSirBeaconportableWeight.clear(); 
+			 }
+			 
+			
+			 
+			 totalSirBeaconportableWeight.setText(String.valueOf((Integer.valueOf(SirBeaconportable.getText()) * 1.1) + "kg")); 
+			 SirBeaconportableDimensions.setText(box.getBox(products.process())); 
 			 SirBeaconportableBox.setText(products.process()); 
 		 });
 		 
@@ -96,13 +119,23 @@ public class BulkBoxPane extends StackPane
 				ex.printStackTrace();  
 			 }
 			 
+			 if(BanBeacon.getText().isEmpty())
+			 {
+				 BanBeaconBox.clear();
+				 BanBeaconDimensions.clear(); 
+				 totalBanBeaconWeight.clear(); 
+			 }
+			 
+			 
+			 totalBanBeaconWeight.setText(String.valueOf((Integer.valueOf(BanBeacon.getText()) * 740) + "g")); 
+			 BanBeaconDimensions.setText(box.getBox(products.process())); 
 			 BanBeaconBox.setText(products.process()); 
 		 });
 		 
 		 flare.setOnKeyReleased(e -> 
 		 {
 			 Products products = null;
-			 Box box = new Box(); 
+			 
 			 try
 			 {
 				 products = new Products("Flare", Integer.valueOf(flare.getText()));  
@@ -112,9 +145,14 @@ public class BulkBoxPane extends StackPane
 				ex.printStackTrace();  
 			 }
 			 
-			 double flareWeight = Integer.valueOf(flare.getText()) * 332; 
-			 
-			 totalWeight.setText(String.valueOf(flareWeight + "g")); 
+			 if(flare.getText().isEmpty())
+			 {
+				 flareBox.clear();
+				 FlareDimensions.clear(); 
+				 totalWeight.clear(); 
+			 }
+ 
+			 totalWeight.setText(String.valueOf((Integer.valueOf(flare.getText()) * 332) + "g")); 
 			 FlareDimensions.setText(box.getBox(products.process())); 
 			 flareBox.setText(products.process()); 
 		 });
@@ -129,7 +167,17 @@ public class BulkBoxPane extends StackPane
 			 catch(Exception ex)
 			 {
 				ex.printStackTrace();  
-			 }			 
+			 }	
+			 
+			 if(flareSix.getText().isEmpty())
+			 {
+				 flareSixBox.clear();
+				 FlareSixDimensions.clear(); 
+				 totalSixWeight.clear(); 
+			 }
+			 
+			 totalSixWeight.setText(String.valueOf((Integer.valueOf(flareSix.getText()) * 1.9) + "kg")); 
+			 FlareSixDimensions.setText("45 x 37 x 8");
 			flareSixBox.setText(products.process());
 		 });
 		 
