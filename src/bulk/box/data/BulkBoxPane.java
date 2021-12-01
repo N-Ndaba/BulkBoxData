@@ -29,7 +29,6 @@ public class BulkBoxPane extends StackPane
 		 pane.add(new Label("Total Weight (kg):"), 4, 0);
 		 
 		 pane.add(new Label("Flare:"), 0, 1);
-		 pane.add(new TextField(), 1, 1);
 		 TextField flare = new TextField(); 
 		 pane.add(flare, 1, 1);
 		 TextField flareBox = new TextField(); 
@@ -65,7 +64,7 @@ public class BulkBoxPane extends StackPane
 		 pane.add(totalBanBeaconWeight , 4, 3);
 		 
 		 pane.add(new Label("Sir Beacon / portable:"), 0, 4);
-		 pane.add(new TextField(), 1, 4);
+		 //pane.add(new TextField(), 1, 4);
 		 TextField SirBeaconportable  = new TextField(); 
 		 pane.add(SirBeaconportable, 1, 4);
 		 TextField SirBeaconportableBox= new TextField(); 
@@ -77,120 +76,41 @@ public class BulkBoxPane extends StackPane
 		 pane.add(totalSirBeaconportableWeight , 4, 4);
 		 
 		 
-
-		 
-		 
-		 Box box = new Box(); 
-		 SirBeaconportable.setOnKeyReleased(e -> 
-		 {
-			 Products products = null; 
-			 try
-			 {
-				 products = new Products("Sir Beacon / portable", Integer.valueOf(SirBeaconportable.getText()));  
-			 }
-			 catch(Exception ex)
-			 {
-				ex.printStackTrace();  
-			 }
-			 
-			 if(SirBeaconportable.getText().isEmpty())
-			 {
-				 SirBeaconportableBox.clear();
-				 SirBeaconportableDimensions.clear(); 
-				 totalSirBeaconportableWeight.clear(); 
-			 }
-			 
+		 setOnKey(flare, flareBox, FlareDimensions, totalWeight, "Flare", 332);
+		 setOnKey(flareSix, flareSixBox, FlareSixDimensions, totalSixWeight, "Flare 6 pack", 1.9);
+		 setOnKey(BanBeacon, BanBeaconBox, BanBeaconDimensions, totalBanBeaconWeight, "Ban Beacon", 740);
+		 setOnKey(SirBeaconportable, SirBeaconportableBox, SirBeaconportableDimensions, totalSirBeaconportableWeight, "Sir Beacon / portable", 1.1);
 			
-			 
-			 totalSirBeaconportableWeight.setText(String.valueOf((Integer.valueOf(SirBeaconportable.getText()) * 1.1) + "kg")); 
-			 SirBeaconportableDimensions.setText(box.getBox(products.process())); 
-			 SirBeaconportableBox.setText(products.process()); 
-		 });
-		 
-		 BanBeacon.setOnKeyReleased(e -> 
-		 {
-			 Products products = null; 
-			 try
-			 {
-				 products = new Products("Ban Beacon", Integer.valueOf(BanBeacon.getText()));  
-			 }
-			 catch(Exception ex)
-			 {
-				ex.printStackTrace();  
-			 }
-			 
-			 if(BanBeacon.getText().isEmpty())
-			 {
-				 BanBeaconBox.clear();
-				 BanBeaconDimensions.clear(); 
-				 totalBanBeaconWeight.clear(); 
-			 }
-			 
-			 
-			 totalBanBeaconWeight.setText(String.valueOf((Integer.valueOf(BanBeacon.getText()) * 740) + "g")); 
-			 BanBeaconDimensions.setText(box.getBox(products.process())); 
-			 BanBeaconBox.setText(products.process()); 
-		 });
-		 
-		 flare.setOnKeyReleased(e -> 
-		 {
-			 Products products = null;
-			 
-			 try
-			 {
-				 products = new Products("Flare", Integer.valueOf(flare.getText()));  
-			 }
-			 catch(Exception ex)
-			 {
-				ex.printStackTrace();  
-			 }
-			 
-			 if(flare.getText().isEmpty())
-			 {
-				 flareBox.clear();
-				 FlareDimensions.clear(); 
-				 totalWeight.clear(); 
-			 }
- 
-			 totalWeight.setText(String.valueOf((Integer.valueOf(flare.getText()) * 332) + "g")); 
-			 FlareDimensions.setText(box.getBox(products.process())); 
-			 flareBox.setText(products.process()); 
-		 });
-		 
-		 flareSix.setOnKeyReleased(e -> 
-		 {
-			 Products products = null; 
-			 try
-			 {
-				 products = new Products("Flare 6 pack", Integer.valueOf(flareSix.getText())); 
-			 }
-			 catch(Exception ex)
-			 {
-				ex.printStackTrace();  
-			 }	
-			 
-			 if(flareSix.getText().isEmpty())
-			 {
-				 flareSixBox.clear();
-				 FlareSixDimensions.clear(); 
-				 totalSixWeight.clear(); 
-			 }
-			 
-			 totalSixWeight.setText(String.valueOf((Integer.valueOf(flareSix.getText()) * 1.9) + "kg")); 
-			flareSixBox.setText(products.process());
-			
-			if(products.process().equals("No box available"))
-				FlareSixDimensions.setText(" 		- 		");
-			else
-				 FlareSixDimensions.setText("45 x 37 x 8");
-		 });
-		 
 		 tpcrisis.setContent(pane); 
 		 getChildren().add(pane);
 	}
 	
-	public void setOnKey(String itemName, int quantity)
+	public void setOnKey(TextField txtQuantity, TextField txtBoxType, TextField txtDimensions, TextField txtTotalWeight,  String strProductName, double dblWeight)
 	{
-		
+		txtQuantity.setOnKeyReleased(e -> 
+		{
+			Products products = null;
+			Box box = new Box(); 
+			 
+			 try
+			 {
+				 if(txtQuantity.getText().isEmpty())
+				 {
+					 txtBoxType.clear();
+					 txtDimensions.clear(); 
+					 txtTotalWeight.clear(); 
+				 }
+				 
+				 products = new Products(strProductName, Integer.valueOf(txtQuantity.getText()));
+				 
+				 txtBoxType.setText(products.process());
+				 txtDimensions.setText(box.getBox(products.process())); 
+				 txtTotalWeight.setText(String.format("%.2f", Integer.valueOf(txtQuantity.getText()) * dblWeight)); 
+			 }
+			 catch(Exception ex)
+			 {
+				ex.printStackTrace();  
+			 }
+		}); 
 	}
 }

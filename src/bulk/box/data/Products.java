@@ -79,11 +79,11 @@ public class Products
 			case "Sir Beacon / portable":
 			{
 				if(this.quantity == 1)
-					return "PAC0017";
+					return "PAC0018";
 				else if(this.quantity == 6)
 					return "PAC0019"; 
 				else if(this.quantity == 10)
-					return "PAC0024";	
+					return "PAC0025";	
 			}
 			break; 
 		}
