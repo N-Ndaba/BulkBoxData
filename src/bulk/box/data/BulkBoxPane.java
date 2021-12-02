@@ -1,26 +1,30 @@
 package bulk.box.data;
 
-import java.util.ArrayList;
-
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.control.Accordion;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollBar;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 
 public class BulkBoxPane extends StackPane
 {
 	public BulkBoxPane()
 	{
+		//Accordion accordion = new Accordion();
+		
 		 GridPane pane = new GridPane();
-		 pane.setAlignment(Pos.CENTER);
+		 pane.setAlignment(Pos.TOP_LEFT);
 		 pane.setPadding(new Insets(11.5, 12.5, 13.5, 14.5));
 		 pane.setHgap(7);
 		 pane.setVgap(5.5);
-		 /*
+		 
+		 
+		 
 		 // Place nodes in the pane
 		 pane.add(new Label("Product:"), 0, 0);
 		 pane.add(new Label("Quantity:"), 1, 0);
@@ -166,50 +170,174 @@ public class BulkBoxPane extends StackPane
 		 pane.add(tdDimensions, 3, 10);
 		 TextField tdTotalWeight  = new TextField();
 		 tdTotalWeight.setEditable(false);
-		 pane.add(tdTotalWeight , 4, 10);*/
+		 pane.add(tdTotalWeight , 4, 10);
+		 
+		 pane.add(new Label("Hooter:"), 0, 11);
+		 TextField hooterQuantity  = new TextField(); 
+		 pane.add(hooterQuantity, 1, 11);
+		 TextField hooterBoxType = new TextField(); 
+		 hooterBoxType.setEditable(false); 
+		 hooterBoxType.setAlignment(Pos.CENTER);
+		 pane.add(hooterBoxType, 2, 11);
+		 TextField hooterDimensions  = new TextField(); 
+		 hooterDimensions.setEditable(false);
+		 pane.add(hooterDimensions, 3, 11);
+		 TextField hooterTotalWeight  = new TextField();
+		 hooterTotalWeight.setEditable(false);
+		 pane.add(hooterTotalWeight , 4, 11);
+		 
+		 pane.add(new Label("Bell:"), 0, 12);
+		 TextField bellQuantity  = new TextField(); 
+		 pane.add(bellQuantity, 1, 12);
+		 TextField bellBoxType = new TextField(); 
+		 bellBoxType.setEditable(false); 
+		 bellBoxType.setAlignment(Pos.CENTER);
+		 pane.add(bellBoxType, 2, 12);
+		 TextField bellDimensions  = new TextField(); 
+		 bellDimensions.setEditable(false);
+		 pane.add(bellDimensions, 3, 12);
+		 TextField bellTotalWeight  = new TextField();
+		 bellTotalWeight.setEditable(false);
+		 pane.add(bellTotalWeight , 4, 12);
+		 
+		 pane.add(new Label("Ban Ex S1/S2:"), 0, 13);
+		 TextField banexQuantity  = new TextField(); 
+		 pane.add(banexQuantity, 1, 13);
+		 TextField banexBoxType = new TextField(); 
+		 banexBoxType.setEditable(false); 
+		 banexBoxType.setAlignment(Pos.CENTER);
+		 pane.add(banexBoxType, 2, 13);
+		 TextField banexDimensions  = new TextField(); 
+		 banexDimensions.setEditable(false);
+		 pane.add(banexDimensions, 3, 13);
+		 TextField banexTotalWeight  = new TextField();
+		 banexTotalWeight.setEditable(false);
+		 pane.add(banexTotalWeight , 4, 13);
+		 
+		 pane.add(new Label("Ban EX Combo S1/S2:"), 0, 14);
+		 TextField banexcQuantity  = new TextField(); 
+		 pane.add(banexcQuantity, 1, 14);
+		 TextField banexcBoxType = new TextField(); 
+		 banexcBoxType.setEditable(false); 
+		 banexcBoxType.setAlignment(Pos.CENTER);
+		 pane.add(banexcBoxType, 2, 14);
+		 TextField banexcDimensions  = new TextField(); 
+		 banexcDimensions.setEditable(false);
+		 pane.add(banexcDimensions, 3, 14);
+		 TextField banexcTotalWeight  = new TextField();
+		 banexcTotalWeight.setEditable(false);
+		 pane.add(banexcTotalWeight , 4, 14);
+		 
+		 pane.add(new Label("Ban EX S3:"), 0, 15);
+		 TextField banexsQuantity  = new TextField(); 
+		 pane.add(banexsQuantity, 1, 15);
+		 TextField banexsBoxType = new TextField(); 
+		 banexsBoxType.setEditable(false); 
+		 banexsBoxType.setAlignment(Pos.CENTER);
+		 pane.add(banexsBoxType, 2, 15);
+		 TextField banexsDimensions  = new TextField(); 
+		 banexsDimensions.setEditable(false);
+		 pane.add(banexsDimensions, 3, 15);
+		 TextField banexsTotalWeight  = new TextField();
+		 banexsTotalWeight.setEditable(false);
+		 pane.add(banexsTotalWeight , 4, 15);
+		 
+		 pane.add(new Label("Ban Ex S3 Light:"), 0, 16);
+		 TextField banexslQuantity  = new TextField(); 
+		 pane.add(banexslQuantity, 1, 16);
+		 TextField banexslBoxType = new TextField(); 
+		 banexslBoxType.setEditable(false); 
+		 banexslBoxType.setAlignment(Pos.CENTER);
+		 pane.add(banexslBoxType, 2, 16);
+		 TextField banexslDimensions  = new TextField(); 
+		 banexslDimensions.setEditable(false);
+		 pane.add(banexslDimensions, 3, 16);
+		 TextField banexslTotalWeight  = new TextField();
+		 banexslTotalWeight.setEditable(false);
+		 pane.add(banexslTotalWeight , 4, 16);
+		 
+		 pane.add(new Label("660HZ:"), 0, 17);
+		 TextField shzQuantity  = new TextField(); 
+		 pane.add(shzQuantity, 1, 17);
+		 TextField shzBoxType = new TextField(); 
+		 shzBoxType.setEditable(false); 
+		 shzBoxType.setAlignment(Pos.CENTER);
+		 pane.add(shzBoxType, 2, 17);
+		 TextField shzDimensions  = new TextField(); 
+		 shzDimensions.setEditable(false);
+		 pane.add(shzDimensions, 3, 17);
+		 TextField shzTotalWeight  = new TextField();
+		 shzTotalWeight.setEditable(false);
+		 pane.add(shzTotalWeight , 4, 17);
+		 
+		 pane.add(new Label("370HZ:"), 0, 18);
+		 TextField thzQuantity  = new TextField(); 
+		 pane.add(thzQuantity, 1, 18);
+		 TextField thzBoxType = new TextField(); 
+		 thzBoxType.setEditable(false); 
+		 thzBoxType.setAlignment(Pos.CENTER);
+		 pane.add(thzBoxType, 2, 18);
+		 TextField thzDimensions  = new TextField(); 
+		 thzDimensions.setEditable(false);
+		 pane.add(thzDimensions, 3, 18);
+		 TextField thzTotalWeight  = new TextField();
+		 thzTotalWeight.setEditable(false);
+		 pane.add(thzTotalWeight , 4, 18);
+		 
+		 pane.add(new Label("Blaster 300ml:"), 0, 19);
+		 TextField blasterQuantity  = new TextField(); 
+		 pane.add(blasterQuantity, 1, 19);
+		 TextField blasterBoxType = new TextField(); 
+		 blasterBoxType.setEditable(false); 
+		 blasterBoxType.setAlignment(Pos.CENTER);
+		 pane.add(blasterBoxType, 2, 19);
+		 TextField blasterDimensions  = new TextField(); 
+		 blasterDimensions.setEditable(false);
+		 pane.add(blasterDimensions, 3, 19);
+		 TextField blasterTotalWeight  = new TextField();
+		 blasterTotalWeight.setEditable(false);
+		 pane.add(blasterTotalWeight , 4, 19);
+		 
+		 pane.add(new Label("Blaster 40/100/135mll:"), 0, 20);
+		 TextField blasterfQuantity  = new TextField(); 
+		 pane.add(blasterfQuantity, 1, 20);
+		 TextField blasterfBoxType = new TextField(); 
+		 blasterfBoxType.setEditable(false); 
+		 blasterfBoxType.setAlignment(Pos.CENTER);
+		 pane.add(blasterfBoxType, 2, 20);
+		 TextField blasterfDimensions  = new TextField(); 
+		 blasterfDimensions.setEditable(false);
+		 pane.add(blasterfDimensions, 3, 20);
+		 TextField blasterfTotalWeight  = new TextField();
+		 blasterfTotalWeight.setEditable(false);
+		 pane.add(blasterfTotalWeight , 4, 20);
+		 
+		 pane.add(new Label("A100:"), 0, 21);
+		 TextField aQuantity  = new TextField(); 
+		 pane.add(aQuantity, 1, 21);
+		 TextField aBoxType = new TextField(); 
+		 aBoxType.setEditable(false); 
+		 aBoxType.setAlignment(Pos.CENTER);
+		 pane.add(aBoxType, 2, 21);
+		 TextField aDimensions  = new TextField(); 
+		 aDimensions.setEditable(false);
+		 pane.add(aDimensions, 3, 21);
+		 TextField aTotalWeight  = new TextField();
+		 aTotalWeight.setEditable(false);
+		 pane.add(aTotalWeight , 4, 21);
 		
-		// setOnKey(flare, flareBox, FlareDimensions, totalWeight, "Flare", 332);
-		 //setOnKey(flareSix, flareSixBox, FlareSixDimensions, totalSixWeight, "Flare 6 pack", 1.9);
-		 //setOnKey(BanBeacon, BanBeaconBox, BanBeaconDimensions, totalBanBeaconWeight, "Ban Beacon", 740);
-		// setOnKey(SirBeaconportable, SirBeaconportableBox, SirBeaconportableDimensions, totalSirBeaconportableWeight, "Sir Beacon / portable", 1.1);
+		 setOnKey(flare, flareBox, FlareDimensions, totalWeight, "Flare", 332);
+		 setOnKey(flareSix, flareSixBox, FlareSixDimensions, totalSixWeight, "Flare 6 pack", 1.9);
+		 setOnKey(BanBeacon, BanBeaconBox, BanBeaconDimensions, totalBanBeaconWeight, "Ban Beacon", 740);
+		 setOnKey(SirBeaconportable, SirBeaconportableBox, SirBeaconportableDimensions, totalSirBeaconportableWeight, "Sir Beacon / portable", 1.1);
 			
-		 //getChildren().add(pane);
+		 
+		 ScrollPane sp = new ScrollPane(); 
+		 sp.setContent(pane); 
 		
-		 pane.add(new Label("Product:"), 0, 0);
-		 pane.add(new Label("Quantity:"), 1, 0);
-		 pane.add(new Label("BoxType:"), 2, 0);
-		 pane.add(new Label("Dimensions (L x W x H):"), 3, 0);
-		 pane.add(new Label("Total Weight (g | kg):"), 4, 0);
 		 
-		VBox vbEvents = new VBox();
-		vbEvents.getChildren().add(setupGUI("Flare", new TextField(),  new TextField(), new TextField(), new TextField())); 
-		vbEvents.getChildren().add(setupGUI("ntttttttttt", new TextField(),  new TextField(), new TextField(), new TextField())); 
-		getChildren().addAll(pane, vbEvents);
-	}
-	
-	public GridPane setupGUI(String label, TextField quantity, TextField boxType, TextField dimensions, TextField totalWeight)
-	{
-		 GridPane pane = new GridPane();
-		 pane.setAlignment(Pos.CENTER);
-		 pane.setPadding(new Insets(11.5, 12.5, 13.5, 14.5));
-		 pane.setHgap(7);
-		 pane.setVgap(5.5);
-		 
-		 
-		 
-		 
-		 pane.add(new Label(label), 0, 1);
-		 pane.add(quantity, 1, 1);
-		 boxType.setEditable(false); 
-		 boxType.setAlignment(Pos.CENTER);
-		 pane.add(boxType, 2, 1);
-		 dimensions.setEditable(false);
-		 pane.add(dimensions, 3, 1);
-		 totalWeight.setEditable(false);
-		 pane.add(totalWeight , 4, 1);
-		 
-		 return pane; 
-		// getChildren().add(pane);
+		 getChildren().addAll(sp, pane);
+		
 	}
 	
 	private void setOnKey(TextField txtQuantity, TextField txtBoxType, TextField txtDimensions, TextField txtTotalWeight,  String strProductName, double dblWeight)
