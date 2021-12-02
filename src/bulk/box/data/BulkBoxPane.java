@@ -1,11 +1,8 @@
 package bulk.box.data;
 
 import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.control.Accordion;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -15,17 +12,12 @@ public class BulkBoxPane extends StackPane
 {
 	public BulkBoxPane()
 	{
-		//Accordion accordion = new Accordion();
-		
 		 GridPane pane = new GridPane();
 		 pane.setAlignment(Pos.TOP_LEFT);
 		 pane.setPadding(new Insets(11.5, 12.5, 13.5, 14.5));
 		 pane.setHgap(7);
 		 pane.setVgap(5.5);
 		 
-		 
-		 
-		 // Place nodes in the pane
 		 pane.add(new Label("Product:"), 0, 0);
 		 pane.add(new Label("Quantity:"), 1, 0);
 		 pane.add(new Label("BoxType:"), 2, 0);
@@ -44,6 +36,8 @@ public class BulkBoxPane extends StackPane
 		 TextField totalWeight  = new TextField(); 
 		 totalWeight.setEditable(false);
 		 pane.add(totalWeight , 4, 1);
+		 	setOnKey(flare, flareBox, FlareDimensions, totalWeight, "Flare", 332);
+		 	
 		 
 		 pane.add(new Label("Flare 6 Pack:"), 0, 2);
 		 TextField flareSix = new TextField(); 
@@ -60,6 +54,7 @@ public class BulkBoxPane extends StackPane
 		 totalSixWeight.setEditable(false);
 		// totalSixWeight.setStyle("-fx-background-color: light gray;");
 		 pane.add(totalSixWeight , 4, 2);
+		 	setOnKey(flareSix, flareSixBox, FlareSixDimensions, totalSixWeight, "Flare 6 pack", 1.9);
 		 
 		 pane.add(new Label("Sir Beacon 60:"), 0, 3);
 		 TextField BanBeacon  = new TextField(); 
@@ -73,7 +68,8 @@ public class BulkBoxPane extends StackPane
 		 TextField totalBanBeaconWeight  = new TextField(); 
 		 totalBanBeaconWeight.setEditable(false);
 		 pane.add(totalBanBeaconWeight , 4, 3);
-		 
+		 setOnKey(BanBeacon, BanBeaconBox, BanBeaconDimensions, totalBanBeaconWeight, "Ban Beacon", 740);
+ 
 		 pane.add(new Label("Sir Beacon / portable:"), 0, 4);
 		 TextField SirBeaconportable  = new TextField(); 
 		 pane.add(SirBeaconportable, 1, 4);
@@ -87,7 +83,8 @@ public class BulkBoxPane extends StackPane
 		 TextField totalSirBeaconportableWeight  = new TextField();
 		 totalSirBeaconportableWeight.setEditable(false);
 		 pane.add(totalSirBeaconportableWeight , 4, 4);
-		 
+		 setOnKey(SirBeaconportable, SirBeaconportableBox, SirBeaconportableDimensions, totalSirBeaconportableWeight, "Sir Beacon / portable", 1.1);
+			 
 		 pane.add(new Label("Mono S:"), 0, 5);
 		 TextField monoQuantity  = new TextField(); 
 		 pane.add(monoQuantity, 1, 5);
@@ -101,6 +98,8 @@ public class BulkBoxPane extends StackPane
 		 TextField monoTotalWeight  = new TextField();
 		 monoTotalWeight.setEditable(false);
 		 pane.add(monoTotalWeight , 4, 5);
+		 setOnKey(monoQuantity, monoBoxType, monoDimensions, monoTotalWeight, "Mono S", 1.66);
+			
 		 
 		 pane.add(new Label("Duplo S:"), 0, 6);
 		 TextField duploQuantity  = new TextField(); 
@@ -115,6 +114,8 @@ public class BulkBoxPane extends StackPane
 		 TextField duploTotalWeight  = new TextField();
 		 duploTotalWeight.setEditable(false);
 		 pane.add(duploTotalWeight , 4, 6);
+		 setOnKey(duploQuantity, duploBoxType, duploDimensions, duploTotalWeight, "Duplo S", 2.9);
+			
 		 
 		 pane.add(new Label("Mono/ Duplo Combo:"), 0, 7);
 		 TextField monoduploQuantity  = new TextField(); 
@@ -129,7 +130,8 @@ public class BulkBoxPane extends StackPane
 		 TextField monoduploTotalWeight  = new TextField();
 		 monoduploTotalWeight.setEditable(false);
 		 pane.add(monoduploTotalWeight , 4, 7);
-		 
+		 setOnKey(monoduploQuantity, monoduploBoxType, monoduploDimensions, monoduploTotalWeight, "Mono/ Duplo Combo", 3);
+				 
 		 pane.add(new Label("1500S:"), 0, 8);
 		 TextField fsQuantity  = new TextField(); 
 		 pane.add(fsQuantity, 1, 8);
@@ -143,6 +145,8 @@ public class BulkBoxPane extends StackPane
 		 TextField fsTotalWeight  = new TextField();
 		 fsTotalWeight.setEditable(false);
 		 pane.add(fsTotalWeight , 4, 8);
+		 setOnKey(fsQuantity, fsBoxType, fsDimensions, fsTotalWeight, "1500S", 6.6);
+			
 		 
 		 pane.add(new Label("1500S Vert:"), 0, 9);
 		 TextField fvQuantity  = new TextField(); 
@@ -157,6 +161,8 @@ public class BulkBoxPane extends StackPane
 		 TextField fvTotalWeight  = new TextField();
 		 fvTotalWeight.setEditable(false);
 		 pane.add(fvTotalWeight , 4, 9);
+		 setOnKey(fvQuantity, fvBoxType, fvDimensions, fvTotalWeight, "1500S Vert", 6.6);
+			
 		 
 		 pane.add(new Label("2D:"), 0, 10);
 		 TextField tdQuantity  = new TextField(); 
@@ -171,7 +177,8 @@ public class BulkBoxPane extends StackPane
 		 TextField tdTotalWeight  = new TextField();
 		 tdTotalWeight.setEditable(false);
 		 pane.add(tdTotalWeight , 4, 10);
-		 
+		 setOnKey(tdQuantity, tdBoxType, tdDimensions, tdTotalWeight, "2D", 8.2);
+			
 		 pane.add(new Label("Hooter:"), 0, 11);
 		 TextField hooterQuantity  = new TextField(); 
 		 pane.add(hooterQuantity, 1, 11);
@@ -185,7 +192,8 @@ public class BulkBoxPane extends StackPane
 		 TextField hooterTotalWeight  = new TextField();
 		 hooterTotalWeight.setEditable(false);
 		 pane.add(hooterTotalWeight , 4, 11);
-		 
+		 setOnKey(hooterQuantity, hooterBoxType, hooterDimensions, hooterTotalWeight, "Hooter", 1.1);
+			
 		 pane.add(new Label("Bell:"), 0, 12);
 		 TextField bellQuantity  = new TextField(); 
 		 pane.add(bellQuantity, 1, 12);
@@ -199,6 +207,8 @@ public class BulkBoxPane extends StackPane
 		 TextField bellTotalWeight  = new TextField();
 		 bellTotalWeight.setEditable(false);
 		 pane.add(bellTotalWeight , 4, 12);
+		 setOnKey(bellQuantity, bellBoxType, bellDimensions, bellTotalWeight, "Bell", 420);
+			
 		 
 		 pane.add(new Label("Ban Ex S1/S2:"), 0, 13);
 		 TextField banexQuantity  = new TextField(); 
@@ -213,6 +223,8 @@ public class BulkBoxPane extends StackPane
 		 TextField banexTotalWeight  = new TextField();
 		 banexTotalWeight.setEditable(false);
 		 pane.add(banexTotalWeight , 4, 13);
+		 setOnKey(banexQuantity, banexBoxType, banexDimensions, banexTotalWeight, "Ban Ex S1/S2", 13);
+			
 		 
 		 pane.add(new Label("Ban EX Combo S1/S2:"), 0, 14);
 		 TextField banexcQuantity  = new TextField(); 
@@ -227,6 +239,8 @@ public class BulkBoxPane extends StackPane
 		 TextField banexcTotalWeight  = new TextField();
 		 banexcTotalWeight.setEditable(false);
 		 pane.add(banexcTotalWeight , 4, 14);
+		 setOnKey(banexcQuantity, banexcBoxType, banexcDimensions, banexcTotalWeight, "Ban EX Combo S1/S2", 16);
+			
 		 
 		 pane.add(new Label("Ban EX S3:"), 0, 15);
 		 TextField banexsQuantity  = new TextField(); 
@@ -241,6 +255,8 @@ public class BulkBoxPane extends StackPane
 		 TextField banexsTotalWeight  = new TextField();
 		 banexsTotalWeight.setEditable(false);
 		 pane.add(banexsTotalWeight , 4, 15);
+		 setOnKey(banexsQuantity, banexsBoxType, banexsDimensions, banexsTotalWeight, "Ban EX S3", 10);
+			
 		 
 		 pane.add(new Label("Ban Ex S3 Light:"), 0, 16);
 		 TextField banexslQuantity  = new TextField(); 
@@ -255,6 +271,8 @@ public class BulkBoxPane extends StackPane
 		 TextField banexslTotalWeight  = new TextField();
 		 banexslTotalWeight.setEditable(false);
 		 pane.add(banexslTotalWeight , 4, 16);
+		 setOnKey(banexslQuantity, banexslBoxType, banexslDimensions, banexslTotalWeight, "Ban Ex S3 Light", 5);
+			
 		 
 		 pane.add(new Label("660HZ:"), 0, 17);
 		 TextField shzQuantity  = new TextField(); 
@@ -269,6 +287,8 @@ public class BulkBoxPane extends StackPane
 		 TextField shzTotalWeight  = new TextField();
 		 shzTotalWeight.setEditable(false);
 		 pane.add(shzTotalWeight , 4, 17);
+		 setOnKey(shzQuantity, shzBoxType, shzDimensions, shzTotalWeight, "660HZ", 2.4);
+			
 		 
 		 pane.add(new Label("370HZ:"), 0, 18);
 		 TextField thzQuantity  = new TextField(); 
@@ -283,6 +303,8 @@ public class BulkBoxPane extends StackPane
 		 TextField thzTotalWeight  = new TextField();
 		 thzTotalWeight.setEditable(false);
 		 pane.add(thzTotalWeight , 4, 18);
+		 setOnKey(thzQuantity, thzBoxType, thzDimensions, thzTotalWeight, "370HZ", 2.8);
+			
 		 
 		 pane.add(new Label("Blaster 300ml:"), 0, 19);
 		 TextField blasterQuantity  = new TextField(); 
@@ -297,6 +319,8 @@ public class BulkBoxPane extends StackPane
 		 TextField blasterTotalWeight  = new TextField();
 		 blasterTotalWeight.setEditable(false);
 		 pane.add(blasterTotalWeight , 4, 19);
+		 setOnKey(blasterQuantity, blasterBoxType, blasterDimensions, blasterTotalWeight, "Blaster 300ml", 500);
+			
 		 
 		 pane.add(new Label("Blaster 40/100/135mll:"), 0, 20);
 		 TextField blasterfQuantity  = new TextField(); 
@@ -311,6 +335,8 @@ public class BulkBoxPane extends StackPane
 		 TextField blasterfTotalWeight  = new TextField();
 		 blasterfTotalWeight.setEditable(false);
 		 pane.add(blasterfTotalWeight , 4, 20);
+		 setOnKey(blasterfQuantity, blasterfBoxType, blasterfDimensions, blasterfTotalWeight, "Blaster 40/100/135mll", 320);
+			
 		 
 		 pane.add(new Label("A100:"), 0, 21);
 		 TextField aQuantity  = new TextField(); 
@@ -325,6 +351,8 @@ public class BulkBoxPane extends StackPane
 		 TextField aTotalWeight  = new TextField();
 		 aTotalWeight.setEditable(false);
 		 pane.add(aTotalWeight , 4, 21);
+		 setOnKey(aQuantity, aBoxType, aDimensions, aTotalWeight, "A100", 370);
+			
 		 
 		 pane.add(new Label("A105:"), 0, 22);
 		 TextField a5Quantity  = new TextField(); 
@@ -339,6 +367,8 @@ public class BulkBoxPane extends StackPane
 		 TextField a5TotalWeight  = new TextField();
 		 a5TotalWeight.setEditable(false);
 		 pane.add(a5TotalWeight , 4, 22);
+		 setOnKey(a5Quantity, a5BoxType, a5Dimensions, a5TotalWeight, "A105", 1);
+			
 		 
 		 pane.add(new Label("A112:"), 0, 23);
 		 TextField a2Quantity  = new TextField(); 
@@ -353,8 +383,10 @@ public class BulkBoxPane extends StackPane
 		 TextField a2TotalWeight  = new TextField();
 		 a2TotalWeight.setEditable(false);
 		 pane.add(a2TotalWeight , 4, 23);
+		 setOnKey(a2Quantity, a2BoxType, a2Dimensions, a2TotalWeight, "A112", 2.1);
+			
 		
-		 pane.add(new Label("A112:"), 0, 24);
+		 pane.add(new Label("A121:"), 0, 24);
 		 TextField a1Quantity  = new TextField(); 
 		 pane.add(a1Quantity, 1, 24);
 		 TextField a1BoxType = new TextField(); 
@@ -367,6 +399,8 @@ public class BulkBoxPane extends StackPane
 		 TextField a1TotalWeight  = new TextField();
 		 a1TotalWeight.setEditable(false);
 		 pane.add(a1TotalWeight , 4, 24);
+		 setOnKey(a1Quantity, a1BoxType, a1Dimensions, a1TotalWeight, "A121", 2.7);
+			
 		 
 		 pane.add(new Label("AL100:"), 0, 25);
 		 TextField alQuantity  = new TextField(); 
@@ -381,6 +415,8 @@ public class BulkBoxPane extends StackPane
 		 TextField alTotalWeight  = new TextField();
 		 alTotalWeight.setEditable(false);
 		 pane.add(alTotalWeight , 4, 25);
+		 setOnKey(alQuantity, alBoxType, alDimensions, alTotalWeight, "AL100", 570);
+			
 		 
 		 
 		 pane.add(new Label("AL105:"), 0, 26);
@@ -396,6 +432,8 @@ public class BulkBoxPane extends StackPane
 		 TextField al5TotalWeight  = new TextField();
 		 al5TotalWeight.setEditable(false);
 		 pane.add(al5TotalWeight , 4, 26);
+		 setOnKey(al5Quantity, al5BoxType, al5Dimensions, al5TotalWeight, "AL105", 1.2);
+			
 		 
 		 
 		 pane.add(new Label("AL112:"), 0, 27);
@@ -411,6 +449,8 @@ public class BulkBoxPane extends StackPane
 		 TextField al2TotalWeight  = new TextField();
 		 al2TotalWeight.setEditable(false);
 		 pane.add(al2TotalWeight , 4, 27);
+		 setOnKey(al2Quantity, al2BoxType, al2Dimensions, al2TotalWeight, "AL112", 2.3);
+			
 		 
 		 pane.add(new Label("AL121:"), 0, 28);
 		 TextField al1Quantity  = new TextField(); 
@@ -425,6 +465,8 @@ public class BulkBoxPane extends StackPane
 		 TextField al1TotalWeight  = new TextField();
 		 al1TotalWeight.setEditable(false);
 		 pane.add(al1TotalWeight , 4, 28);
+		 setOnKey(al1Quantity, al1BoxType, al1Dimensions, al1TotalWeight, "AL121", 2.9);
+			
 		 
 		 pane.add(new Label("B300:"), 0, 29);
 		 TextField a3Quantity  = new TextField(); 
@@ -439,6 +481,8 @@ public class BulkBoxPane extends StackPane
 		 TextField a3TotalWeight  = new TextField();
 		 a3TotalWeight.setEditable(false);
 		 pane.add(a3TotalWeight , 4, 29);
+		 setOnKey(a3Quantity, a3BoxType, a3Dimensions, a3TotalWeight, "B300", 1);
+			
 		 
 		 pane.add(new Label("B400:"), 0, 30);
 		 TextField a4Quantity  = new TextField(); 
@@ -453,6 +497,9 @@ public class BulkBoxPane extends StackPane
 		 TextField a4TotalWeight  = new TextField();
 		 a4TotalWeight.setEditable(false);
 		 pane.add(a4TotalWeight , 4, 30);
+		 setOnKey(a4Quantity, a4BoxType, a4Dimensions, a4TotalWeight, "B400", 1.2);
+			
+		 
 		 
 		 pane.add(new Label("H100:"), 0, 31);
 		 TextField h1Quantity  = new TextField(); 
@@ -467,6 +514,8 @@ public class BulkBoxPane extends StackPane
 		 TextField h1TotalWeight  = new TextField();
 		 h1TotalWeight.setEditable(false);
 		 pane.add(h1TotalWeight , 4, 31);
+		 setOnKey(h1Quantity, h1BoxType, h1Dimensions, h1TotalWeight, "H100", 1.2);
+			
 		 
 		 pane.add(new Label("H150:"), 0, 32);
 		 TextField h15Quantity  = new TextField(); 
@@ -481,6 +530,8 @@ public class BulkBoxPane extends StackPane
 		 TextField h15TotalWeight  = new TextField();
 		 h15TotalWeight.setEditable(false);
 		 pane.add(h15TotalWeight , 4, 32);
+		 setOnKey(h15Quantity, h15BoxType, h15Dimensions, h15TotalWeight, "H150", 5.1);
+			
 		 
 		 pane.add(new Label("H200:"), 0, 33);
 		 TextField h2Quantity  = new TextField(); 
@@ -495,6 +546,8 @@ public class BulkBoxPane extends StackPane
 		 TextField h2TotalWeight  = new TextField();
 		 h2TotalWeight.setEditable(false);
 		 pane.add(h2TotalWeight , 4, 33);
+		 setOnKey(h2Quantity, h2BoxType, h2Dimensions, h2TotalWeight, "H200", 12);
+			
 		 
 		 pane.add(new Label("500SA:"), 0, 34);
 		 TextField saQuantity  = new TextField(); 
@@ -509,6 +562,8 @@ public class BulkBoxPane extends StackPane
 		 TextField saTotalWeight  = new TextField();
 		 saTotalWeight.setEditable(false);
 		 pane.add(saTotalWeight , 4, 34);
+		 setOnKey(saQuantity, saBoxType, saDimensions, saTotalWeight, "500SA", 1.1);
+			
 		 
 		 pane.add(new Label("1000SA:"), 0, 35);
 		 TextField sa1Quantity  = new TextField(); 
@@ -523,6 +578,8 @@ public class BulkBoxPane extends StackPane
 		 TextField sa1TotalWeight  = new TextField();
 		 sa1TotalWeight.setEditable(false);
 		 pane.add(sa1TotalWeight , 4, 35);
+		 setOnKey(sa1Quantity, sa1BoxType, sa1Dimensions, sa1TotalWeight, "1000SA", 1.2);
+			
 		 
 		 
 		 pane.add(new Label("MA112:"), 0, 36);
@@ -538,6 +595,8 @@ public class BulkBoxPane extends StackPane
 		 TextField ma2TotalWeight  = new TextField();
 		 ma2TotalWeight.setEditable(false);
 		 pane.add(ma2TotalWeight , 4, 36);
+		 setOnKey(ma2Quantity, ma2BoxType, ma2Dimensions, ma2TotalWeight, "MA112", 3);
+			
 		 
 		 pane.add(new Label("MA121:"), 0, 37);
 		 TextField sa12Quantity  = new TextField(); 
@@ -552,23 +611,20 @@ public class BulkBoxPane extends StackPane
 		 TextField sa12TotalWeight  = new TextField();
 		 sa12TotalWeight.setEditable(false);
 		 pane.add(sa12TotalWeight , 4, 37);
-		 
-		 setOnKey(flare, flareBox, FlareDimensions, totalWeight, "Flare", 332);
-		 setOnKey(flareSix, flareSixBox, FlareSixDimensions, totalSixWeight, "Flare 6 pack", 1.9);
-		 setOnKey(BanBeacon, BanBeaconBox, BanBeaconDimensions, totalBanBeaconWeight, "Ban Beacon", 740);
-		 setOnKey(SirBeaconportable, SirBeaconportableBox, SirBeaconportableDimensions, totalSirBeaconportableWeight, "Sir Beacon / portable", 1.1);
+		 setOnKey(sa12Quantity, sa12BoxType, sa12Dimensions, sa12TotalWeight, "MA121", 3);
 			
 		 
-		 ScrollPane sp = new ScrollPane(); 
-		 sp.setContent(pane); 
-		
+	
 		 
+		 ScrollPane sp = new ScrollPane(); 
+		 sp.setContent(pane); 	 
 		 getChildren().addAll(sp, pane);
 		
 	}
 	
 	private void setOnKey(TextField txtQuantity, TextField txtBoxType, TextField txtDimensions, TextField txtTotalWeight,  String strProductName, double dblWeight)
 	{
+		
 		txtQuantity.setOnKeyReleased(e -> 
 		{
 			Products products = null;
@@ -591,7 +647,12 @@ public class BulkBoxPane extends StackPane
 				 
 				 txtBoxType.setText(products.process());
 				 txtDimensions.setText(box.getBox(products.process())); 
-				 txtTotalWeight.setText(String.format("%.1f", Integer.valueOf(txtQuantity.getText()) * dblWeight)); 
+				 
+				 
+				 if(strProductName.equals("Flare") || strProductName.equals("Sir Beacon 60") || strProductName.equals("Bell")  || strProductName.equals("Blaster 300ml") || strProductName.equals("Blaster 40/100/135mll"))
+					 txtTotalWeight.setText(String.format("%.2f", Integer.valueOf(txtQuantity.getText()) * dblWeight) + "g"); 
+				 else 
+					 txtTotalWeight.setText(String.format("%.2f", Integer.valueOf(txtQuantity.getText()) * dblWeight) + "kg"); 	
 			 }
 			 catch(Exception ex)
 			 {
