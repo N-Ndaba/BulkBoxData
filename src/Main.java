@@ -22,7 +22,7 @@ public class Main extends Application
 		//Set the Scene
 		Scene scene = new Scene(pane);
 		arg0.setWidth(805);
-		arg0.setHeight(700);
+		arg0.setHeight(735);
 		arg0.setScene(scene);
 		//Open the Curtains
 		arg0.show();
