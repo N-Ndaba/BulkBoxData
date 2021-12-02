@@ -86,141 +86,84 @@ public class Products
 					return "PAC0025";	
 			}
 			break; 
-		}
-		return "No box available";
-	}
-	
-	public String getBoxType()
-	{ 
-		return this.boxType; 
-	}
-	
-	/*public void process()
-	{
-		switch(this.name)
-		{
-			case "Flare": 
+			
+			
+			case "Mono S":
 			{
 				if(this.quantity == 1)
-					System.out.println("BOX TYPE: CH1EF4D | CH1EF4P");
-				else if(this.quantity == 15)
-					System.out.println("BOX TYPE: PAC0004");
-				else if(this.quantity == 20)
-					System.out.println("BOX TYPE: PAC0018");
-				else if(this.quantity == 45)
-					System.out.println("BOX TYPE: PAC0024");
-			}
-			break;
-			
-			case "Flare 6 pack": 
-			{
-				//if(this.quantity == 1)
-					//System.out.println("BOX: CH1EF4D or CH1EF4P");
-			}
-			break;
-			
-			case "Ban Beacon": 
-			{
-				if(this.quantity == 1)
-					System.out.println("BOX: PAC0002 | PAC0011 | PACACD02");
-				else if(this.quantity == 10)
-					System.out.println("BOX: PAC0004");
+					return "PAC0018";
 				else if(this.quantity == 6)
-					System.out.println("BOX: PAC0008");
-				else if(this.quantity == 25)
-					System.out.println("BOX: PAC0024");
-			}
-			break;
-			
-			
-			case "Sir Beacon / portable": 
-			{
-				if(this.quantity == 1)
-					System.out.println("BOX: PAC0017");
-				else if(this.quantity == 6)
-					System.out.println("BOX: PAC0018");
+					return "PAC0019"; 
 				else if(this.quantity == 10)
-					System.out.println("BOX: PAC0024");
-			}
-			break;
-			
-			case "Mono S": 
-			{
-				if(this.quantity == 1)
-					System.out.println("BOX: PAC0017");
-				else if(this.quantity == 6)
-					System.out.println("BOX: PAC0018"); 
-				else if(this.quantity == 10)
-					System.out.println("BOX: PAC0024");
+					return "PAC0025";
 			}
 			break;
 			
 			case "Duplo S": 
 			{
 				if(this.quantity == 1)
-					System.out.println("BOX: PAC009");
-				else if(this.quantity == 10)
-					System.out.println("BOX: PAC0024");
+					return "PAC0005";
+				else if(this.quantity == 6)
+					return "PAC0025";
 			}
-			break;
 			
 			case "Mono/ Duplo Combo": 
 			{
 				if(this.quantity == 9)
-					System.out.println("BOX: PAC0001");
+					return "PAC0002";
 				else if (this.quantity == 1)
-					System.out.println("BOX: PAC0010");
+					return "PAC0010";
 				else if(this.quantity == 2)
-					System.out.println("BOX: PAC0017");
+					return "PAC0019";
+				else if(this.quantity == 4)
+					return "PAC0025"; 
 			}
 			break;
 			
 			case "1500S": 
 			{
 				if(this.quantity == 1)
-					System.out.println("BOX: PAC0012");
+					return "PAC0013";
 				else if(this.quantity == 2) 
-					System.out.println("Box: PAC0018");
+					return "PAC0018 | PAC0019";
 			}
 			break;
 			
 			case "1500S Vert": 
 			{
 				if(this.quantity == 1)
-					System.out.println("BOX: PAC0008");
-				else if(this.quantity == 2)
-					System.out.println("BOX: PAC0024");
+					return "PAC0009";
 			}
 			break;
 			
 			case "2D": 
 			{
 				if(this.quantity == 1)
-					System.out.println("BOX: PAC0012");
+					return "PAC0013";
 				else if(this.quantity == 2)
-					System.out.println("BOX: PAC0018");
+					return "PAC0018 | PAC0019"; 
 			}
 			break;
 			
 			case "Hooter": 
 			{
 				if(this.quantity == 1)
-					System.out.println("BOX: PAC0010");
+					return "PAC0010 | PAC0011";
 				if(this.quantity == 9)
-					System.out.println("BOX: PAC0001");
+					return "PAC0002";
 				if(this.quantity == 2)
-					System.out.println("BOX: PAC0018");
+					return "PAC0018";
+				else if(this.quantity == 4)
+					return "PAC0025";  
 			}
 			break;
 			
 			case "Bell": 
 			{
 				if(this.quantity == 1)
-					System.out.println("BOX: PAC0017");
+					return "PAC0018";
 				else if(this.quantity == 6)
-					System.out.println("BOX: PAC0018");
-				else if(this.quantity == 10)
-					System.out.println("BOX: PAC0024");
+					return "PAC0019";
 			}
 			break;
 			
@@ -228,27 +171,25 @@ public class Products
 			case "Ban Ex S1/S2": 
 			{
 				if(this.quantity == 1)
-					System.out.println("BOX: PAC0009");
-				else if(this.quantity == 2)
-					System.out.println("BOX: PAC0017");
+					return "PAC0010";
 			}
 			break;
 			
 			case "Ban EX Combo S1/S2": 
 			{
 				if(this.quantity == 1)
-					System.out.println("BOX: PAC0008");
+					return "PAC0009";
 				else if(this.quantity == 24)
-					System.out.println("BOX: PAC0024");
+					return "PAC0024";
 			}
 			break;
 			
 			case "Ban EX S3": 
 			{
 				if(this.quantity == 1)
-					System.out.println("BOX: PAC0003");
+					return "PAC0004";
 				else if(this.quantity == 2)
-					System.out.println("BOX: PAC0018");
+					return "PAC0018";
 			}
 			break;
 			
@@ -256,18 +197,18 @@ public class Products
 			case "Ban Ex S3 Light": 
 			{
 				if(this.quantity == 1)
-					System.out.println("BOX: PAC0017");
+					return "PAC0018";
 				else if(this.quantity == 6)
-					System.out.println("BOX: PAC0018");
+					return "PAC0019";
 			}
 			break;
 			
 			case "660HZ": 
 			{
 				if(this.quantity == 3)
-					System.out.println("BOX: PAC0003");
+					return "PAC0003";
 				else if(this.quantity == 1)
-					System.out.println("BOX: PAC0012");
+					return "PAC0010 | PAC0013";
 				else if(this.quantity == 2)
 					System.out.println("BOX: PAC0017");
 			}
@@ -276,38 +217,40 @@ public class Products
 			case "370HZ": 
 			{
 				if(this.quantity == 1)
-					System.out.println("BOX: PAC0018");
+					return "PAC009 | PAC0019";
 				else if(this.quantity == 2)
-					System.out.println("BOX: PAC0024");
+					return "PAC0025";
 			}
 			break;
 			
 			case "Blaster 300ml": 
 			{
 				if(this.quantity == 1)
-					System.out.println("BOX: PAC0030");
+					return "PAC0030";
 				else if(this.quantity == 16)
-					System.out.println("BOX: PAC0004");
+					return "PAC0004";
 			}
 			break;
 			
 			case "Blaster 40/100/135mll": 
 			{
 				if(this.quantity == 16)
-					System.out.println("BOX: PAC0004");
+					return "PAC0004";
 				else if(this.quantity == 20)
-					System.out.println("BOX: PAC0018");
+					return "PAC0018";
 				else if(this.quantity == 1)
-					System.out.println("BOX: PAC0031");
+					return "PAC0031";;
 			}
 			break;
 			
 			case "A100": 
 			{
-				if(this.quantity == 10)
-					System.out.println("BOX: PAC0018");
-				else if(this.quantity == 20)
-					System.out.println("BOX: PAC0020");
+				if(this.quantity == 1)
+					return "PAC0018";
+				else if(this.quantity == 6)
+					return "PAC0019";
+				else if(this.quantity == 10)
+					return "PAC0025"; 
 			}
 			break;
 			
@@ -315,20 +258,20 @@ public class Products
 			case "A105": 
 			{
 				if(this.quantity == 6)
-					System.out.println("BOX: PAC0018");
-				else if(this.quantity == 10)
-					System.out.println("BOX: PAC0024");
+					return "PAC0018";
 			}
 			break;
 			
 			case "A112": 
 			{
-				if(this.quantity == 6)
-					System.out.println("BOX: PAC0001");
+				if(this.quantity == 1)
+					return "PAC0013";
 				else if(this.quantity == 2)
-					System.out.println("BOX: PAC0018");
+					return "PAC0018";
 				else if(this.quantity == 4)
-					System.out.println("BOX: PAC0024");
+					return "PAC0025";
+				else if(this.quantity == 6)
+					return "PAC0002";
 			}
 			break;
 			
@@ -336,21 +279,17 @@ public class Products
 			case "A121": 
 			{
 				if(this.quantity == 4)
-					System.out.println("BOX: PAC0001");
-				else if(this.quantity == 2)
-					System.out.println("BOX: PAC0024");
+					return "PAC0002";
+				else if(this.quantity == 1)
+					return ("PAC0025");
 			}
 			break;
 			
 			
 			case "AL100": 
 			{
-				if(this.quantity == 1)
-					System.out.println("BOX: PAC0017");
-				else if(this.quantity == 6)
-					System.out.println("BOX: PAC0018");
-				else if(this.quantity == 10)
-					System.out.println("BOX: PAC0024");
+				if(this.quantity == 6)
+					return "PAC0018";
 			}
 			break;
 			
@@ -358,59 +297,69 @@ public class Products
 			case "AL105": 
 			{
 				if(this.quantity == 1)
-					System.out.println("BOX: PAC0021");
+					return "PAC0021 | PAC0022";
 				else if(this.quantity == 2)
-					System.out.println("BOX: PAC0018");
+					return "PAC0018";
+				else if(this.quantity == 4)
+					return "PAC0025";
 				else if(this.quantity == 6)
-					System.out.println("BOX: PAC0024");
+					return "PAC0002";
 			}
 			break;
 			
 			
 			case "AL112": 
 			{
-				if(this.quantity == 3)
-					boxType = Box.PAC0001.toString(); 
-				else if(this.quantity == 1)
-					boxType = Box.PAC0012.toString(); 
-				else if(this.quantity == 2)
-					boxType = Box.PAC0018.toString(); 
+				if(this.quantity == 2)
+					return "PAC002";
+				else if (this.quantity == 1)
+					return "PAC0013"; 
+				else if(this.quantity == 4)
+					return "PAC0025";
 			}
 			break;
 			
 			
 			case "AL121": 
 			{
-				if(this.quantity == 2)
-					boxType = Box.PAC0001.toString(); 
-				else if(this.quantity == 1)
-					boxType = "PAC0008";
+				if(this.quantity == 1)
+					return "PAC0009";
 				else if(this.quantity == 2)
-					boxType = "PAC0018";
+					return "PAC0002 | PAC0018";
 			}
 			break;
 			
 			
 			case "B300": 
 			{
-				if(this.quantity == 6)
-					boxType = "PAC0024";  
+				if(this.quantity == 1)
+					return "PAC0018";  
+				else if(this.quantity == 4)
+					return "PAC0019"; 
+				else if(this.quantity == 10)
+					return  "PAC0025";
 			}
 			break;
 			
 			case "B400": 
 			{
-				if(this.quantity == 4)
-					boxType = "PAC0001"; 
+				if(this.quantity == 1)
+					return "PAC0013";
 				else if(this.quantity == 2)
-					boxType = "PAC0024";
+					return "PAC0025";
+				else if(this.quantity == 4)
+					return "PAC0002"; 
 			}
 			break;
 			
 			case "H100": 
 			{
-				if(this.quantity == 8)
-					boxType = "PAC0001"; 
+				if(this.quantity == 1)
+					return "PAC0013"; 
+				else if(this.quantity == 4)
+					return "PAC0025";
+				else if(this.quantity == 8)
+					return "PAC0002"; 
 			}
 			break;
 			
@@ -422,10 +371,53 @@ public class Products
 			
 			case "H200": 
 			{
-				if(this.quantity == 2)
-					boxType = "PAC0001"; 
+				if(this.quantity == 1)
+					return "PAC0002"; 
 			}
 			break;
+			
+			case "500SA":
+			{
+				if(this.quantity == 1)
+					return "PAC0018";
+				else if(this.quantity == 6)
+					return "PAC0019";
+				else if(this.quantity == 10)
+					return "PAC0025";
+			}
+			break; 
+			
+			case "1000SA":
+			{
+				if(this.quantity == 1)
+					return "PAC0018";
+				else if(this.quantity == 6)
+					return "PAC0019"; 
+				else if (this.quantity == 10)
+					return "PAC0025"; 
+			}
+			break; 
+			
+			case "MA112":
+			{
+				if(this.quantity == 2)
+					return "PAC0002"; 
+				else if(this.quantity == 4)
+					return "PAC0025"; 
+			}
+			break; 
+			
+			case "MA121":
+			{
+				if(this.quantity == 2)
+					return "PAC0002";
+			}
 		}
-	}*/
+		return "No box available";
+	}
+	
+	public String getBoxType()
+	{ 
+		return this.boxType; 
+	}
 }
