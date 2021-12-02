@@ -1,14 +1,7 @@
 package bulk.box.data;
 
 public class Box 
-{
-	/*private String name; 
-	
-	public Box(String name)
-	{
-		this.name = name; 
-	}*/
-	
+{	
 	public String getBox(String name)
 	{
 		switch(name)

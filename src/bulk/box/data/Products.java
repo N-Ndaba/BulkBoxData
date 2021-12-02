@@ -41,8 +41,8 @@ public class Products
 			{
 				if(this.quantity == 1)
 					return "CH1EF4D | CH1EF4P";
-				else if(this.quantity >= 5 && this.quantity <= 15)
-					return "PAC0002";
+				else if(this.quantity >= 6 && this.quantity <= 15)
+					return "PAC0005";
 				else if(this.quantity == 20)
 					return "PAC0019";
 				else if(this.quantity == 45)
@@ -62,7 +62,7 @@ public class Products
 			case "Ban Beacon":
 			{
 				if(this.quantity == 1)
-					return "PAC0001";
+					return "PAC0003";
 				else if(this.quantity > 1 && this.quantity <= 4)
 					return "PAC0010";
 				else if(this.quantity >= 6 && this.quantity <= 10)
