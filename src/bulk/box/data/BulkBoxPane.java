@@ -37,6 +37,8 @@ public class BulkBoxPane extends StackPane
 		grid.setHgap(7);
 		grid.setVgap(5.5);
 		
+		grid.setAlignment(Pos.CENTER);
+		
 		grid.add(new Label("PRODUCTS:"), 0, 0);
 		grid.add(new Label("QUANTITY:"), 1, 0);
 		grid.add(new Label("BOX:"), 2, 0);
@@ -45,9 +47,6 @@ public class BulkBoxPane extends StackPane
 		
 	
 	
-		TitledPane tpcrisis = new TitledPane();
-		
-		tpcrisis.setContent(grid); 
 		
 		VBox vbProduct = new VBox();
 		for(Product p : FileHandler.listProduct)
@@ -59,7 +58,7 @@ public class BulkBoxPane extends StackPane
 		ScrollPane sp = new ScrollPane(); 
 		sp.setContent(vbProduct); 
 		
-		getChildren().addAll(sp, grid);
+		getChildren().addAll(grid, sp);
 	}
 	
 	
