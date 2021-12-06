@@ -7,6 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -31,23 +32,34 @@ public class BulkBoxPane extends StackPane
 		System.out.println("\n\n--------------");
 		
 		GridPane grid = new GridPane();
+		grid.setAlignment(Pos.TOP_LEFT);
+		grid.setPadding(new Insets(11.5, 12.5, 13.5, 14.5));
+		grid.setHgap(7);
+		grid.setVgap(5.5);
 		
+		grid.add(new Label("PRODUCTS:"), 0, 0);
+		grid.add(new Label("QUANTITY:"), 1, 0);
+		grid.add(new Label("BOX:"), 2, 0);
+		grid.add(new Label("DIMENSIONS (L x W x H):"), 3, 0);
+		grid.add(new Label("TOTAL WEIGHT (g | kg):"), 4, 0);
 		
 	
 	
-	
+		TitledPane tpcrisis = new TitledPane();
+		
+		tpcrisis.setContent(grid); 
 		
 		VBox vbProduct = new VBox();
-		for(Product p : product.getProducts())
+		for(Product p : FileHandler.listProduct)
 		{
-			System.out.println(p.getName());
 			vbProduct.getChildren().add(createProductGrid(p)); 
 		
 		}
 		
 		ScrollPane sp = new ScrollPane(); 
-		sp.setContent(grid); 	 
-		getChildren().addAll(sp, grid, vbProduct);
+		sp.setContent(vbProduct); 
+		
+		getChildren().addAll(sp, grid);
 	}
 	
 	
@@ -59,11 +71,11 @@ public class BulkBoxPane extends StackPane
 		grid.setHgap(7);
 		grid.setVgap(5.5);
 		
-		grid.add(new Label("PRODUCTS:"), 0, 0);
+		/*grid.add(new Label("PRODUCTS:"), 0, 0);
 		grid.add(new Label("QUANTITY:"), 1, 0);
 		grid.add(new Label("BOX:"), 2, 0);
 		grid.add(new Label("DIMENSIONS (L x W x H):"), 3, 0);
-		grid.add(new Label("TOTAL WEIGHT (g | kg):"), 4, 0);
+		grid.add(new Label("TOTAL WEIGHT (g | kg):"), 4, 0);*/
 		
 		
 		grid.add(new Label(product.getName()), 0, 1);
@@ -732,6 +744,8 @@ public class BulkBoxPane extends StackPane
 				 }
 				 
 				 products = new Product(strProductName, Integer.valueOf(txtQuantity.getText()));
+				 
+				 //-> products.setNameQuantity(strProductName, Integer.valueOf(txtQuantity.getText()));
 				 
 				 txtBoxType.setText(products.process());
 				 txtDimensions.setText(box.getBox(products.process())); 

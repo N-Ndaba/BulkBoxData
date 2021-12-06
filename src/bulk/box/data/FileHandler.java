@@ -2,6 +2,7 @@ package bulk.box.data;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
@@ -53,7 +54,15 @@ public class FileHandler
 					System.out.println(productName + "\t" +  productWeight + "\t" + measurement);
 					product = new Product(productName, productWeight, measurement);
 					
-					Product products = makeEventFromString(productHeader); 
+					
+					setList(product); 
+					
+					Product products = makeEventFromString(productHeader);
+					
+					
+					
+				
+					
 					product.addProduct(products);
 				}
 			}
@@ -72,8 +81,24 @@ public class FileHandler
 		return product; 
 	}
 	
+	static ArrayList<Product> listProduct = new ArrayList<Product>(); 
+	
+	public static void setList(Product product)
+	{
+		listProduct.add(product); 
+	}
+	
+	public ArrayList<Product> getList()
+	{
+		return FileHandler.listProduct; 
+	}
+	
+	
 	private static Product makeEventFromString(String productLine) 
 	{
+		
+		
+		
 		StringTokenizer productTokens = new StringTokenizer(productLine, "\t");
 		String productName = productTokens.nextToken();
 		String strProductWeight = productTokens.nextToken();
@@ -82,6 +107,9 @@ public class FileHandler
 		String measurement	= productTokens.nextToken();
 		
 		Product product = new Product(productName, productWeight, measurement);
+		
+		//product.addProduct(product);
+		
 		return  product;
 	}		
 }

@@ -13,16 +13,11 @@ public class Product
 	
 	private Product[] products;
 	
-	public Product()
-	{
-		this.products = new Product[0]; 
-	}
 	
 	public Product(String name, int quantity)
-	{
+	{ 
 		this.name = name; 
 		this.quantity = quantity; 
-		this.products = new Product[0]; 
 	}
 	
 	public Product(String name, double weight, String measurement)
@@ -30,12 +25,17 @@ public class Product
 		this.name = name; 
 		this.weight = weight; 
 		this.measurement = measurement; 
-		this.products = new Product[0];
-		
-//		addProduct(new Product(name, weight, measurement));
+		this.products = new Product[0];	
 	}
 	
-	
+	public Product getProduct(int index) {
+	      if (index >= 0 && index < this.products.length) {
+	         return this.products[index];
+	      } else {
+	         System.err.println("Invalid index: " + index);
+	         return null;
+	      }
+	   }
 	
 	public int getQuantity()
 	{
