@@ -1,5 +1,7 @@
 package bulk.box.data;
 
+import java.io.File;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -10,8 +12,27 @@ import javafx.scene.layout.StackPane;
 
 public class BulkBoxPane extends StackPane
 {
+	
+	public static void main(String[] args) {
+
+		File productFile = new File("data/bulkboxdata.txt.txt");
+		//System.out.println(productFile.exists());
+		
+		Product productFromFile = FileHandler.readProduct(productFile);
+		
+		//productFromFile.printCrisis();
+		
+		
+		
+	}
 	public BulkBoxPane()
 	{
+		
+		
+		
+		
+		
+		
 		 GridPane pane = new GridPane();
 		 pane.setAlignment(Pos.TOP_LEFT);
 		 pane.setPadding(new Insets(11.5, 12.5, 13.5, 14.5));
@@ -627,7 +648,7 @@ public class BulkBoxPane extends StackPane
 		
 		txtQuantity.setOnKeyReleased(e -> 
 		{
-			Products products = null;
+			Product products = null;
 			Box box = new Box(); 
 			 
 			 try
@@ -643,7 +664,7 @@ public class BulkBoxPane extends StackPane
 					 txtTotalWeight.clear(); 
 				 }
 				 
-				 products = new Products(strProductName, Integer.valueOf(txtQuantity.getText()));
+				 products = new Product(strProductName, Integer.valueOf(txtQuantity.getText()));
 				 
 				 txtBoxType.setText(products.process());
 				 txtDimensions.setText(box.getBox(products.process())); 

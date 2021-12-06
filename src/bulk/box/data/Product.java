@@ -1,15 +1,39 @@
 package bulk.box.data;
 
-public class Products 
+public class Product 
 {
 	private String name; 
 	private int quantity; 
 	private String boxType; 
+	private double weight;
+	private String measurement; 
 	
-	public Products(String name, int quantity)
+	private Product[] p;
+	
+	public Product(String name, int quantity)
 	{
 		this.name = name; 
 		this.quantity = quantity; 
+		p = new Product[0];
+	}
+	
+	public Product(String name, double weight, String measurement)
+	{
+		this.name = name; 
+		this.weight = weight; 
+		this.measurement = measurement; 
+		p = new Product[0];
+	}
+	
+	public void addProduct(Product product) {
+		//Increase array of Events by one
+		Product[] tempEvents = new Product[p.length + 1];
+		System.arraycopy(p, 0, tempEvents, 0, p.length);
+		//Add new Member
+		tempEvents[tempEvents.length -1] = product;
+		p = tempEvents;
+		//Recompute Priority
+		//computeCrisisPriority();
 	}
 	
 	public int getQuantity()
