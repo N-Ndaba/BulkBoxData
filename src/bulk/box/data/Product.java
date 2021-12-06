@@ -1,5 +1,8 @@
 package bulk.box.data;
 
+import java.io.File;
+import java.util.ArrayList;
+
 public class Product 
 {
 	private String name; 
@@ -8,13 +11,18 @@ public class Product
 	private double weight;
 	private String measurement; 
 	
-	private Product[] p;
+	private Product[] products;
+	
+	public Product()
+	{
+		this.products = new Product[0]; 
+	}
 	
 	public Product(String name, int quantity)
 	{
 		this.name = name; 
 		this.quantity = quantity; 
-		p = new Product[0];
+		this.products = new Product[0]; 
 	}
 	
 	public Product(String name, double weight, String measurement)
@@ -22,23 +30,21 @@ public class Product
 		this.name = name; 
 		this.weight = weight; 
 		this.measurement = measurement; 
-		p = new Product[0];
+		this.products = new Product[0];
+		
+//		addProduct(new Product(name, weight, measurement));
 	}
 	
-	public void addProduct(Product product) {
-		//Increase array of Events by one
-		Product[] tempEvents = new Product[p.length + 1];
-		System.arraycopy(p, 0, tempEvents, 0, p.length);
-		//Add new Member
-		tempEvents[tempEvents.length -1] = product;
-		p = tempEvents;
-		//Recompute Priority
-		//computeCrisisPriority();
-	}
+	
 	
 	public int getQuantity()
 	{
 		return this.quantity; 
+	}
+	
+	public double getWeight()
+	{
+		return this.weight; 
 	}
 	
 	public void setQuantity(int quantity)
@@ -443,5 +449,18 @@ public class Product
 	public String getBoxType()
 	{ 
 		return this.boxType; 
+	}
+	
+	public void addProduct(Product product)
+	{	
+		Product[] tempProducts = new Product[this.products.length + 1];
+	    System.arraycopy(this.products, 0, tempProducts, 0, this.products.length);
+	    tempProducts[tempProducts.length - 1] = product;
+	    this.products = tempProducts;
+	}
+	
+	public Product[] getProducts() 
+	{
+		return this.products;
 	}
 }

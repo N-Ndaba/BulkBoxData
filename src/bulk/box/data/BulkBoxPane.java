@@ -9,23 +9,88 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 
 public class BulkBoxPane extends StackPane
 {
-	
-	public static void main(String[] args) {
-
-		File productFile = new File("data/bulkboxdata.txt.txt");
-		//System.out.println(productFile.exists());
+	private Product product = null; 
 		
-		Product productFromFile = FileHandler.readProduct(productFile);
-		
-		//productFromFile.printCrisis();
-		
-		
-		
-	}
 	public BulkBoxPane()
+	{	
+		setProduct(FileHandler.readProduct(new File("data/bulkboxdata.txt"))); 
+	}
+	
+	public void setProduct(Product product) {
+		this.product = product;
+
+		createChildren(); 
+	}
+	
+	public void createChildren() 
+	{
+		System.out.println("\n\n--------------");
+		
+		GridPane grid = new GridPane();
+		
+		
+	
+	
+	
+		
+		VBox vbProduct = new VBox();
+		for(Product p : product.getProducts())
+		{
+			System.out.println(p.getName());
+			vbProduct.getChildren().add(createProductGrid(p)); 
+		
+		}
+		
+		ScrollPane sp = new ScrollPane(); 
+		sp.setContent(grid); 	 
+		getChildren().addAll(sp, grid, vbProduct);
+	}
+	
+	
+	public GridPane createProductGrid(Product product) 
+	{
+		GridPane grid = new GridPane();
+		grid.setAlignment(Pos.TOP_LEFT);
+		grid.setPadding(new Insets(11.5, 12.5, 13.5, 14.5));
+		grid.setHgap(7);
+		grid.setVgap(5.5);
+		
+		grid.add(new Label("PRODUCTS:"), 0, 0);
+		grid.add(new Label("QUANTITY:"), 1, 0);
+		grid.add(new Label("BOX:"), 2, 0);
+		grid.add(new Label("DIMENSIONS (L x W x H):"), 3, 0);
+		grid.add(new Label("TOTAL WEIGHT (g | kg):"), 4, 0);
+		
+		
+		grid.add(new Label(product.getName()), 0, 1);
+		
+		TextField txtQuantity = new TextField(); 
+		txtQuantity.setAlignment(Pos.CENTER);
+		grid.add(txtQuantity, 1, 1);
+		TextField txtBox = new TextField(); 
+		txtBox.setEditable(false);
+		txtBox.setAlignment(Pos.CENTER);
+		grid.add(txtBox, 2, 1);
+		TextField txtDimensions  = new TextField(); 
+		txtDimensions.setEditable(false);
+		txtDimensions.setAlignment(Pos.CENTER);
+		grid.add(txtDimensions, 3, 1);
+		TextField txtTotalWeight  = new TextField(); 
+		txtTotalWeight.setEditable(false);
+		txtTotalWeight.setAlignment(Pos.CENTER);
+		grid.add(txtTotalWeight , 4, 1);
+		 
+		setOnKey(txtQuantity, txtBox, txtDimensions, txtTotalWeight, product.getName(), product.getWeight());
+		 	
+		
+		return grid;
+	}
+	
+	public void setUI()
 	{
 		
 		
@@ -642,6 +707,8 @@ public class BulkBoxPane extends StackPane
 		 getChildren().addAll(sp, pane);
 		
 	}
+	
+	
 	
 	private void setOnKey(TextField txtQuantity, TextField txtBoxType, TextField txtDimensions, TextField txtTotalWeight,  String strProductName, double dblWeight)
 	{

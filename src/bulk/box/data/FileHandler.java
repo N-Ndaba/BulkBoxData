@@ -11,16 +11,13 @@ public class FileHandler
 {
 	private static final Pattern productHeaderPattern = Pattern.compile("\\w+.*\\t\\*[0-9]+\\.[0-9]+\\*\\t(g|kg)"); 
 	
-	
 	public static Product readProduct(File productFile)
 	{
 		Product product = null; 
 		if(!productFile.exists())
 		{
-			System.out.println("1");
 			return product;
-		}
-		
+		}	
 		
 		Scanner scProduct = null;
 		try
@@ -31,7 +28,6 @@ public class FileHandler
 			if(!scProduct.hasNext()) 
 			{
 				System.err.println("Error: File is empty");
-				System.out.println("2");
 				return product;
 			}
 			
@@ -47,11 +43,20 @@ public class FileHandler
 				}
 				else 
 				{
-					Product p = makeProductFromString(productHeader);
-					//product.addProduct(p);
+					StringTokenizer productTokens = new StringTokenizer(productHeader, "\t");
+					String productName = productTokens.nextToken();
+					String strProductWeight = productTokens.nextToken();
+					strProductWeight = strProductWeight.substring(1, strProductWeight.length()-1);
+					double productWeight = Double.parseDouble(strProductWeight); 
+					String measurement	= productTokens.nextToken();
+					
+					System.out.println(productName + "\t" +  productWeight + "\t" + measurement);
+					product = new Product(productName, productWeight, measurement);
+					
+					Product products = makeEventFromString(productHeader); 
+					product.addProduct(products);
 				}
 			}
-		
 		} 
 		catch(FileNotFoundException fnfex) 
 		{
@@ -59,37 +64,24 @@ public class FileHandler
 		} 
 		finally 
 		{
-			//Close the file
 			if(scProduct != null) 
 			{
 				scProduct.close();
 			}
 		}
-		System.out.println("3");
 		return product; 
 	}
 	
-	private static Product makeProductFromString(String productLine) 
+	private static Product makeEventFromString(String productLine) 
 	{
-		
-		
 		StringTokenizer productTokens = new StringTokenizer(productLine, "\t");
 		String productName = productTokens.nextToken();
 		String strProductWeight = productTokens.nextToken();
-		
 		strProductWeight = strProductWeight.substring(1, strProductWeight.length()-1);
-		
 		double productWeight = Double.parseDouble(strProductWeight); 
 		String measurement	= productTokens.nextToken();
 		
-	
-	
-		
-		//Print Event
-		System.out.println("" + productName + " " +  productWeight + "" + measurement);
-		
-		//Create Event
 		Product product = new Product(productName, productWeight, measurement);
-		return product;
-	}
+		return  product;
+	}		
 }
