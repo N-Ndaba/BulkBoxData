@@ -432,4 +432,9 @@ public class Product
 	{ 
 		return this.boxType; 
 	}
+	
+	public String getMeasurement()
+	{ 
+		return this.measurement; 
+	}
 }
