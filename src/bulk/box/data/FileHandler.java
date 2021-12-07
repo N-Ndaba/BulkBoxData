@@ -11,6 +11,8 @@ import java.util.regex.Pattern;
 public class FileHandler 
 {
 	private static final Pattern productHeaderPattern = Pattern.compile("\\w+.*\\t\\*[0-9]+\\.[0-9]+\\*\\t(g|kg)"); 
+	public static ArrayList<Product> listProduct = new ArrayList<Product>(); 
+	
 	
 	public static Product readProduct(File productFile)
 	{
@@ -53,17 +55,8 @@ public class FileHandler
 					
 					System.out.println(productName + "\t" +  productWeight + "\t" + measurement);
 					product = new Product(productName, productWeight, measurement);
-					
-					
+						
 					setList(product); 
-					
-					Product products = makeEventFromString(productHeader);
-					
-					
-					
-				
-					
-					product.addProduct(products);
 				}
 			}
 		} 
@@ -81,8 +74,6 @@ public class FileHandler
 		return product; 
 	}
 	
-	static ArrayList<Product> listProduct = new ArrayList<Product>(); 
-	
 	public static void setList(Product product)
 	{
 		listProduct.add(product); 
@@ -91,25 +82,5 @@ public class FileHandler
 	public ArrayList<Product> getList()
 	{
 		return FileHandler.listProduct; 
-	}
-	
-	
-	private static Product makeEventFromString(String productLine) 
-	{
-		
-		
-		
-		StringTokenizer productTokens = new StringTokenizer(productLine, "\t");
-		String productName = productTokens.nextToken();
-		String strProductWeight = productTokens.nextToken();
-		strProductWeight = strProductWeight.substring(1, strProductWeight.length()-1);
-		double productWeight = Double.parseDouble(strProductWeight); 
-		String measurement	= productTokens.nextToken();
-		
-		Product product = new Product(productName, productWeight, measurement);
-		
-		//product.addProduct(product);
-		
-		return  product;
 	}		
 }
