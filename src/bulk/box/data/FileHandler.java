@@ -1,120 +1,86 @@
 package bulk.box.data;
 
-import java.io.BufferedOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Scanner;
+import java.util.StringTokenizer;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FileHandler 
 {
-	private static final Pattern productHeaderPattern = Pattern.compile("(\\w+\\s?)+\\|\\w"); 
+	private static final Pattern productHeaderPattern = Pattern.compile("\\w+.*\\t\\*[0-9]+\\.[0-9]+\\*\\t(g|kg)"); 
+	public static ArrayList<Product> listProduct = new ArrayList<Product>(); 
 	
-	//-> P03
 	
-	
-	/*public static Products readProduct(File productFile)
+	public static Product readProduct(File productFile)
 	{
-		Products products = null; 
+		Product product = null; 
 		if(!productFile.exists())
 		{
-			return products;
-		}
+			return product;
+		}	
 		
-		//Scanner scProduct = null; 
-	}*/
-	
-	
-	private static List<Products> list = new ArrayList<Products>(); 
-	
-	public static void saveToFile(String boxCode, int length, int weight, int height)
-	{
-		list.add(new Products("1",1 )); 
-		
-		DataOutputStream output =  null;
-		try {
-			output = new DataOutputStream(new BufferedOutputStream(new FileOutputStream("data/bulkboxdata.dat", true)));
-
-			output.writeUTF(boxCode);
-			output.writeInt(length);
-			output.writeInt(weight);
-			output.writeInt(height);
-		}
-		catch(IOException io)
+		Scanner scProduct = null;
+		try
 		{
-			io.printStackTrace(); 
-		}
+			//Open file
+			scProduct = new Scanner(productFile);
+			//Check file isn't empty
+			if(!scProduct.hasNext()) 
+			{
+				System.err.println("Error: File is empty");
+				return product;
+			}
+			
+			while(scProduct.hasNext()) 
+			{
+				String productHeader = scProduct.nextLine();
+			
+				Matcher productHeaderMatcher = productHeaderPattern.matcher(productHeader);
+		
+				if(!productHeaderMatcher.matches()) 
+				{
+					System.err.format("Product Header does not match:\r%s\n", productHeader);
+				}
+				else 
+				{
+					StringTokenizer productTokens = new StringTokenizer(productHeader, "\t");
+					String productName = productTokens.nextToken();
+					String strProductWeight = productTokens.nextToken();
+					strProductWeight = strProductWeight.substring(1, strProductWeight.length()-1);
+					double productWeight = Double.parseDouble(strProductWeight); 
+					String measurement	= productTokens.nextToken();
+					
+					System.out.println(productName + "\t" +  productWeight + "\t" + measurement);
+					product = new Product(productName, productWeight, measurement);
+						
+					setList(product); 
+				}
+			}
+		} 
+		catch(FileNotFoundException fnfex) 
+		{
+			System.err.format("Error: File %s does not exist%", productFile.getAbsolutePath());
+		} 
 		finally 
 		{
-		   if(output != null)
-		   {
-			   try
-			   {
-				   output.close();
-			   }
-			   catch(IOException e)
-			   {
-				   e.printStackTrace(); 
-			   }
-		   }
-		}	
-	}
-	
-	public void fileHandler(String boxCode, int length, int weight, int height) throws IOException 
-	{
-		try ( 
-				DataOutputStream output = new DataOutputStream(new FileOutputStream("data/bulkboxdata.dat"));
-		    ) 
-		{
-			output.writeUTF(boxCode);
-			output.writeInt(length);
-			output.writeInt(weight);
-			output.writeInt(height);
-		}
-	}
-	
-	public static void readBoxData() throws IOException 
-	{
-			try ( 
-					DataInputStream input =	new DataInputStream(new FileInputStream("data/bulkboxdata.dat"));
-			) {
-			
-				
-					System.out.println(input.readUTF());
-			System.out.println(input.readInt());
-			System.out.println(input.readInt());
-			System.out.println(input.readInt());
-			
-			System.out.println(input.readUTF());
-			System.out.println(input.readInt());
-			System.out.println(input.readInt());
-			System.out.println(input.readInt());
-			
-			System.out.println(input.readUTF());
-			System.out.println(input.readInt());
-			System.out.println(input.readInt());
-			System.out.println(input.readInt());
+			if(scProduct != null) 
+			{
+				scProduct.close();
 			}
+		}
+		return product; 
 	}
 	
-	/*public static void main(String[] args) {
-		
-		if("Flare				|322	g".matches("(\\w+\\s?)+\\|\\w")) 
-		{
-			System.out.println("Horay!!");
-		}
-		else 
-		{
-			System.out.println("<>");
-		}
-	}*/
+	public static void setList(Product product)
+	{
+		listProduct.add(product); 
+	}
+	
+	public ArrayList<Product> getList()
+	{
+		return FileHandler.listProduct; 
+	}		
 }

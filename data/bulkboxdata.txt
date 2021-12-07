@@ -1,0 +1,37 @@
+Flare	*322.0*	g
+Flare 6 pack	*1.9*	kg
+Sir Beacon 60	*740.0*	g
+Sir Beacon / portable	*1.1*	kg
+Mono S	*1.66*	kg
+Duplo s	*2.9*	kg
+Mono/ Duplo Combo	*3.0*	kg
+1500S	*6.6*	kg
+1500S Vert	*6.6*	kg
+2D	*8.2*	kg
+Hooter	*1.1*	g
+Bell	*420.0*	kg
+Ban Ex S1/S2	*13.0*	kg
+Ban EX Combo S1/S2	*16.0*	kg
+Ban EX S3	*10.0*	kg
+Ban Ex S3 Light	*5.0*	kg
+660HZ	*2.4*	kg
+370HZ	*2.8*	g
+Blaster 300ml	*500.0*	g
+Blaster 40/100/135mll	*320.0*	kg
+A100	*370.0*	kg
+A105	*1.0*	kg
+A112	*2.1*	kg
+A121	*2.7*	kg
+AL100	*570.0*	kg
+AL105	*1.2*	kg
+AL112	*2.3*	kg
+AL121	*2.9*	kg
+B300	*1.0*	kg
+B400	*1.2*	kg
+H100	*1.2*	kg
+H150	*5.1*	kg
+H200	*12.0*	kg
+500SA	*1.1*	kg
+1000SA	*1.2*	kg
+MA112	*3.0*	kg
+MA121	*3.0*	kg
