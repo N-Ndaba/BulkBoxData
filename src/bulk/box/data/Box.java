@@ -67,7 +67,7 @@ public class Box
 				return "120 x 120 x 130";
 			
 			default: 
-				return "\t-"; 
+				return "-"; 
 		} 
 	}
 }
