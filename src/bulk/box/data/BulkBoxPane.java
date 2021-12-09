@@ -134,7 +134,7 @@ public class BulkBoxPane extends StackPane
 	
 	private void setOnKey(TextField txtQuantity, TextField txtBoxType, TextField txtDimensions, TextField txtTotalWeight,  String strProductName, double dblWeight, String dblMeasurement, GridPane grid)
 	{
-		txtQuantity.setOnKeyTyped(e -> 
+		txtQuantity.setOnAction(e -> 
 		{
 			Product products = null;
 			Box box = new Box(); 
@@ -148,51 +148,12 @@ public class BulkBoxPane extends StackPane
 					 txtDimensions.setText(box.getBox(products.process()));  	
 					 txtTotalWeight.setText(String.valueOf(String.format("%.2f", Double.valueOf(txtQuantity.getText()) * dblWeight).replace(",", "."))); 	
 					 
-					 
-					 Sum += Double.parseDouble(txtTotalWeight.getText());
-					 
-					 for(Node node : grid.getChildren())
-					 {
-						/*if(node instanceof TextField && ((TextField) node).getId() == "O")
-						{
-							Sum += Double.parseDouble(((TextField) node).getText().replace(",", ".")); 
-						}*/
-						
-						if(node instanceof TextField && ((TextField) node).getId() == "D")
-						{
-							if(!txtDimensions.getText().equals("-"))
-							 {
-								 String[] tokens = txtDimensions.getText().split("\s");
-							
-								
-								
-								Length.add(Integer.valueOf(tokens[0])); 
-								Weight.add(Integer.valueOf(tokens[2]));
-								Height.add(Integer.valueOf(tokens[4]));
-							
-							 }
-							/*else 
-							{
-								Length.clear(); 
-								Weight.clear();
-								Height.clear();
-							}*/
-						}
-					 } 
+					 printSumOfSum(grid, true); 
 				 }
 				 else
-				 {		
-					 Sum -= Double.parseDouble(txtTotalWeight.getText());
+				 {
+					 printSumOfSum(grid, false); 
 					 
-					 for(Node node : grid.getChildren())
-					 {
-						if(node instanceof TextField &&  ((TextField) node).getId() == "O")
-						{
-							// Sum -= Double.valueOf(txtTotalWeight.getText().replace(",", ".")); 
-							//Sum -= Double.parseDouble(((TextField) node).getText().replace(",", ".")); 
-						}
-					 }
-
 					 txtBoxType.clear();
 					 txtDimensions.clear(); 
 					 txtTotalWeight.clear(); 
@@ -211,13 +172,30 @@ public class BulkBoxPane extends StackPane
 				
 				//System.out.println(Collections.max(Length) + " x " + Collections.max(Weight) + " x " + Collections.max(Height));
 
-			 txtSum.setText(String.valueOf(String.format("%.2f", Sum)).replace(",", "."));
+			
 			 printFD(grid); 
 		}); 
 		
 		
 	}
 	
+	
+	public void printSumOfSum(GridPane grid, boolean subadd)
+	{
+		for(Node node : grid.getChildren())
+		{
+			if(node instanceof TextField &&  ((TextField) node).getId() == "O" && subadd == true)
+			{
+				Sum += Double.parseDouble(((TextField) node).getText().replace(",", ".")); 
+			}
+			
+			if(node instanceof TextField &&  ((TextField) node).getId() == "O" && subadd == false)
+			{
+				Sum -= Double.parseDouble(((TextField) node).getText().replace(",", ".")); 
+			}
+		}
+		txtSum.setText(String.valueOf(String.format("%.2f", Sum)).replace(",", "."));
+	}
 	
 	public void printFD(GridPane grid)
 	{
@@ -227,7 +205,13 @@ public class BulkBoxPane extends StackPane
 			{		
 				if(((TextField) node).getText().equals("-"))
 				{
-					 txtFD.setText("-"); 
+					/*String[] tokens = ((TextField) node).getText().split("\s");	
+					Integer.valueOf(tokens[0]); 
+					Integer.valueOf(tokens[2]);
+					Integer.valueOf(tokens[4]);*/
+					txtFD.setText("-");
+			
+					// txtFD.setText(Collections.max(Length) + " x " + Collections.max(Weight) + " x " + Collections.max(Height));
 				}
 				else if(!((TextField) node).getText().equals("-"))
 				{
