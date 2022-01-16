@@ -16,6 +16,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -146,7 +147,8 @@ public class BulkBoxPane extends StackPane {
 				} else	{
 					//-> pane.getChildren().remove(node)
 					//-> pane.getChildren().removeAll(node)
-					//	Lu.getChildren().add(deleteProductGrid(p));
+					//Lu.getChildren().add(deleteProductGrid(p));
+					deleteProductGrid(Lu, p); 
 				} 
 			};
 			chProduct.setOnAction(handler);
@@ -207,32 +209,28 @@ public class BulkBoxPane extends StackPane {
 		getChildren().add(sp);
 	}
 
-	private GridPane deleteProductGrid(Product product) {
-		return null; 
-	}
+	private void deleteProductGrid(VBox v, Product p) {
+		for(Node n : v.getChildren()) {
+			for(Node i : ((GridPane) n).getChildren()) {
 
-	private TableView<Product> createTableView(Product product) {
-		TableView<Product> tableView = new TableView<Product>(products);
-
-		tableView.setEditable(true);
-
-		TableColumn<Product, String> nameColumn = new TableColumn<>("Name"); 
-		nameColumn.setMinWidth(100);
-		nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-
-		TableColumn<Product, Integer> quantityColumn = new TableColumn<>("Quantity"); 
-		quantityColumn.setMinWidth(100);
-		quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
-
-		TableColumn<Product, String> dimensionColumn = new TableColumn<>("Dimension"); 
-		dimensionColumn.setMinWidth(100);
-		dimensionColumn.setCellValueFactory(new PropertyValueFactory<>("dimension"));
-
-		TableColumn<Product, Double> weightColumn = new TableColumn<>("Weight"); 
-		weightColumn.setMinWidth(100);
-		weightColumn.setCellValueFactory(new PropertyValueFactory<>("weight"));
-
-		return tableView; 
+				if(i instanceof Label && ((Label) i).getText().equals(p.getName()+":")) {
+					System.out.println("[ 90 ]");
+					v.getChildren().remove(n); 
+					
+				}
+				/*System.out.println("[] = " + i.ge);
+				if(i instanceof TextField && ((TextField) i).getText().equals(1)) {
+					System.out.println("[ 90 ]");
+					v.getChildren().remove(n); 
+					
+				}
+				System.out.println("[] = ");*/
+			}
+			
+			/*if(node instanceof GridPane && node.getUserData().equals(p)) {
+				v.getChildren().remove(node); 
+			}*/
+		}
 	}
 
 	public GridPane createProductGrid(Product product) 
