@@ -212,24 +212,18 @@ public class BulkBoxPane extends StackPane {
 	private void deleteProductGrid(VBox v, Product p) {
 		for(Node n : v.getChildren()) {
 			for(Node i : ((GridPane) n).getChildren()) {
-
+				System.out.println("[]" + i);
 				if(i instanceof Label && ((Label) i).getText().equals(p.getName()+":")) {
-					System.out.println("[ 90 ]");
 					v.getChildren().remove(n); 
-					
+					//((TextField) i).getId().equals("D") == null;
 				}
-				/*System.out.println("[] = " + i.ge);
-				if(i instanceof TextField && ((TextField) i).getText().equals(1)) {
-					System.out.println("[ 90 ]");
-					v.getChildren().remove(n); 
-					
-				}
-				System.out.println("[] = ");*/
+				
+				/*if(i instanceof TextField) {
+					((TextField) i).setText(null);
+				}*/
+				txtSum.setText(null);
+				txtFinalDimension.setText(null);
 			}
-			
-			/*if(node instanceof GridPane && node.getUserData().equals(p)) {
-				v.getChildren().remove(node); 
-			}*/
 		}
 	}
 
@@ -258,6 +252,7 @@ public class BulkBoxPane extends StackPane {
 		txtBox.setEditable(false);
 		txtBox.setAlignment(Pos.CENTER);
 		txtBox.setFont(Font.font("Cambria", 13));
+		txtBox.setId("B");
 		grid.add(txtBox, 2, 1);
 
 		TextField txtDimensions  = new TextField(); 
