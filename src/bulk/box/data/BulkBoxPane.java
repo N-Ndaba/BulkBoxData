@@ -43,8 +43,11 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
 public class BulkBoxPane extends StackPane { 
-	private TextField txtSum = new TextField(); 
-	ObservableList<Product> products = null;
+	private double sum = 0;
+	private TextField txtSum = new TextField();
+	private TextField txtFinalDimension = new TextField(); 
+	private ObservableList<Product> products = null;
+	private ArrayList<Integer>[] dimList = new ArrayList[3]; 
 
 	public BulkBoxPane() {
 		products = FXCollections.observableArrayList( 
@@ -73,7 +76,9 @@ public class BulkBoxPane extends StackPane {
 				); 
 
 
-
+		for(int i = 0; i < 3 ; ++i) {
+			dimList[i] =  new ArrayList<Integer>();
+		}
 
 
 		setSide(); 
@@ -173,7 +178,7 @@ public class BulkBoxPane extends StackPane {
 		lblFinalDimension.setFont(Font.font("Cambria", 13));
 		sideGrid.add(lblFinalDimension, 0, 12);
 
-		TextField txtFinalDimension = new TextField("60 x 23 x 112"); 
+
 		txtFinalDimension.setFont(Font.font("Cambria", 13));
 		txtFinalDimension.setAlignment(Pos.CENTER);
 		txtFinalDimension.setId("txtFD");
@@ -294,10 +299,12 @@ public class BulkBoxPane extends StackPane {
 						txtTotalWeight.setText(String.valueOf(String.format("%.2f", Double.valueOf(txtQuantity.getText()) * dblWeight).replace(",", "."))); 	
 
 						calcTotalWeight(grid, true);
+						calcDimension(grid, true); 
 
 
 					} else {
 						calcTotalWeight(grid, false);
+						calcDimension(grid, false); 
 						txtBoxType.setText(null);
 						txtDimensions.setText(null);
 						txtTotalWeight.setText(null); 
@@ -311,8 +318,7 @@ public class BulkBoxPane extends StackPane {
 		}); 
 	}
 
-	double sum = 0;
-	public void calcTotalWeight(GridPane grid, boolean status) {
+	private void calcTotalWeight(GridPane grid, boolean status) {
 		for(Node node : grid.getChildren()) {
 			if(node instanceof TextField &&  ((TextField) node).getId() == "O" && status == true) {
 				sum += Double.parseDouble(((TextField) node).getText().replace(",", ".")); 
@@ -334,5 +340,44 @@ public class BulkBoxPane extends StackPane {
 		}
 
 		txtSum.setText(String.valueOf(String.format("%.2f", sum)).replace(",", "."));
+	}
+
+	
+
+	private void calcDimension(GridPane grid, boolean status) {
+		String dim = ""; 
+		for(Node node : grid.getChildren()) {
+			if(node instanceof TextField &&  ((TextField) node).getId() == "D")	{
+
+				if(!((TextField)node).getText().contains("-") && status == true) {
+					String[] tokens = ((TextField) node).getText().split("\s");
+					dimList[0].add(Integer.valueOf(tokens[0]));
+					dimList[1].add(Integer.valueOf(tokens[2]));
+					dimList[2].add(Integer.valueOf(tokens[4]));
+					
+					dim = Collections.max(dimList[0]) + " x " + Collections.max(dimList[1]) + " x " + Collections.max(dimList[2]);   
+				} else if (!((TextField)node).getText().contains("-") && status == false) {
+					String[] tokens = ((TextField) node).getText().split("\s");
+					dimList[0].remove(Integer.valueOf(tokens[0]));
+					dimList[1].remove(Integer.valueOf(tokens[2]));
+					dimList[2].remove(Integer.valueOf(tokens[4]));
+					
+					System.out.println(Integer.valueOf(tokens[0]));
+					System.out.println(Integer.valueOf(tokens[2]));
+					System.out.println(Integer.valueOf(tokens[4]));
+					
+					if(!dimList[0].isEmpty() && !dimList[1].isEmpty() && !dimList[2].isEmpty()) {
+						dim = Collections.max(dimList[0]) + " x " + Collections.max(dimList[1]) + " x " + Collections.max(dimList[2]);   
+					} else {
+						txtFinalDimension.setText(null); return; 
+					}
+				}
+				else {
+					txtFinalDimension.setText("-"); return; 
+				}
+			}
+		}
+
+		txtFinalDimension.setText(dim);
 	}
 }
