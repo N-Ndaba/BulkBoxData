@@ -156,10 +156,11 @@ public class BulkBoxPane extends StackPane {
 		vbProduct.setStyle("−fx−border−color: red");
 
 		vbProduct.getChildren().addAll(pane);
+		vbProduct.setPrefHeight(420);
 
 		ScrollPane scrollPane = new ScrollPane(vbProduct); 
 
-		sideGrid.add(scrollPane, 0, 0, 2, 2); 
+		sideGrid.add(scrollPane, 0, 0, 2, 1); 
 		//-----
 
 		Label lblSum = new Label("Total Weight:"); 
@@ -202,7 +203,8 @@ public class BulkBoxPane extends StackPane {
 		HBox h = new HBox(); 
 		h.setPadding(new Insets(13, 8, 12, 8));
 		h.getChildren().addAll(sideGrid, Lu); 
-		getChildren().add(h);
+		ScrollPane sp = new ScrollPane(h); 
+		getChildren().add(sp);
 	}
 
 	private GridPane deleteProductGrid(Product product) {
@@ -361,10 +363,6 @@ public class BulkBoxPane extends StackPane {
 					dimList[0].remove(Integer.valueOf(tokens[0]));
 					dimList[1].remove(Integer.valueOf(tokens[2]));
 					dimList[2].remove(Integer.valueOf(tokens[4]));
-					
-					System.out.println(Integer.valueOf(tokens[0]));
-					System.out.println(Integer.valueOf(tokens[2]));
-					System.out.println(Integer.valueOf(tokens[4]));
 					
 					if(!dimList[0].isEmpty() && !dimList[1].isEmpty() && !dimList[2].isEmpty()) {
 						dim = Collections.max(dimList[0]) + " x " + Collections.max(dimList[1]) + " x " + Collections.max(dimList[2]);   
