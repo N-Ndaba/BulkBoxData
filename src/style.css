@@ -8,3 +8,13 @@
 .text-field:focused {
     -fx-background-color: -fx-focus-color, -fx-background ;
 }
+
+/**GridPane {
+	-fx-background-color: lightblue;
+	-fx-padding: 10px;
+	-fx-alignment: center
+}
+
+HBox {
+		-fx-background-color: red;
+}/* */

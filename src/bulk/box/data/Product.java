@@ -1,15 +1,11 @@
 package bulk.box.data;
 
-import java.io.File;
-import java.util.ArrayList;
-
-public class Product 
+public class Product
 {
 	private String name; 
 	private int quantity; 
 	private String boxType; 
 	private double weight;
-	private String measurement; 
 	
 	
 	public Product(String name, int quantity)
@@ -18,11 +14,17 @@ public class Product
 		this.quantity = quantity; 
 	}
 	
+	public Product(String name, double weight)
+	{ 
+		this.name = name; 
+		this.weight = weight; 
+	}
+	
+	
 	public Product(String name, double weight, String measurement)
 	{
 		this.name = name; 
-		this.weight = weight; 
-		this.measurement = measurement; 	
+		this.weight = weight; 	
 	}
 	
 	public int getQuantity()
@@ -35,9 +37,10 @@ public class Product
 		return this.weight; 
 	}
 	
-	public void setQuantity(int quantity)
+	public void setQuantity(String quantity)
 	{
-		this.quantity = quantity; 
+		
+		this.quantity = Integer.valueOf(quantity); 
 	}
 	
 	public void setName(String name)
@@ -431,10 +434,5 @@ public class Product
 	public String getBoxType()
 	{ 
 		return this.boxType; 
-	}
-	
-	public String getMeasurement()
-	{ 
-		return this.measurement; 
-	}
+	}	
 }
