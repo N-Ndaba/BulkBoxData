@@ -1,438 +1,581 @@
 package bulk.box.data;
 
-public class Product
-{
-	private String name; 
-	private int quantity; 
-	private String boxType; 
-	private double weight;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
+public class Product {
+
+	private final StringProperty name; 
+	private final DoubleProperty weight;
 	
+	private DoubleProperty sum;
+	private StringProperty boxtype;
+	private IntegerProperty quantity; 
+	private StringProperty dimension; 
 	
-	public Product(String name, int quantity)
-	{ 
-		this.name = name; 
-		this.quantity = quantity; 
+	Box box = new Box(); 
+
+	
+	public Product(String name, double weight) {
+		this.name = new SimpleStringProperty(this, "name", name); 
+		this.weight = new SimpleDoubleProperty(this, "weight", weight); 
+		this.quantity = new SimpleIntegerProperty(this, "quantity", 1); 
+		this.boxtype = new SimpleStringProperty(this, "boxtype");
+		this.sum = new SimpleDoubleProperty(this, "sum", weight); 
+		this.dimension = new SimpleStringProperty(this, "dimension", ""); 
+		setQuantity(1);
 	}
 	
-	public Product(String name, double weight)
-	{ 
-		this.name = name; 
-		this.weight = weight; 
+	public final String getDimension() {
+		return this.dimension.get(); 
 	}
 	
-	
-	public Product(String name, double weight, String measurement)
-	{
-		this.name = name; 
-		this.weight = weight; 	
+	public void setDimension(String dimension) {
+		this.dimension.set(dimension);
 	}
 	
-	public int getQuantity()
-	{
-		return this.quantity; 
+	public final StringProperty dimensionProperty() {
+		return this.dimension; 
 	}
 	
-	public double getWeight()
-	{
-		return this.weight; 
+	public final String getName() {
+		return this.name.get(); 
 	}
 	
-	public void setQuantity(String quantity)
-	{
-		
-		this.quantity = Integer.valueOf(quantity); 
-	}
-	
-	public void setName(String name)
-	{
-		this.name = name; 
-	}
-	
-	public String getName()
-	{
+	public final StringProperty nameProperty() {
 		return this.name; 
 	}
 	
+	public final Double getWeight() {
+		return this.weight.get(); 
+	}
 	
-	public String process()
+	public final DoubleProperty weightProperty() {
+		return this.weight; 
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	public final Double getSumWeight() {
+		return this.sum.get(); 
+	}
+	
+	public final void setSumWeight(double weight) {
+		this.sum.set(weight);
+	}
+	
+	public final DoubleProperty sumProperty() {
+		return this.sum; //Double.valueOf(String.format("%", null))
+	}
+	
+	public final String getBoxType() {
+		return this.boxtype.get(); 
+	}
+	
+	public final void setBoxType(String boxtype) {
+		this.boxtype.set(boxtype);
+	}
+	
+	public final StringProperty boxtypeProperty() {
+		return this.boxtype; 
+	}
+	
+	public Integer getQuantity() {
+		return this.quantity.get(); 
+	}
+	
+	public void setQuantity(int number) {
+		//int number = i.intValue(); 
+		if(number <= 0) {
+			number = 1; 
+		}
+
+		if(number != 0) {
+			this.quantity.set(number);
+			setSumWeight(number * this.getWeight());
+			process(number, this.getName());
+			
+			setDimension(box.getBox(getBoxType())); 
+		}
+	}
+	
+	public IntegerProperty quantityProperty() {
+		return this.quantity; 
+	}
+	
+	
+
+	public void process(int e, String s)
 	{
-		switch(this.name)
+		switch(s)
 		{
 			case "Flare": 
 			{
-				if(this.quantity == 1)
-					return Boxtype.CH1EF4D.toString() + " | " + Boxtype.CH1EF4P.toString();  
-				else if(this.quantity >= 6 && this.quantity <= 15)
-					return Boxtype.PAC0005.toString(); 
-				else if(this.quantity == 20)
-					return Boxtype.PAC0019.toString(); 
-				else if(this.quantity == 45)
-					return Boxtype.PAC0025.toString(); 	
-				else if(this.quantity == 60)
-					return Boxtype.PAC0002.toString(); ; 
+				if(e == 1)
+					setBoxType(Boxtype.CH1EF4D.toString()); 
+				else if(e == 5)
+					setBoxType(Boxtype.PAC0013.toString());
+				else if(e >= 6 && e <= 15)
+					setBoxType(Boxtype.PAC0005.toString()); 
+				else if(e == 20)
+					setBoxType(Boxtype.PAC0019.toString()); 
+				else if(e == 45)
+					setBoxType(Boxtype.PAC0025.toString()); 	
+				else if(e == 60)
+					setBoxType(Boxtype.PAC0002.toString());
+				else 
+					setBoxType("-");
 			}
 			break; 
 			
 			case "Flare 6 pack": 
 			{
-				if(this.quantity >= 2 && this.quantity <= 7)
-					return Boxtype.PAC0002.toString(); 
+				if(e >= 2 && e <= 7)
+					setBoxType(Boxtype.PAC0002.toString());
+				else 
+					setBoxType("-");
 			}
 			break;
 			
 			case "Sir Beacon 60":
 			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0003.toString(); 
-				else if(this.quantity > 1 && this.quantity <= 4)
-					return Boxtype.PAC0010.toString(); 
-				else if(this.quantity >= 6 && this.quantity <= 10)
-					return Boxtype.PAC0005.toString(); 
-				else if(this.quantity == 10)
-					return Boxtype.PAC0004.toString();  
-				else if(this.quantity == 25)
-					return Boxtype.PAC0025.toString(); 
+				if(e == 1)
+					setBoxType(Boxtype.PAC0003.toString());
+				else if(e == 2)
+					setBoxType(Boxtype.PAC0018.toString());
+				else if(e == 3)
+					setBoxType(Boxtype.PAC0011.toString()); 
+				else if(e == 4)
+					setBoxType(Boxtype.PAC0009.toString()); 
+				else if(e >= 6 && e <= 10)
+					setBoxType(Boxtype.PAC0005.toString()); 
+				else 
+					setBoxType("-");
 			}
 			break; 
 			
 			case "Sir Beacon / portable":
 			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0018.toString(); 
-				else if(this.quantity == 6)
-					return Boxtype.PAC0019.toString(); 
-				else if(this.quantity == 10)
-					return Boxtype.PAC0025.toString(); 
+				if(e == 1)
+					setBoxType(Boxtype.PAC0018.toString()); 
+				else if(e == 6)
+					setBoxType(Boxtype.PAC0019.toString()); 
+				else if(e == 10)
+					setBoxType(Boxtype.PAC0025.toString()); 
+				else 
+					setBoxType("-");
 			}
 			break; 
 			
 			
 			case "Mono S":
 			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0018.toString(); 
-				else if(this.quantity == 6)
-					return Boxtype.PAC0019.toString(); 
-				else if(this.quantity == 10)
-					return Boxtype.PAC0025.toString(); 
+				if(e == 1)
+					setBoxType(Boxtype.PAC0018.toString()); 
+				else if(e == 6)
+					setBoxType(Boxtype.PAC0019.toString()); 
+				else if(e == 10)
+					setBoxType(Boxtype.PAC0025.toString()); 
+				else 
+					setBoxType("-");
 			}
 			break;
 			
 			case "Duplo s": 
 			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0005.toString(); 
-				else if(this.quantity == 6)
-					return Boxtype.PAC0025.toString(); 
+				if(e == 1)
+					setBoxType(Boxtype.PAC0006.toString()); 
+				else if(e == 6)
+					setBoxType(Boxtype.PAC0025.toString()); 
+				else 
+					setBoxType("-");
 			}
 			
 			case "Mono/ Duplo Combo": 
 			{
-				if(this.quantity == 9)
-					return Boxtype.PAC0002.toString(); 
-				else if (this.quantity == 1)
-					return Boxtype.PAC0010.toString(); 
-				else if(this.quantity == 2)
-					return Boxtype.PAC0019.toString(); 
-				else if(this.quantity == 4)
-					return Boxtype.PAC0025.toString(); 
+				if(e == 9)
+					setBoxType(Boxtype.PAC0002.toString()); 
+				else if (e == 1)
+					setBoxType(Boxtype.PAC0011.toString()); 
+				else if(e == 2)
+					setBoxType(Boxtype.PAC0019.toString()); 
+				else if(e == 4)
+					setBoxType(Boxtype.PAC0025.toString()); 
+				else
+					setBoxType("-"); 
 			}
 			break;
 			
 			case "1500S": 
 			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0013.toString(); 
-				else if(this.quantity == 2) 
-					return  Boxtype.PAC0018.toString() + " | " + Boxtype.PAC0019.toString(); 
+				if(e == 1)
+					setBoxType(Boxtype.PAC0013.toString()); 
+				else if(e == 2) 
+					setBoxType(Boxtype.PAC0019.toString());
+				else
+					setBoxType("-"); 
 			}
 			break;
 			
 			case "1500S Vert": 
 			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0009.toString(); 
+				if(e == 1)
+					setBoxType(Boxtype.PAC0009.toString()); 
+				else
+					setBoxType("-");
 			}
 			break;
 			
 			case "2D": 
 			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0013.toString(); 
-				else if(this.quantity == 2)
-					return Boxtype.PAC0018.toString() + " | " + Boxtype.PAC0019.toString(); 
+				if(e == 1)
+					setBoxType(Boxtype.PAC0013.toString()); 
+				else if(e == 2)
+					setBoxType(Boxtype.PAC0019.toString()); 
+				else
+					setBoxType("-");
 			}
 			break;
 			
 			case "Hooter": 
 			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0010.toString() + " | " + Boxtype.PAC0011.toString(); 
-				if(this.quantity == 9)
-					return Boxtype.PAC0002.toString(); 
-				if(this.quantity == 2)
-					return Boxtype.PAC0018.toString();
-				else if(this.quantity == 4)
-					return Boxtype.PAC0025.toString();
+				if(e == 1)
+					setBoxType(Boxtype.PAC0011.toString()); 
+				if(e == 9)
+					setBoxType(Boxtype.PAC0002.toString()); 
+				if(e == 2)
+					setBoxType(Boxtype.PAC0019.toString());
+				else if(e == 4)
+					setBoxType(Boxtype.PAC0025.toString());
+				else
+					setBoxType("-");
 			}
 			break;
 			
 			case "Bell": 
 			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0018.toString();
-				else if(this.quantity == 6)
-					return Boxtype.PAC0019.toString(); 
+				if(e == 1)
+					setBoxType(Boxtype.PAC0018.toString());
+				else if(e == 6)
+					setBoxType(Boxtype.PAC0019.toString());
+				else if(e == 10)
+					setBoxType(Boxtype.PAC0025.toString());
+				else
+					setBoxType("-");
 			}
 			break;
 			
 			
 			case "Ban Ex S1/S2": 
 			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0010.toString(); 
+				if(e == 1)
+					setBoxType(Boxtype.PAC0010.toString());
+				else if(e == 2)
+					setBoxType(Boxtype.PAC0019.toString());
+				else
+					setBoxType("-");
 			}
 			break;
 			
 			case "Ban EX Combo S1/S2": 
 			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0009.toString();
+				if(e == 1)
+					setBoxType(Boxtype.PAC0009.toString());
+				else
+					setBoxType("-");
 			}
 			break;
 			
 			case "Ban EX S3": 
 			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0004.toString();
-				else if(this.quantity == 2)
-					return Boxtype.PAC0018.toString();
+				if(e == 1)
+					setBoxType(Boxtype.PAC0004.toString());
+				else if(e == 2)
+					setBoxType(Boxtype.PAC0019.toString());
+				else
+					setBoxType("-");
 			}
 			break;
 			
 			
 			case "Ban Ex S3 Light": 
 			{
-				if(this.quantity == 1)
-					return  Boxtype.PAC0018.toString();
-				else if(this.quantity == 6)
-					return  Boxtype.PAC0019.toString();
+				if(e == 1)
+					setBoxType(Boxtype.PAC0018.toString());
+				else if(e == 6)
+					setBoxType(Boxtype.PAC0019.toString());
+				else if(e == 10)
+					setBoxType(Boxtype.PAC0025.toString());
+				else
+					setBoxType("-");
 			}
 			break;
 			
 			case "660HZ": 
 			{
-				if(this.quantity == 3)
-					return  Boxtype.PAC0003.toString();
-				else if(this.quantity == 1)
-					return Boxtype.PAC0010.toString() + " | " +  Boxtype.PAC0013.toString();
+				if(e == 3)
+					setBoxType(Boxtype.PAC0003.toString());
+				else if(e == 1)
+					setBoxType(Boxtype.PAC0010.toString());
+				else
+					setBoxType("-");
 			}
 			break;
 			
 			case "370HZ": 
 			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0009.toString() + " | " +  Boxtype.PAC0019.toString();
-				else if(this.quantity == 2)
-					return Boxtype.PAC0025.toString();
+				if(e== 1)
+					setBoxType(Boxtype.PAC0009.toString());
+				else if(e == 2)
+					setBoxType(Boxtype.PAC0025.toString());
+				else
+					setBoxType("-");
 			}
 			break;
 			
 			case "Blaster 300ml": 
 			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0030.toString();
-				else if(this.quantity == 16)
-					return Boxtype.PAC0004.toString();
+				if(e == 1)
+					setBoxType(Boxtype.PAC0030.toString());
+				else if(e == 16)
+					setBoxType(Boxtype.PAC0004.toString());
+				else if(e == 20)
+					setBoxType(Boxtype.PAC0019.toString());
+				else
+					setBoxType("-");
 			}
 			break;
 			
 			case "Blaster 40/100/135mll": 
 			{
-				if(this.quantity == 16)
-					return Boxtype.PAC0004.toString();
-				else if(this.quantity == 20)
-					return Boxtype.PAC0018.toString();
-				else if(this.quantity == 1)
-					return Boxtype.PAC0031.toString();
+				if(e == 16)
+					setBoxType(Boxtype.PAC0004.toString());
+				else if(e == 20)
+					setBoxType(Boxtype.PAC0018.toString());
+				else if(e == 1)
+					setBoxType(Boxtype.PAC0031.toString());
+				else
+					setBoxType("-");
 			}
 			break;
 			
 			case "A100": 
 			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0018.toString();
-				else if(this.quantity == 6)
-					return Boxtype.PAC0019.toString();
-				else if(this.quantity == 10)
-					return Boxtype.PAC0025.toString();
+				if(e == 1)
+					setBoxType(Boxtype.PAC0018.toString());
+				else if(e == 6)
+					setBoxType(Boxtype.PAC0019.toString());
+				else if(e == 10)
+					setBoxType(Boxtype.PAC0025.toString());
+				else
+					setBoxType("-");
 			}
 			break;
 			
 			
 			case "A105": 
 			{
-				if(this.quantity == 6)
-					return Boxtype.PAC0018.toString();;
+				if(e == 1)
+					setBoxType(Boxtype.PAC0006.toString());
+				if(e == 6)
+					setBoxType(Boxtype.PAC0025.toString());
+				else
+					setBoxType("-");
 			}
 			break;
 			
 			case "A112": 
 			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0013.toString();
-				else if(this.quantity == 2)
-					return Boxtype.PAC0018.toString();
-				else if(this.quantity == 4)
-					return Boxtype.PAC0025.toString();
-				else if(this.quantity == 6)
-					return Boxtype.PAC0002.toString();
+				if(e == 1)
+					setBoxType(Boxtype.PAC0013.toString());
+				else if(e == 2)
+					setBoxType(Boxtype.PAC0019.toString());
+				else if(e == 4)
+					setBoxType(Boxtype.PAC0002.toString());
+				else
+					setBoxType("-");
 			}
 			break;
 			
 			
 			case "A121": 
 			{
-				if(this.quantity == 4)
-					return Boxtype.PAC0002.toString();
-				else if(this.quantity == 1)
-					return Boxtype.PAC0025.toString();
+				if(e == 4)
+					setBoxType(Boxtype.PAC0002.toString());
+				else if(e == 1)
+					setBoxType(Boxtype.PAC0009.toString());
+				else if(e == 2)
+					setBoxType(Boxtype.PAC0019.toString());
+				else
+					setBoxType("-");
 			}
 			break;
 			
 			
 			case "AL100": 
 			{
-				if(this.quantity == 6)
-					return Boxtype.PAC0018.toString();
+				if(e == 1)
+					setBoxType(Boxtype.PAC0018.toString());
+				else if(e == 6)
+					setBoxType(Boxtype.PAC0019.toString());
+				else if(e == 10)
+					setBoxType(Boxtype.PAC0025.toString());
+				else
+					setBoxType("-");
 			}
 			break;
 			
 			
 			case "AL105": 
 			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0021.toString() + " | "+ Boxtype.PAC0022.toString();
-				else if(this.quantity == 2)
-					return Boxtype.PAC0018.toString();
-				else if(this.quantity == 4)
-					return Boxtype.PAC0025.toString();
-				else if(this.quantity == 6)
-					return Boxtype.PAC0002.toString();
+				if(e == 6)
+					setBoxType(Boxtype.PAC0002.toString());
+				else if(e == 2)
+					setBoxType(Boxtype.PAC0019.toString());
+				else if(e == 4)
+					setBoxType(Boxtype.PAC0025.toString());
+				else
+					setBoxType("-");
 			}
 			break;
 			
 			
 			case "AL112": 
 			{
-				if(this.quantity == 2)
-					return Boxtype.PAC0002.toString();
-				else if (this.quantity == 1)
-					return Boxtype.PAC0013.toString();
-				else if(this.quantity == 4)
-					return Boxtype.PAC0025.toString();
+				if(e == 2)
+					setBoxType(Boxtype.PAC0019.toString());
+				else if (e == 1)
+					setBoxType(Boxtype.PAC0013.toString());
+				else if(e == 4)
+					setBoxType(Boxtype.PAC0002.toString());
+				else
+					setBoxType("-");
 			}
 			break;
 			
 			
 			case "AL121": 
 			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0009.toString();
-				else if(this.quantity == 2)
-					return Boxtype.PAC0002.toString() + " | " + Boxtype.PAC0018.toString();
+				if(e == 1)
+					setBoxType(Boxtype.PAC0009.toString());
+				else if(e == 2)
+					setBoxType(Boxtype.PAC0025.toString());
+				else if(e == 4)
+					setBoxType(Boxtype.PAC0002.toString());
+				else
+					setBoxType("-");
 			}
 			break;
 			
 			
 			case "B300": 
 			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0018.toString(); 
-				else if(this.quantity == 4)
-					return Boxtype.PAC0019.toString();
-				else if(this.quantity == 10)
-					return  Boxtype.PAC0025.toString();
+				if(e == 1)
+					setBoxType(Boxtype.PAC0018.toString()); 
+				else if(e == 6)
+					setBoxType(Boxtype.PAC0019.toString());
+				else if(e == 10)
+					setBoxType(Boxtype.PAC0025.toString());
+				else
+					setBoxType("-");
 			}
 			break;
 			
 			case "B400": 
 			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0013.toString();
-				else if(this.quantity == 2)
-					return Boxtype.PAC0025.toString();
-				else if(this.quantity == 4)
-					return Boxtype.PAC0002.toString(); 
+				if(e == 1)
+					setBoxType(Boxtype.PAC0013.toString());
+				else if(e == 2)
+					setBoxType(Boxtype.PAC0025.toString());
+				else if(e == 4)
+					setBoxType(Boxtype.PAC0002.toString());
+				else
+					setBoxType("-");
 			}
 			break;
 			
 			case "H100": 
 			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0013.toString();
-				else if(this.quantity == 4)
-					return Boxtype.PAC0025.toString();
-				else if(this.quantity == 8)
-					return Boxtype.PAC0002.toString(); 
+				if(e == 1)
+					setBoxType(Boxtype.PAC0013.toString());
+				else if(e == 4)
+					setBoxType(Boxtype.PAC0025.toString());
+				else if(e == 8)
+					setBoxType(Boxtype.PAC0002.toString());
+				else
+					setBoxType("-");
 			}
 			break;
 			
 			case "H150": 
 			{
-				
+				setBoxType("-");
 			}
 			break;
 			
 			case "H200": 
 			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0002.toString(); 
+				if(e == 1)
+					setBoxType(Boxtype.PAC0002.toString()); 
+				else
+					setBoxType("-");
 			}
 			break;
 			
 			case "500SA":
 			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0018.toString();
-				else if(this.quantity == 6)
-					return Boxtype.PAC0019.toString();
-				else if(this.quantity == 10)
-					return Boxtype.PAC0025.toString();
+				if(e == 1)
+					setBoxType(Boxtype.PAC0018.toString());
+				else if(e == 6)
+					setBoxType(Boxtype.PAC0019.toString());
+				else if(e == 10)
+					setBoxType(Boxtype.PAC0025.toString());
+				else
+					setBoxType("-");
 			}
 			break; 
 			
 			case "1000SA":
 			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0018.toString();
-				else if(this.quantity == 6)
-					return Boxtype.PAC0019.toString();
-				else if (this.quantity == 10)
-					return Boxtype.PAC0025.toString();
+				if(e == 1)
+					setBoxType(Boxtype.PAC0018.toString());
+				else if(e == 6)
+					setBoxType(Boxtype.PAC0019.toString());
+				else if (e == 10)
+					setBoxType(Boxtype.PAC0025.toString());
+				else
+					setBoxType("-");
 			}
 			break; 
 			
 			case "MA112":
 			{
-				if(this.quantity == 2)
-					return Boxtype.PAC0002.toString(); 
-				else if(this.quantity == 4)
-					return Boxtype.PAC0025.toString(); 
+				if(e == 2)
+					setBoxType(Boxtype.PAC0002.toString()); 
+				else if(e == 4)
+					setBoxType(Boxtype.PAC0025.toString()); 
+				else
+					setBoxType("-");
 			}
 			break; 
 			
 			case "MA121":
 			{
-				if(this.quantity == 2)
-					return Boxtype.PAC0002.toString(); 
+				if(e == 2)
+					setBoxType(Boxtype.PAC0002.toString()); 
 			}
+			 
+			default: 
+				setBoxType("-");
 		}
-		return "No box available";
 	}
-	
-	public String getBoxType()
-	{ 
-		return this.boxType; 
-	}	
 }

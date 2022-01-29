@@ -6,7 +6,7 @@ public class Box
 	{
 		switch(name)
 		{
-			case "CH1EF4D | CH1EF4P":
+			case "CH1EF4D":
 				return "110 x 80 x 110";  
 				
 			case "PAC0001":
