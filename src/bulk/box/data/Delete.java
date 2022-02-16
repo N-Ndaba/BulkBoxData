@@ -33,7 +33,7 @@ public class Delete extends StackPane{
 
 
 
-			String query = "SELECT id, name, weight FROM item"; 
+			String query = "SELECT * FROM item"; 
 			ResultSet rs = statement.executeQuery(query); 
 			while(rs.next()) {
 				System.out.println("id" + rs.getString("id"));
@@ -59,11 +59,11 @@ public class Delete extends StackPane{
 			}
 		}
 
-		insert(); 
+		deleteRecord(); 
 	}
 
 	@SuppressWarnings("unchecked")
-	public void insert() {
+	public void deleteRecord() {
 		Label lbllabel = new Label("Name:");
 		TextField name = new TextField();
 		Label lblnumber = new Label("Weight:");
@@ -74,7 +74,9 @@ public class Delete extends StackPane{
 		grid.add(lblnumber, 0, 1);
 		grid.add(number, 1, 1);
 		Button btn = new Button("Save"); 
+		Button REF = new Button("REF"); 
 		grid.add(btn, 3, 3);
+		grid.add(REF, 0, 4);
 
 		grid.add(tableView, 5, 5); 
 		tableView.getColumns().addAll(productName, productWeight);
@@ -83,39 +85,46 @@ public class Delete extends StackPane{
 
 		btn.setOnAction(e -> {
 
-			Product pro = tableView.getSelectionModel().getSelectedItem(); 
-			name.setText(productName.getText());
-			number.setText(productWeight.getText());
-
-
 			try {
+				DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
 				Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
 				Connection connection = DriverManager.getConnection(jdbcURL);
-				String sql = "DELETE from item WHERE id = " + pro.getId(); 
-
 				Statement statement = connection.createStatement(); 
 
-				int rows = statement.executeUpdate(sql);
-				if(rows > 0) {
-					System.out.println("A row created.");
-				}
-
-
-				String query = "SELECT id, name, weight FROM item"; 
+				/*String query = "SELECT * FROM item"; 
 				ResultSet rs = statement.executeQuery(query); 
 				while(rs.next()) {
 					System.out.println("name: " + rs.getString("name"));
 					System.out.println("weight: " + rs.getString("weight"));
 
 					products = FXCollections.observableArrayList(new Product(Integer.valueOf(rs.getString("id")), rs.getString("name"), Double.valueOf(rs.getString("weight"))));
+					for(Product p : products) {
+						tableView.getItems().add(p); 
+					}
+				}*/
+
+
+				String sql = "DELETE from item WHERE name = '" + name.getText() + "'"; 
+				products.clear(); 
+				tableView.getItems().clear();
+
+
+				int rows = statement.executeUpdate(sql);
+				if(rows > 0) {
+					System.out.println("A row created.");
 				}
 
-				for(Product p : products) {
-					tableView.getItems().add(p); 
+				String query = "SELECT * FROM item"; 
+				ResultSet rs = statement.executeQuery(query); 
+				while(rs.next()) {
+					System.out.println("name: " + rs.getString("name"));
+					System.out.println("weight: " + rs.getString("weight"));
+
+					products = FXCollections.observableArrayList(new Product(Integer.valueOf(rs.getString("id")), rs.getString("name"), Double.valueOf(rs.getString("weight"))));
+					for(Product p : products) {
+						tableView.getItems().add(p); 
+					}
 				}
-
-
-
 
 				String shutdown = "jdbc:derby:;shutdown=true";
 				DriverManager.getConnection(shutdown); 
@@ -136,6 +145,7 @@ public class Delete extends StackPane{
 
 		});
 
+
 		productName.setMinWidth(160);
 		productName.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Product, String>, ObservableValue<String>>() {
 
@@ -155,6 +165,7 @@ public class Delete extends StackPane{
 				return param.getValue().sumProperty();
 			}
 		});
+
 
 
 

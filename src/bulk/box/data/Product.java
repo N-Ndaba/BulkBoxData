@@ -661,6 +661,7 @@ public class Product {
 
 	private void updateRecord() {
 		try {
+			DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
 			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
 			Connection connection = DriverManager.getConnection(jdbcURL);
 			Statement statement = connection.createStatement(); 

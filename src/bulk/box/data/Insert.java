@@ -52,6 +52,7 @@ public class Insert extends StackPane{
 
 
 			try {
+				DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
 				Connection connection = DriverManager.getConnection(jdbcURL);
 				String sql = "Insert into item (name, weight) values ('" +name.getText()+ "', "+number.getText()+")";
 
@@ -63,18 +64,19 @@ public class Insert extends StackPane{
 				}
 
 
-				String query = "SELECT id, name, weight FROM item"; 
+				String query = "SELECT * FROM item WHERE name = '" + name.getText() +"'"; 
 				ResultSet rs = statement.executeQuery(query); 
 				while(rs.next()) {
 					System.out.println("name: " + rs.getString("name"));
 					System.out.println("weight: " + rs.getString("weight"));
 
 					products = FXCollections.observableArrayList(new Product(Integer.valueOf(rs.getString("id")), rs.getString("name"), Double.valueOf(rs.getString("weight"))));
+					for(Product p : products) {
+						tableView.getItems().add(p); 
+					}
 				}
 
-				for(Product p : products) {
-					tableView.getItems().add(p); 
-				}
+				
 
 				
 

@@ -9,6 +9,9 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -43,8 +46,33 @@ public class BulkBoxPane extends StackPane {
 	TableColumn<Product, String> dimension = new TableColumn<>("Dimensions (L x W x H)");
 	TableColumn<Product, Number> productWeight = new TableColumn<>("Weight (kg)");
 	TableColumn<Product, Number> quantity = new TableColumn<Product, Number>("Quantity"); 
-
+	
+	private MenuBar menuBar = null; 
+	
+	
 	public BulkBoxPane() {
+		menuBar = new MenuBar(); 
+		Menu home = new Menu("Home");
+		menuBar.getMenus().add(home); 
+		home.setOnAction(e -> {
+			//BulkBoxPane();			
+		});
+		
+		
+		
+		Menu add = new Menu("Add");
+		menuBar.getMenus().add(add); 
+		add.setOnAction(e -> {
+			//Insert insert = new Insert();
+			System.out.println("<><>");
+		});
+		
+		Menu edit = new Menu("Edit");
+		menuBar.getMenus().add(edit); 
+		Menu del = new Menu("Delete");
+		menuBar.getMenus().add(del); 
+		
+		
 		products = FXCollections.observableArrayList( 
 				new Product(1, "Flare", 0.322)/*,
 				new Product("Flare 6 pack", 1.9),
@@ -88,8 +116,9 @@ public class BulkBoxPane extends StackPane {
 				new Product("10s", 68),
 				new Product("15D", 118)*/
 				);
+		
 
-	
+		
 		setSide(); 
 	}
 
@@ -153,8 +182,8 @@ public class BulkBoxPane extends StackPane {
 				return param.getValue().boxtypeProperty();
 			}
 		});
-		
-		
+
+
 		dimension.setMinWidth(160);
 		dimension.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Product, String>, ObservableValue<String>>() {
 
@@ -186,9 +215,9 @@ public class BulkBoxPane extends StackPane {
 							n.getTablePosition().getRow())
 							).setQuantity(n.getNewValue().intValue());
 
-			calcSum();
-		});
-		
+					calcSum();
+				});
+
 		quantity.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Product, Number>, ObservableValue<Number>>() {
 
 			@Override
@@ -207,7 +236,7 @@ public class BulkBoxPane extends StackPane {
 		vbGrid.getChildren().addAll(tableView); 
 
 		pane.setLeft(paneForCheckBoxes);
-	
+
 		vbProduct.getChildren().addAll(pane);
 		vbProduct.setPrefHeight(330);
 
@@ -254,10 +283,12 @@ public class BulkBoxPane extends StackPane {
 		GridPane.setHalignment(txtFinalDimension, HPos.RIGHT);
 
 		//Calc(vbGrid); 
-
+		VBox layout = new VBox(); 
+		layout.getChildren().add(menuBar); 
+		
 		HBox h = new HBox(); 
 		h.setPadding(new Insets(13, 8, 12, 8));
-		h.getChildren().addAll(sideGrid, vbGrid); 
+		h.getChildren().addAll(layout, sideGrid, vbGrid); 
 		ScrollPane sp = new ScrollPane(h); 
 		getChildren().add(sp);
 	}
@@ -272,19 +303,19 @@ public class BulkBoxPane extends StackPane {
 		} else {
 			txtSum.setText(String.valueOf(String.format("%.2f", sum)).replace(",", ".")); 
 		}
-		
+
 
 		ArrayList<Integer>[] dimList = new ArrayList[3]; 
-		
+
 		for(int i = 0; i < 3 ; ++i) {
 			dimList[i] =  new ArrayList<Integer>();
 		}
-		
+
 		String dim = ""; 
 		for(int i = 0; i < tableView.getItems().size(); ++i) {
 			if(!dimension.getCellData(i).equals("-")) {
 				String[] tokens = dimension.getCellData(i).split("\\s"); 
-			
+
 				dimList[0].add(Integer.valueOf(tokens[0]));
 				dimList[1].add(Integer.valueOf(tokens[2]));
 				dimList[2].add(Integer.valueOf(tokens[4]));
