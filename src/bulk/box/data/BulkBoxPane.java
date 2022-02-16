@@ -1,5 +1,10 @@
 package bulk.box.data;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -52,7 +57,7 @@ public class BulkBoxPane extends StackPane {
 	
 	public BulkBoxPane() {
 		menuBar = new MenuBar(); 
-		Menu home = new Menu("Home");
+		/*Menu home = new Menu("HOME");
 		menuBar.getMenus().add(home); 
 		home.setOnAction(e -> {
 			//BulkBoxPane();			
@@ -60,17 +65,27 @@ public class BulkBoxPane extends StackPane {
 		
 		
 		
-		Menu add = new Menu("Add");
-		menuBar.getMenus().add(add); 
-		add.setOnAction(e -> {
-			//Insert insert = new Insert();
-			System.out.println("<><>");
-		});
 		
-		Menu edit = new Menu("Edit");
+		
+		Menu edit = new Menu("EDIT");
 		menuBar.getMenus().add(edit); 
-		Menu del = new Menu("Delete");
-		menuBar.getMenus().add(del); 
+		Menu del = new Menu("DELETE");
+		menuBar.getMenus().add(del); */
+		Menu add = new Menu("Menu");
+		
+		menuBar.getMenus().add(add); 		
+		MenuItem miAdd = new MenuItem("ADD"); 
+		MenuItem miEdit = new MenuItem("EDIT"); 
+		MenuItem miDelete = new MenuItem("DELETE"); 
+		add.getItems().add(miAdd);
+		add.getItems().add(miEdit); 
+		add.getItems().add(miDelete); 
+		
+		miAdd.setOnAction(e -> {
+			getChildren().clear(); 
+			
+			editBB();
+		});
 		
 		
 		products = FXCollections.observableArrayList( 
@@ -121,6 +136,89 @@ public class BulkBoxPane extends StackPane {
 		
 		setSide(); 
 	}
+	
+	
+	private void editBB() {
+		TableView<Product> tableView = new TableView<>(); 
+		TableColumn<Product, String> productName = new TableColumn<>("Product");
+		TableColumn<Product, Number> productWeight = new TableColumn<>("Weight (kg)");
+		ObservableList<Product> products = null;
+		String jdbcURL = "jdbc:derby:boxbulkdb;create=true";
+		
+		
+		try { 
+			Connection connection = DriverManager.getConnection(jdbcURL);
+			Statement statement = connection.createStatement(); 
+
+
+
+			String query = "SELECT id, name, weight FROM item"; 
+			ResultSet rs = statement.executeQuery(query); 
+			while(rs.next()) {
+				System.out.println("id" + rs.getString("id"));
+				System.out.println("name: " + rs.getString("name"));
+				System.out.println("weight: " + rs.getString("weight"));
+
+				products = FXCollections.observableArrayList(new Product(Integer.valueOf(rs.getString("id")), rs.getString("name"), Double.valueOf(rs.getString("weight"))));
+				for(Product p : products) {
+					tableView.getItems().add(p); 
+				}
+			}
+			String shutdown = "jdbc:derby:;shutdown=true";
+			DriverManager.getConnection(shutdown);
+			connection.close();
+			statement.close();
+		} catch (SQLException ex) {
+			if(ex.getSQLState().equals("XJ015")) {
+				System.out.println("Derby shutdown normally");
+			} else {
+				ex.printStackTrace();
+			}
+		}
+		
+		tableView.setEditable(true);
+		tableView.setPrefHeight(430);
+
+		productName.setMinWidth(160);
+		productName.setCellFactory(TextFieldTableCell.forTableColumn());
+		productName.setOnEditCommit(
+				(CellEditEvent<Product, String> n) ->{
+					((Product) n.getTableView().getItems().get(
+							n.getTablePosition().getRow())
+							).setName(n.getNewValue());
+				});
+		productName.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Product, String>, ObservableValue<String>>() {
+
+			@Override
+			public ObservableValue<String> call(TableColumn.CellDataFeatures<Product, String> param) {
+				// TODO Auto-generated method stub
+				return param.getValue().nameProperty();
+			}		
+		});
+
+		productWeight.setMinWidth(160);
+		productWeight.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
+		productWeight.setOnEditCommit(
+				(CellEditEvent<Product, Number> n) ->{
+					((Product) n.getTableView().getItems().get(
+							n.getTablePosition().getRow())
+							).setWeight(n.getNewValue().doubleValue());
+				});
+		productWeight.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Product, Number>, ObservableValue<Number>>() {
+
+			@Override
+			public ObservableValue<Number> call(TableColumn.CellDataFeatures<Product, Number> param) {
+				// TODO Auto-generated method stub
+				return param.getValue().sumProperty();
+			}
+		});
+
+
+		GridPane grid = new GridPane(); 
+		tableView.getColumns().addAll(productName, productWeight);
+		grid.getChildren().addAll(tableView); 
+		getChildren().add(grid);
+	}
 
 	@SuppressWarnings("unchecked")
 	private void setSide() {
@@ -157,6 +255,9 @@ public class BulkBoxPane extends StackPane {
 		}
 
 
+		
+		
+		
 		tableView.setEditable(true);
 		tableView.setPrefHeight(430);
 		// table column for the name of the person 
@@ -284,12 +385,13 @@ public class BulkBoxPane extends StackPane {
 
 		//Calc(vbGrid); 
 		VBox layout = new VBox(); 
-		layout.getChildren().add(menuBar); 
+		
 		
 		HBox h = new HBox(); 
 		h.setPadding(new Insets(13, 8, 12, 8));
-		h.getChildren().addAll(layout, sideGrid, vbGrid); 
-		ScrollPane sp = new ScrollPane(h); 
+		h.getChildren().addAll(sideGrid, vbGrid); 
+		layout.getChildren().addAll(menuBar, h); 
+		ScrollPane sp = new ScrollPane(layout); 
 		getChildren().add(sp);
 	}
 
