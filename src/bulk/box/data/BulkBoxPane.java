@@ -40,13 +40,13 @@ public class BulkBoxPane extends StackPane {
 	TableView<Product> tableView = new TableView<>(); 
 	TableColumn<Product, String> productName = new TableColumn<>("Product");
 	TableColumn<Product, String> boxtype = new TableColumn<>("BoxType");
-	TableColumn<Product, String> dimension = new TableColumn<>("Dimensions");
-	TableColumn<Product, Number> productWeight = new TableColumn<>("Weight");
+	TableColumn<Product, String> dimension = new TableColumn<>("Dimensions (L x W x H)");
+	TableColumn<Product, Number> productWeight = new TableColumn<>("Weight (kg)");
 	TableColumn<Product, Number> quantity = new TableColumn<Product, Number>("Quantity"); 
 
 	public BulkBoxPane() {
 		products = FXCollections.observableArrayList( 
-				new Product("Flare", 0.322),
+				new Product(1, "Flare", 0.322)/*,
 				new Product("Flare 6 pack", 1.9),
 				new Product("Sir Beacon 60", 0.74),
 				new Product("Sir Beacon / portable", 1.1), 
@@ -83,10 +83,10 @@ public class BulkBoxPane extends StackPane {
 				new Product("1000SA", 1.2), 
 				new Product("MA112", 3),
 				new Product("MA121", 3),
-				new Product("3LF", 22000), 
-				new Product("5S", 50000),
-				new Product("10s", 68000),
-				new Product("15D", 188000)
+				new Product("3LF", 22), 
+				new Product("5S", 50),
+				new Product("10s", 68),
+				new Product("15D", 118)*/
 				);
 
 	
@@ -108,13 +108,11 @@ public class BulkBoxPane extends StackPane {
 		BorderPane pane = new BorderPane(); 
 		VBox paneForCheckBoxes = new VBox(20);
 		paneForCheckBoxes.setPadding(new Insets(5, 5, 5, 5));
-		paneForCheckBoxes.setStyle("−fx−border−color: green");
-
-
-
 
 		for(Product p : products) {
 			CheckBox chProduct = new CheckBox(p.getName());
+			chProduct.setFont(Font.font("Arial", 13));
+			chProduct.setAlignment(Pos.CENTER);
 			paneForCheckBoxes.getChildren().addAll(chProduct);
 
 			EventHandler<ActionEvent> handler = e -> {
@@ -181,7 +179,7 @@ public class BulkBoxPane extends StackPane {
 
 
 		quantity.setMinWidth(160);
-		quantity.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));		
+		quantity.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
 		quantity.setOnEditCommit(
 				(CellEditEvent<Product, Number> n) ->{
 					((Product) n.getTableView().getItems().get(
@@ -190,6 +188,7 @@ public class BulkBoxPane extends StackPane {
 
 			calcSum();
 		});
+		
 		quantity.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Product, Number>, ObservableValue<Number>>() {
 
 			@Override
@@ -208,7 +207,7 @@ public class BulkBoxPane extends StackPane {
 		vbGrid.getChildren().addAll(tableView); 
 
 		pane.setLeft(paneForCheckBoxes);
-
+	
 		vbProduct.getChildren().addAll(pane);
 		vbProduct.setPrefHeight(330);
 
@@ -217,24 +216,24 @@ public class BulkBoxPane extends StackPane {
 		sideGrid.add(scrollPane, 0, 0, 2, 1); 
 		//-----
 
-		Label lblSum = new Label("Total Weight:"); 
+		Label lblSum = new Label("Total Weight (kg):"); 
 		lblSum.setPrefWidth(125);
-		lblSum.setFont(Font.font("Cambria", 13));
+		lblSum.setFont(Font.font("Arial", 13));
 		sideGrid.add(lblSum, 0, 10);
 
 
-		txtSum.setFont(Font.font("Cambria", 13));
+		txtSum.setFont(Font.font("Arial", 13));
 		txtSum.setAlignment(Pos.CENTER);
 		txtSum.setId("txtS");
 		sideGrid.add(txtSum, 1, 10);
 
 		Label lblFinalDimension = new Label("Final Dimension:"); 
 		lblFinalDimension.setPrefWidth(125);
-		lblFinalDimension.setFont(Font.font("Cambria", 13));
+		lblFinalDimension.setFont(Font.font("Arial", 13));
 		sideGrid.add(lblFinalDimension, 0, 12);
 
 
-		txtFinalDimension.setFont(Font.font("Cambria", 13));
+		txtFinalDimension.setFont(Font.font("Arial", 13));
 		txtFinalDimension.setAlignment(Pos.CENTER);
 		txtFinalDimension.setId("txtFD");
 		sideGrid.add(txtFinalDimension, 1, 12);
@@ -268,7 +267,12 @@ public class BulkBoxPane extends StackPane {
 		for(int i = 0; i < tableView.getItems().size(); ++i) {
 			sum += productWeight.getCellData(i).doubleValue(); 
 		}
-		txtSum.setText(String.valueOf(String.format("%.3f", sum)).replace(",", ".")); 
+		if(sum == 0) {
+			txtSum.setText(""); 
+		} else {
+			txtSum.setText(String.valueOf(String.format("%.2f", sum)).replace(",", ".")); 
+		}
+		
 
 		ArrayList<Integer>[] dimList = new ArrayList[3]; 
 		
@@ -279,21 +283,16 @@ public class BulkBoxPane extends StackPane {
 		String dim = ""; 
 		for(int i = 0; i < tableView.getItems().size(); ++i) {
 			if(!dimension.getCellData(i).equals("-")) {
-				String[] tokens = dimension.getCellData(i).split("\s"); 
+				String[] tokens = dimension.getCellData(i).split("\\s"); 
 			
 				dimList[0].add(Integer.valueOf(tokens[0]));
 				dimList[1].add(Integer.valueOf(tokens[2]));
 				dimList[2].add(Integer.valueOf(tokens[4]));
 				dim = Collections.max(dimList[0]) + " x " + Collections.max(dimList[1]) + " x " + Collections.max(dimList[2]);   
+			} else if(dimension.getCellData(i).equals("-")) {
+				txtFinalDimension.setText("-"); return; 
 			}
 		}
-		
-		for(int i = 0; i < tableView.getItems().size(); ++i) {
-			if(dimension.getCellData(i).equals("-")) {
-				txtFinalDimension.setText("-");
-			}
-		}
-		
 		txtFinalDimension.setText(dim);
-	}
+	}	
 }

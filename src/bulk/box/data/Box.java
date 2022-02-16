@@ -6,7 +6,7 @@ public class Box
 	{
 		switch(name)
 		{
-			case "CH1EF4D":
+			case "CH1EF4P":
 				return "110 x 80 x 110";  
 				
 			case "PAC0001":
@@ -28,7 +28,7 @@ public class Box
 				return "270 x 150 x 150";
 				
 			case "PAC0009":
-				return "270 x 260 x 220";
+				return "370 x 260 x 220";
 				
 			case "PAC0010":
 				return "280 x 210 x 250";  
@@ -46,7 +46,7 @@ public class Box
 				return "200 x 140 x 140";
 				
 			case "PAC0019":
-				return "430 x 260 x 220";
+				return "430 x 290 x 220";
 				
 			case "PAC0022":
 				return "230 x 150 x 150";  
