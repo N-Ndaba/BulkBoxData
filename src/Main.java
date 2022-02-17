@@ -11,7 +11,7 @@ public class Main extends Application {
 	private BulkBoxPane pane = null;
 	private Edit edit = null; 
 	private Delete del = null; 
-	
+	private Insert insert = null; 
 	public static void main(String[] args) {
 		launch(args);
 	}
