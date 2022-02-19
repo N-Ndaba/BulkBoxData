@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -13,6 +14,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
 
 public class Product {
 
@@ -25,7 +27,7 @@ public class Product {
 	private StringProperty dimension; 
 	private IntegerProperty id; 
 
-	private Box box = new Box(); 
+	
 	private String jdbcURL = "jdbc:derby:boxbulkdb;create=true";
 
 
@@ -126,30 +128,72 @@ public class Product {
 	}
 
 	public void setQuantity(int number) {
-		//int number = i.intValue(); 
+
+		System.out.println("< " +number + ">");
 		if(number <= 0) {
 			number = 1; 
 		}
 
 		if(number != 0) {
+	 
 			this.quantity.set(number);
 			setSumWeight(calcSum(number));
-			process(number, this.getName());
+		}
+		
+		String iname = "";
+		String bname = "";
+		int minimum = 0;
+		int maximum = 0;
+		
+	
+		try {
+			DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
+			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+			Connection connection = DriverManager.getConnection(jdbcURL);
+			Statement statement = connection.createStatement(); 
 
+			String query = "SELECT * FROM ItemBox WHERE iname = '" + getName() + "' and minimum = " + number + " or maximum = " + number; 
+			ResultSet rs = statement.executeQuery(query); 
 
+			while(rs.next()) {
+				
+				iname = rs.getString("iname"); 
+				bname = rs.getString("bname"); 
+				minimum = Integer.valueOf(rs.getString("minimum")); 
+				maximum = Integer.valueOf(rs.getString("maximum")); 
+			}
+	
+			System.out.println("minimum " + minimum);
+			System.out.println("maximum " + maximum);
+			System.out.println(getName().equals(iname));
+			if(number >= minimum && number <= maximum && getName().equals(iname)) {
+				
+				System.out.println("[ "+ number  +" ]");
+				String queryItem = "SELECT * FROM box WHERE name = '" + bname +"'"; 
+				ResultSet rx = statement.executeQuery(queryItem); 
+				while(rx.next()) {
 
-			if(number == 1 && this.getName().equals("Flare 6 pack")) {
-				setDimension("45 x 37 x 8"); 
-			} else if(number == 1 && this.getName().equals("3LF")) {
-				setDimension("38 x 32 x 48"); 
-			} else if(number == 1 && this.getName().equals("5S")) {
-				setDimension("60 x 60 x 58"); 
-			} else if(number == 1 && this.getName().equals("10s")) {
-				setDimension("60 x 60 x 74"); 
-			} else if(number == 1 && this.getName().equals("15D")) {
-				setDimension("60 x 65 x 74"); 
+	
+					setBoxType(rx.getString("name"));
+					setDimension(rx.getString("length") + " x " + rx.getString("width") + " x " + rx.getString("height"));
+				}
 			} else {
-				setDimension(box.getBox(getBoxType())); 
+				setBoxType("-");
+				setDimension("-");
+			}
+
+			/*String shutdown = "jdbc:derby:;shutdown=true";
+			DriverManager.getConnection(shutdown); 
+			
+			*/
+		}  catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException ex) {
+			if(ex.getSQLState().equals("XJ015")) {
+				System.out.println("Derby shutdown normally");
+			} else {
+				ex.printStackTrace();
 			}
 		}
 	}
@@ -164,501 +208,6 @@ public class Product {
 	}
 
 
-
-	public void process(int e, String s)
-	{
-		switch(s)
-		{
-		case "Flare": 
-		{
-			if(e == 1)
-				setBoxType(Boxtype.CH1EF4P.toString()); 
-			else if(e == 5)
-				setBoxType(Boxtype.PAC0013.toString());
-			else if(e >= 6 && e <= 15)
-				setBoxType(Boxtype.PAC0005.toString()); 
-			else if(e == 20)
-				setBoxType(Boxtype.PAC0019.toString()); 
-			else if(e == 45)
-				setBoxType(Boxtype.PAC0025.toString()); 	
-			else if(e == 60)
-				setBoxType(Boxtype.PAC0002.toString());
-			else 
-				setBoxType("-");
-		}
-		break; 
-
-		case "Flare 6 pack": 
-		{
-			if(e == 1) {
-				setBoxType("-");
-			} else if(e >= 2 && e <= 7)
-				setBoxType(Boxtype.PAC0002.toString());
-			else 
-				setBoxType("-");
-		}
-		break;
-
-		case "Sir Beacon 60":
-		{
-			if(e == 1)
-				setBoxType(Boxtype.PAC0003.toString());
-			else if(e == 2)
-				setBoxType(Boxtype.PAC0018.toString());
-			else if(e == 3)
-				setBoxType(Boxtype.PAC0011.toString()); 
-			else if(e == 4)
-				setBoxType(Boxtype.PAC0009.toString()); 
-			else if(e >= 6 && e <= 10)
-				setBoxType(Boxtype.PAC0005.toString()); 
-			else 
-				setBoxType("-");
-		}
-		break; 
-
-		case "Sir Beacon / portable":
-		{
-			if(e == 1)
-				setBoxType(Boxtype.PAC0018.toString()); 
-			else if(e == 6)
-				setBoxType(Boxtype.PAC0019.toString()); 
-			else if(e == 10)
-				setBoxType(Boxtype.PAC0025.toString()); 
-			else 
-				setBoxType("-");
-		}
-		break; 
-
-
-		case "Mono S":
-		{
-			if(e == 1)
-				setBoxType(Boxtype.PAC0018.toString()); 
-			else if(e == 6)
-				setBoxType(Boxtype.PAC0019.toString()); 
-			else if(e == 10)
-				setBoxType(Boxtype.PAC0025.toString()); 
-			else 
-				setBoxType("-");
-		}
-		break;
-
-		case "Duplo s": 
-		{
-			if(e == 1)
-				setBoxType(Boxtype.PAC0006.toString()); 
-			else if(e == 6)
-				setBoxType(Boxtype.PAC0025.toString()); 
-			else 
-				setBoxType("-");
-		}
-
-		case "Mono/ Duplo Combo": 
-		{
-			if(e == 9)
-				setBoxType(Boxtype.PAC0002.toString()); 
-			else if (e == 1)
-				setBoxType(Boxtype.PAC0011.toString()); 
-			else if(e == 2)
-				setBoxType(Boxtype.PAC0019.toString()); 
-			else if(e == 4)
-				setBoxType(Boxtype.PAC0025.toString()); 
-			else
-				setBoxType("-"); 
-		}
-		break;
-
-		case "1500S": 
-		{
-			if(e == 1)
-				setBoxType(Boxtype.PAC0013.toString()); 
-			else if(e == 2) 
-				setBoxType(Boxtype.PAC0019.toString());
-			else
-				setBoxType("-"); 
-		}
-		break;
-
-		case "1500S Vert": 
-		{
-			if(e == 1)
-				setBoxType(Boxtype.PAC0009.toString()); 
-			else
-				setBoxType("-");
-		}
-		break;
-
-		case "2D": 
-		{
-			if(e == 1)
-				setBoxType(Boxtype.PAC0013.toString()); 
-			else if(e == 2)
-				setBoxType(Boxtype.PAC0019.toString()); 
-			else
-				setBoxType("-");
-		}
-		break;
-
-		case "Hooter": 
-		{
-			if(e == 1)
-				setBoxType(Boxtype.PAC0011.toString()); 
-			if(e == 9)
-				setBoxType(Boxtype.PAC0002.toString()); 
-			if(e == 2)
-				setBoxType(Boxtype.PAC0019.toString());
-			else if(e == 4)
-				setBoxType(Boxtype.PAC0025.toString());
-			else
-				setBoxType("-");
-		}
-		break;
-
-		case "Bell": 
-		{
-			if(e == 1)
-				setBoxType(Boxtype.PAC0018.toString());
-			else if(e == 6)
-				setBoxType(Boxtype.PAC0019.toString());
-			else if(e == 10)
-				setBoxType(Boxtype.PAC0025.toString());
-			else
-				setBoxType("-");
-		}
-		break;
-
-
-		case "Ban Ex S1/S2": 
-		{
-			if(e == 1)
-				setBoxType(Boxtype.PAC0010.toString());
-			else if(e == 2)
-				setBoxType(Boxtype.PAC0019.toString());
-			else
-				setBoxType("-");
-		}
-		break;
-
-		case "Ban EX Combo S1/S2": 
-		{
-			if(e == 1)
-				setBoxType(Boxtype.PAC0009.toString());
-			else
-				setBoxType("-");
-		}
-		break;
-
-		case "Ban EX S3": 
-		{
-			if(e == 1)
-				setBoxType(Boxtype.PAC0004.toString());
-			else if(e == 2)
-				setBoxType(Boxtype.PAC0019.toString());
-			else
-				setBoxType("-");
-		}
-		break;
-
-
-		case "Ban Ex S3 Light": 
-		{
-			if(e == 1)
-				setBoxType(Boxtype.PAC0018.toString());
-			else if(e == 6)
-				setBoxType(Boxtype.PAC0019.toString());
-			else if(e == 10)
-				setBoxType(Boxtype.PAC0025.toString());
-			else
-				setBoxType("-");
-		}
-		break;
-
-		case "660HZ": 
-		{
-			if(e == 3)
-				setBoxType(Boxtype.PAC0003.toString());
-			else if(e == 1)
-				setBoxType(Boxtype.PAC0010.toString());
-			else
-				setBoxType("-");
-		}
-		break;
-
-		case "370HZ": 
-		{
-			if(e== 1)
-				setBoxType(Boxtype.PAC0009.toString());
-			else if(e == 2)
-				setBoxType(Boxtype.PAC0025.toString());
-			else
-				setBoxType("-");
-		}
-		break;
-
-		case "Blaster 300ml": 
-		{
-			if(e == 1)
-				setBoxType(Boxtype.PAC0030.toString());
-			else if(e == 16)
-				setBoxType(Boxtype.PAC0004.toString());
-			else if(e == 20)
-				setBoxType(Boxtype.PAC0019.toString());
-			else
-				setBoxType("-");
-		}
-		break;
-
-		case "Blaster 40/100/135mll": 
-		{
-			if(e == 16)
-				setBoxType(Boxtype.PAC0004.toString());
-			else if(e == 20)
-				setBoxType(Boxtype.PAC0018.toString());
-			else if(e == 1)
-				setBoxType(Boxtype.PAC0031.toString());
-			else
-				setBoxType("-");
-		}
-		break;
-
-		case "A100": 
-		{
-			if(e == 1)
-				setBoxType(Boxtype.PAC0018.toString());
-			else if(e == 6)
-				setBoxType(Boxtype.PAC0019.toString());
-			else if(e == 10)
-				setBoxType(Boxtype.PAC0025.toString());
-			else
-				setBoxType("-");
-		}
-		break;
-
-
-		case "A105": 
-		{
-			if(e == 1)
-				setBoxType(Boxtype.PAC0006.toString());
-			if(e == 6)
-				setBoxType(Boxtype.PAC0025.toString());
-			else
-				setBoxType("-");
-		}
-		break;
-
-		case "A112": 
-		{
-			if(e == 1)
-				setBoxType(Boxtype.PAC0013.toString());
-			else if(e == 2)
-				setBoxType(Boxtype.PAC0019.toString());
-			else if(e == 4)
-				setBoxType(Boxtype.PAC0002.toString());
-			else
-				setBoxType("-");
-		}
-		break;
-
-
-		case "A121": 
-		{
-			if(e == 4)
-				setBoxType(Boxtype.PAC0002.toString());
-			else if(e == 1)
-				setBoxType(Boxtype.PAC0009.toString());
-			else if(e == 2)
-				setBoxType(Boxtype.PAC0019.toString());
-			else
-				setBoxType("-");
-		}
-		break;
-
-
-		case "AL100": 
-		{
-			if(e == 1)
-				setBoxType(Boxtype.PAC0018.toString());
-			else if(e == 6)
-				setBoxType(Boxtype.PAC0019.toString());
-			else if(e == 10)
-				setBoxType(Boxtype.PAC0025.toString());
-			else
-				setBoxType("-");
-		}
-		break;
-
-
-		case "AL105": 
-		{
-			if(e == 6)
-				setBoxType(Boxtype.PAC0002.toString());
-			else if(e == 2)
-				setBoxType(Boxtype.PAC0019.toString());
-			else if(e == 4)
-				setBoxType(Boxtype.PAC0025.toString());
-			else
-				setBoxType("-");
-		}
-		break;
-
-
-		case "AL112": 
-		{
-			if(e == 2)
-				setBoxType(Boxtype.PAC0019.toString());
-			else if (e == 1)
-				setBoxType(Boxtype.PAC0013.toString());
-			else if(e == 4)
-				setBoxType(Boxtype.PAC0002.toString());
-			else
-				setBoxType("-");
-		}
-		break;
-
-
-		case "AL121": 
-		{
-			if(e == 1)
-				setBoxType(Boxtype.PAC0009.toString());
-			else if(e == 2)
-				setBoxType(Boxtype.PAC0025.toString());
-			else if(e == 4)
-				setBoxType(Boxtype.PAC0002.toString());
-			else
-				setBoxType("-");
-		}
-		break;
-
-
-		case "B300": 
-		{
-			if(e == 1)
-				setBoxType(Boxtype.PAC0018.toString()); 
-			else if(e == 6)
-				setBoxType(Boxtype.PAC0019.toString());
-			else if(e == 10)
-				setBoxType(Boxtype.PAC0025.toString());
-			else
-				setBoxType("-");
-		}
-		break;
-
-		case "B400": 
-		{
-			if(e == 1)
-				setBoxType(Boxtype.PAC0013.toString());
-			else if(e == 2)
-				setBoxType(Boxtype.PAC0025.toString());
-			else if(e == 4)
-				setBoxType(Boxtype.PAC0002.toString());
-			else
-				setBoxType("-");
-		}
-		break;
-
-		case "H100": 
-		{
-			if(e == 1)
-				setBoxType(Boxtype.PAC0013.toString());
-			else if(e == 4)
-				setBoxType(Boxtype.PAC0025.toString());
-			else if(e == 8)
-				setBoxType(Boxtype.PAC0002.toString());
-			else
-				setBoxType("-");
-		}
-		break;
-
-		case "H150": 
-		{
-			setBoxType("-");
-		}
-		break;
-
-		case "H200": 
-		{
-			if(e == 1)
-				setBoxType(Boxtype.PAC0002.toString()); 
-			else
-				setBoxType("-");
-		}
-		break;
-
-		case "500SA":
-		{
-			if(e == 1)
-				setBoxType(Boxtype.PAC0018.toString());
-			else if(e == 6)
-				setBoxType(Boxtype.PAC0019.toString());
-			else if(e == 10)
-				setBoxType(Boxtype.PAC0025.toString());
-			else
-				setBoxType("-");
-		}
-		break; 
-
-		case "1000SA":
-		{
-			if(e == 1)
-				setBoxType(Boxtype.PAC0018.toString());
-			else if(e == 6)
-				setBoxType(Boxtype.PAC0019.toString());
-			else if (e == 10)
-				setBoxType(Boxtype.PAC0025.toString());
-			else
-				setBoxType("-");
-		}
-		break; 
-
-		case "MA112":
-		{
-			if(e == 2)
-				setBoxType(Boxtype.PAC0002.toString()); 
-			else if(e == 4)
-				setBoxType(Boxtype.PAC0025.toString()); 
-			else
-				setBoxType("-");
-		}
-		break; 
-
-		case "MA121":
-		{
-			if(e == 2)
-				setBoxType(Boxtype.PAC0002.toString()); 
-			else
-				setBoxType("-");
-		}
-		break; 
-
-		case "3LF":
-		{
-			setBoxType("-");
-		}
-		break; 
-
-		case "5S":
-		{
-			setBoxType("-");
-		}
-		break; 
-
-		case "10s":
-		{
-			setBoxType("-");
-		}
-		break; 
-
-		case "15D":
-		{
-			setBoxType("-");
-		}
-		break; 
-
-		default: 
-			setBoxType("-");
-		}
-	}
-
 	private void updateRecord() {
 		try {
 			DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
@@ -670,6 +219,61 @@ public class Product {
 			System.out.println("Number of record updated are: " + num);
 			String shutdown = "jdbc:derby:;shutdown=true";
 			DriverManager.getConnection(shutdown); 
+		}  catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException ex) {
+			if(ex.getSQLState().equals("XJ015")) {
+				System.out.println("Derby shutdown normally");
+			} else {
+				ex.printStackTrace();
+			}
+		}
+	}
+
+	private void joinIB(int quantity) {
+		String iname = "";
+		String bname = "";
+		int minimum = 0;
+		int maximum = 0;
+		
+	
+		try {
+			DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
+			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+			Connection connection = DriverManager.getConnection(jdbcURL);
+			Statement statement = connection.createStatement(); 
+
+			String query = "SELECT * FROM ItemBox"; 
+			ResultSet rs = statement.executeQuery(query); 
+
+			while(rs.next()) {
+				
+				iname = rs.getString("iname"); 
+				bname = rs.getString("bname"); 
+				minimum = Integer.valueOf(rs.getString("minimum")); 
+				maximum = Integer.valueOf(rs.getString("maximum")); 
+			}
+	
+			System.out.println("[ "+ getQuantity()  +" ]");
+			if(minimum >= getQuantity() && getQuantity() <= maximum && getName().equals(iname)) {
+				
+				
+				String queryItem = "SELECT * FROM box WHERE name = '" + bname +"'"; 
+				ResultSet rx = statement.executeQuery(queryItem); 
+				while(rx.next()) {
+
+					System.out.println(rx.getString("name"));
+					System.out.println(rx.getString("length"));
+					System.out.println(rx.getString("width"));
+					System.out.println(rx.getString("height"));
+				}
+			}
+
+			/*String shutdown = "jdbc:derby:;shutdown=true";
+			DriverManager.getConnection(shutdown); 
+			
+			*/
 		}  catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

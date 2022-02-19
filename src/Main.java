@@ -1,7 +1,4 @@
 import bulk.box.data.BulkBoxPane;
-import bulk.box.data.Delete;
-import bulk.box.data.Edit;
-import bulk.box.data.Insert;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -9,9 +6,6 @@ import javafx.stage.Stage;
 public class Main extends Application {
 	
 	private BulkBoxPane pane = null;
-	private Edit edit = null; 
-	private Delete del = null; 
-	private Insert insert = null; 
 	public static void main(String[] args) {
 		launch(args);
 	}

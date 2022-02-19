@@ -21,13 +21,33 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
-public class Delete {
+
+public class Add {
 
 	private static ObservableList<BoxCode> boxes = null;
 	private static ObservableList<Product> products = null;
 	private static String jdbcURL = "jdbc:derby:boxbulkdb;create=true";
-	
-	public static VBox deleteRecord(MenuBar menuBar) {
+
+	public static VBox addRecord(MenuBar menuBar) {
+		Label lbllabel = new Label("Name:");
+		TextField name = new TextField();
+		Label lblnumber = new Label("Weight:");
+		TextField number = new TextField(); 
+		Button btn = new Button("Add Item"); 
+		btn.setPrefWidth(200);
+
+		Label lblBoxCode = new Label("Box Code:");
+		TextField txtBoxCode = new TextField();
+		Label lblLength = new Label("Length:");
+		TextField txtLength = new TextField(); 
+		Label lblWidth = new Label("Width:");
+		TextField txtWidth = new TextField(); 
+		Label lblHeight = new Label("Hieght:");
+		TextField txtHeight = new TextField(); 
+		Button btnDimensions = new Button("Add Item"); 
+
+		btnDimensions.setPrefWidth(200);
+
 
 		TableView<Product> tableView = new TableView<>(); 
 		TableColumn<Product, String> productName = new TableColumn<>("Product");
@@ -39,131 +59,53 @@ public class Delete {
 		TableColumn<BoxCode, Number> boxWidth = new TableColumn<>("Width");
 		TableColumn<BoxCode, Number> boxHeight = new TableColumn<>("Height ");
 
-		Label lbllabel = new Label("Name:");
-		TextField name = new TextField();
-
-		Label lblBoxCode = new Label("Box Code:");
-		TextField txtBoxCode = new TextField();
-
 		GridPane grid = new GridPane(); 
 		grid.setAlignment(Pos.TOP_LEFT);
 		grid.setPadding(new Insets(3, 12.5, 5, 14.5));
 		grid.setHgap(7);
-		grid.setVgap(3);	
-
+		grid.setVgap(3);
 		grid.add(lbllabel, 0, 0);
-		grid.add(name, 1, 0);	
-		Button btn = new Button("Delete"); 
-		btn.setPrefWidth(200);
-		grid.add(btn, 0, 3, 2, 3);
-
-		grid.add(lblBoxCode, 0, 7);
-		grid.add(txtBoxCode, 1, 7);
-		Button btnBox = new Button("Delete"); 
-		btnBox.setPrefWidth(200);
-		grid.add(btnBox, 0, 8, 2, 3);
+		grid.add(name, 1, 0);
+		grid.add(lblnumber, 0, 1);
+		grid.add(number, 1, 1);
+		grid.add(btn, 0, 4, 2, 3);
 
 
-		grid.add(tableView, 4, 0, 1, 10); 
+		grid.add(lblBoxCode, 0, 9);
+		grid.add(txtBoxCode, 1, 9);
+		grid.add(lblLength, 0,10);
+		grid.add(txtLength, 1, 10); 
+		grid.add(lblWidth, 0, 11);
+		grid.add(txtWidth, 1, 11); 
+		grid.add(lblHeight, 0, 12);
+		grid.add(txtHeight, 1, 12);
+		grid.add(btnDimensions, 0, 12, 2, 3); 
+
+		grid.add(tableView, 5, 0, 1, 14);
+		grid.add(tableBox, 7, 0, 1, 14);
+		tableBox.getColumns().addAll(boxName, boxLength, boxWidth, boxHeight);
 		tableView.getColumns().addAll(productName, productWeight);
 
-		grid.add(tableBox, 7, 0, 1, 10); 
-		tableBox.getColumns().addAll(boxName, boxLength, boxWidth, boxHeight);
-
-		try { 
-			DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
-			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-			Connection connection = DriverManager.getConnection(jdbcURL);
-			Statement statement = connection.createStatement(); 
-
-
-
-			String query = "SELECT * FROM item"; 
-			ResultSet rs = statement.executeQuery(query); 
-			while(rs.next()) {
-				products = FXCollections.observableArrayList(new Product(Integer.valueOf(rs.getString("id")), rs.getString("name"), Double.valueOf(rs.getString("weight"))));
-				for(Product p : products) {
-					tableView.getItems().add(p); 
-				}
-			}
-			String shutdown = "jdbc:derby:;shutdown=true";
-			DriverManager.getConnection(shutdown);
-			connection.close();
-			statement.close();
-		} catch(ClassNotFoundException ex) {
-			ex.printStackTrace();
-		}catch (SQLException ex) {
-			if(ex.getSQLState().equals("XJ015")) {
-				System.out.println("Derby shutdown normally");
-			} else {
-				ex.printStackTrace();
-			}
-		}
-
-		try { 
-			DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
-			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-			Connection connection = DriverManager.getConnection(jdbcURL);
-			Statement statement = connection.createStatement(); 
-
-
-
-			String query = "SELECT * FROM box"; 
-			ResultSet rs = statement.executeQuery(query); 
-			while(rs.next()) {
-				boxes = FXCollections.observableArrayList(new BoxCode(Integer.valueOf(rs.getString("id")), rs.getString("name"), Integer.valueOf(rs.getString("length")), Integer.valueOf(rs.getString("width")), Integer.valueOf(rs.getString("height"))));	
-				for(BoxCode b : boxes) {
-					tableBox.getItems().add(b); 
-				}
-			}
-			String shutdown = "jdbc:derby:;shutdown=true";
-			DriverManager.getConnection(shutdown);
-			connection.close();
-			statement.close();
-		} catch(ClassNotFoundException ex) {
-			ex.printStackTrace();
-		}catch (SQLException ex) {
-			if(ex.getSQLState().equals("XJ015")) {
-				System.out.println("Derby shutdown normally");
-			} else {
-				ex.printStackTrace();
-			}
-		}
 
 
 
 		btn.setOnAction(e -> {
 
+
 			try {
 				DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
-				Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
 				Connection connection = DriverManager.getConnection(jdbcURL);
+				String sql = "Insert into item (name, weight) values ('" +name.getText()+ "', "+number.getText()+")";
+
 				Statement statement = connection.createStatement(); 
-
-				/*String query = "SELECT * FROM item"; 
-				ResultSet rs = statement.executeQuery(query); 
-				while(rs.next()) {
-					System.out.println("name: " + rs.getString("name"));
-					System.out.println("weight: " + rs.getString("weight"));
-
-					products = FXCollections.observableArrayList(new Product(Integer.valueOf(rs.getString("id")), rs.getString("name"), Double.valueOf(rs.getString("weight"))));
-					for(Product p : products) {
-						tableView.getItems().add(p); 
-					}
-				}*/
-
-
-				String sql = "DELETE from item WHERE name = '" + name.getText() + "'"; 
-				products.clear(); 
-				tableView.getItems().clear();
-
 
 				int rows = statement.executeUpdate(sql);
 				if(rows > 0) {
 					System.out.println("A row created.");
 				}
 
-				String query = "SELECT * FROM item"; 
+
+				String query = "SELECT * FROM item WHERE name = '" + name.getText() +"'"; 
 				ResultSet rs = statement.executeQuery(query); 
 				while(rs.next()) {
 					System.out.println("name: " + rs.getString("name"));
@@ -175,12 +117,14 @@ public class Delete {
 					}
 				}
 
+
+
+
+
+
 				String shutdown = "jdbc:derby:;shutdown=true";
 				DriverManager.getConnection(shutdown); 
-			} catch(ClassNotFoundException ex) {
-				ex.printStackTrace();
-			}
-			catch (SQLException ex) {
+			} catch (SQLException ex) {
 				if(ex.getSQLState().equals("XJ015")) {
 					System.out.println("Derby shutdown normally");
 				} else {
@@ -189,46 +133,43 @@ public class Delete {
 			}
 
 			name.setText(null);
+			number.setText(null); 
 		});
 
-		btnBox.setOnAction(e -> {
+		btnDimensions.setOnAction(e -> {
+
+
 
 			try {
 				DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
-				Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
 				Connection connection = DriverManager.getConnection(jdbcURL);
+				String sql = "Insert into box (name, length, width, height) values ('" + txtBoxCode.getText()+ "', "+ txtLength.getText()+", " + txtWidth.getText()+", " + txtHeight.getText()+ ")";
+
 				Statement statement = connection.createStatement(); 
-
-
-
-
-				String sql = "DELETE from box WHERE name = '" + txtBoxCode.getText() + "'"; 
-				boxes.clear(); 
-				tableBox.getItems().clear();
-
 
 				int rows = statement.executeUpdate(sql);
 				if(rows > 0) {
 					System.out.println("A row created.");
 				}
 
-				String query = "SELECT * FROM box"; 
+
+				String query = "SELECT * FROM box WHERE name = '" + txtBoxCode.getText() +"'"; 
 				ResultSet rs = statement.executeQuery(query); 
 				while(rs.next()) {
-
-
 					boxes = FXCollections.observableArrayList(new BoxCode(Integer.valueOf(rs.getString("id")), rs.getString("name"), Integer.valueOf(rs.getString("length")), Integer.valueOf(rs.getString("width")), Integer.valueOf(rs.getString("height"))));	
 					for(BoxCode b : boxes) {
 						tableBox.getItems().add(b); 
 					}
 				}
 
+
+
+
+
+
 				String shutdown = "jdbc:derby:;shutdown=true";
 				DriverManager.getConnection(shutdown); 
-			} catch(ClassNotFoundException ex) {
-				ex.printStackTrace();
-			}
-			catch (SQLException ex) {
+			} catch (SQLException ex) {
 				if(ex.getSQLState().equals("XJ015")) {
 					System.out.println("Derby shutdown normally");
 				} else {
@@ -236,11 +177,13 @@ public class Delete {
 				}
 			}
 
-			name.setText(null);
+			txtBoxCode.setText(null);
+			txtLength.setText(null); 
+			txtWidth.setText(null);
+			txtHeight.setText(null);
 		});
 
-		tableBox.setEditable(true);
-		tableBox.setPrefHeight(430);
+
 
 		//boxName.setMinWidth(160);
 		boxName.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoxCode, String>, ObservableValue<String>>() {
@@ -282,7 +225,7 @@ public class Delete {
 				return param.getValue().heightProperty();
 			}
 		});
-		//----------
+		//----------------------------
 
 		productName.setMinWidth(160);
 		productName.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Product, String>, ObservableValue<String>>() {
@@ -303,9 +246,6 @@ public class Delete {
 				return param.getValue().sumProperty();
 			}
 		});
-
-
-
 
 		VBox vbox = new VBox(); 
 		vbox.getChildren().addAll(menuBar, grid); 

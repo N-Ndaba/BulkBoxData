@@ -18,9 +18,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -32,115 +30,27 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.util.Callback;
 import javafx.util.converter.NumberStringConverter;
 
-public class home extends StackPane {
-	private TextField txtSum = new TextField();
-	private TextField txtFinalDimension = new TextField(); 
-	private ObservableList<Product> products = null;
+public class Home {
 
-
-	TableView<Product> tableView = new TableView<>(); 
-	TableColumn<Product, String> productName = new TableColumn<>("Product");
-	TableColumn<Product, String> boxtype = new TableColumn<>("BoxType");
-	TableColumn<Product, String> dimension = new TableColumn<>("Dimensions (L x W x H)");
-	TableColumn<Product, Number> productWeight = new TableColumn<>("Weight (kg)");
-	TableColumn<Product, Number> quantity = new TableColumn<Product, Number>("Quantity"); 
-
-	private MenuBar menuBar = null; 
-	MenuItem miHome = new MenuItem("Home"); 
-	MenuItem miAdd = new MenuItem("Add"); 
-	MenuItem miEdit = new MenuItem("Edit"); 
-	MenuItem miDelete = new MenuItem("Delete"); 
-
-	public home() {
-		menuBar = new MenuBar(); 
-		menuBar.setPrefHeight(30);
-		//menuBar.setStyle("-fx-");
-
-		Menu menu = new Menu("Menu");
-		menuBar.getMenus().add(menu); 
-
-		menu.getItems().add(miHome);
-		menu.getItems().add(miAdd);
-		menu.getItems().add(miEdit); 
-		menu.getItems().add(miDelete); 
-
-		products = FXCollections.observableArrayList( 
-				new Product(1, "Flare", 0.322)/*,
-				new Product("Flare 6 pack", 1.9),
-				new Product("Sir Beacon 60", 0.74),
-				new Product("Sir Beacon / portable", 1.1), 
-				new Product("Mono S", 1.66),
-				new Product("Duplo s", 2.9),
-				new Product("Mono/ Duplo Combo", 3), 
-				new Product("1500S", 6.6),
-				new Product("1500S Vert", 6.6),
-				new Product("2D", 8.2), 
-				new Product("Hooter", 1.1),
-				new Product("Bell", 0.42), 
-				new Product("Ban Ex S1/S2", 13),
-				new Product("Ban EX Combo S1/S2", 16),
-				new Product("Ban EX S3", 10), 
-				new Product("Ban Ex S3 Light", 5),
-				new Product("660HZ", 2.4),
-				new Product("370HZ", 2.8), 
-				new Product("Blaster 300ml", 0.5),
-				new Product("Blaster 40/100/135mll", 0.32),
-				new Product("A100", 0.37), 
-				new Product("A105", 1),
-				new Product("A112", 2.1),
-				new Product("A121", 2.7),
-				new Product("AL100", 570), 
-				new Product("AL105", 1.2),
-				new Product("AL112", 2.3),
-				new Product("AL121", 2.9), 
-				new Product("B300", 1),
-				new Product("B400", 1.2),
-				new Product("H100", 1.2), 
-				new Product("H150", 5.1),
-				new Product("H200", 12),
-				new Product("500SA", 1.1),
-				new Product("1000SA", 1.2), 
-				new Product("MA112", 3),
-				new Product("MA121", 3),
-				new Product("3LF", 22), 
-				new Product("5S", 50),
-				new Product("10s", 68),
-				new Product("15D", 118)*/
-				);
-
-		menuWorks(); 
-		setSide(); 
-
-	}
-
-
-	private void menuWorks() {
-
-		miHome.setOnAction(e -> {
-			getChildren().clear(); 
-			setSide(); 
-		});
-
-		miAdd.setOnAction(e -> {
-			getChildren().clear(); 
-		});
-	}
-
+	private static TextField txtSum = new TextField();
+	private static TextField txtFinalDimension = new TextField(); 
+	private static String jdbcURL = "jdbc:derby:boxbulkdb;create=true";
 	
-	@SuppressWarnings("unchecked")
-	private void setSide() {
+
+	public static ScrollPane home(MenuBar menuBar) {
+
+
+
 		GridPane sideGrid = new GridPane(); 
 		sideGrid.setAlignment(Pos.TOP_LEFT);
 		sideGrid.setPadding(new Insets(3, 12.5, 5, 14.5));
 		sideGrid.setHgap(7);
 		sideGrid.setVgap(3);
-
 
 		VBox vbProduct = new VBox();
 		VBox vbGrid = new VBox();
@@ -149,23 +59,65 @@ public class home extends StackPane {
 		VBox paneForCheckBoxes = new VBox(20);
 		paneForCheckBoxes.setPadding(new Insets(5, 5, 5, 5));
 
-		for(Product p : products) {
-			CheckBox chProduct = new CheckBox(p.getName());
-			chProduct.setFont(Font.font("Arial", 13));
-			chProduct.setAlignment(Pos.CENTER);
-			paneForCheckBoxes.getChildren().addAll(chProduct);
 
-			EventHandler<ActionEvent> handler = e -> {
-				if (chProduct.isSelected()) {
-					tableView.getItems().add(p);
-					calcSum();
-				} else	{
-					tableView.getItems().remove(p);
-					calcSum();
-				} 
-			};
-			chProduct.setOnAction(handler);
+		ObservableList<Product> products = null;
+		TableView<Product> tableView = new TableView<>(); 
+		TableColumn<Product, String> productName = new TableColumn<>("Product");
+		TableColumn<Product, String> boxtype = new TableColumn<>("BoxType");
+		TableColumn<Product, String> dimension = new TableColumn<>("Dimensions (L x W x H)");
+		TableColumn<Product, Number> productWeight = new TableColumn<>("Weight (kg)");
+		TableColumn<Product, Number> quantity = new TableColumn<Product, Number>("Quantity");
+
+		try {
+			DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
+			Connection connection = DriverManager.getConnection(jdbcURL);
+			Statement statement = connection.createStatement(); 
+
+
+
+			String query = "SELECT * FROM item"; 
+			ResultSet rs = statement.executeQuery(query); 
+
+			while(rs.next()) {
+				products = FXCollections.observableArrayList(new Product(Integer.valueOf(rs.getString("id")), rs.getString("name"), Double.valueOf(rs.getString("weight"))));
+
+				for(Product p : products) {
+					CheckBox chProduct = new CheckBox(p.getName());
+					chProduct.setFont(Font.font("Arial", 13));
+					chProduct.setAlignment(Pos.CENTER);
+					paneForCheckBoxes.getChildren().addAll(chProduct);
+
+					EventHandler<ActionEvent> handler = e -> {
+						if (chProduct.isSelected()) {
+							tableView.getItems().add(p);
+							calcSum(tableView, dimension, productWeight);
+						} else	{
+							tableView.getItems().remove(p);
+							calcSum(tableView, dimension, productWeight);
+						} 
+					};
+					chProduct.setOnAction(handler);
+				}
+			}
+
+			String shutdown = "jdbc:derby:;shutdown=true";
+			DriverManager.getConnection(shutdown);
+			connection.close();
+			statement.close();
+		} catch (SQLException ex) {
+			if(ex.getSQLState().equals("XJ015")) {
+				System.out.println("Derby shutdown normally");
+			} else {
+				ex.printStackTrace();
+			}
 		}
+
+
+
+
+
+
+
 
 
 
@@ -229,7 +181,7 @@ public class home extends StackPane {
 							n.getTablePosition().getRow())
 							).setQuantity(n.getNewValue().intValue());
 
-					calcSum();
+					calcSum(tableView, dimension, productWeight);
 				});
 
 		quantity.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Product, Number>, ObservableValue<Number>>() {
@@ -305,10 +257,10 @@ public class home extends StackPane {
 		h.getChildren().addAll(sideGrid, vbGrid); 
 		layout.getChildren().addAll(menuBar, h); 
 		ScrollPane sp = new ScrollPane(layout); 
-		getChildren().add(sp);
+		return sp;
 	}
 
-	private void calcSum() {
+	private static void calcSum(TableView<Product> tableView, TableColumn<Product, String> dimension, TableColumn<Product, Number> productWeight) {
 		double sum = 0; 
 		for(int i = 0; i < tableView.getItems().size(); ++i) {
 			sum += productWeight.getCellData(i).doubleValue(); 
@@ -341,6 +293,4 @@ public class home extends StackPane {
 		}
 		txtFinalDimension.setText(dim);
 	}	
-
-
 }
