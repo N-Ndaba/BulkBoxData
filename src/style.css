@@ -9,12 +9,18 @@
     -fx-background-color: -fx-focus-color, -fx-background ;
 }
 
-/**GridPane {
-	-fx-background-color: lightblue;
-	-fx-padding: 10px;
-	-fx-alignment: center
+.table-row-cell {
+	-fx-font-size: 10pt;
+	-fx-font-family: Arial;
+	-fx-text-align: center; 
 }
 
-HBox {
-		-fx-background-color: red;
-}/* */
+.table-view .column-header .label {
+	-fx-font-size: 10pt;
+	-fx-text-fill: black; 
+	-fx-text-align: center; 
+}
+
+.table-view .table-column {
+  -fx-alignment: center;
+}

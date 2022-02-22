@@ -1,438 +1,288 @@
 package bulk.box.data;
 
-public class Product
-{
-	private String name; 
-	private int quantity; 
-	private String boxType; 
-	private double weight;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+
+public class Product {
+
+	private final StringProperty name; 
+	private final DoubleProperty weight;
+
+	private DoubleProperty sum;
+	private StringProperty boxtype;
+	private IntegerProperty quantity; 
+	private StringProperty dimension; 
+	private IntegerProperty id; 
+
 	
-	
-	public Product(String name, int quantity)
-	{ 
-		this.name = name; 
-		this.quantity = quantity; 
+	private String jdbcURL = "jdbc:derby:boxbulkdb;create=true";
+
+
+	public Product(int id, String name, double weight) {
+		this.name = new SimpleStringProperty(this, "name", name); 
+		this.weight = new SimpleDoubleProperty(this, "weight", weight); 
+		this.quantity = new SimpleIntegerProperty(this, "quantity", 1); 
+		this.boxtype = new SimpleStringProperty(this, "boxtype");
+		this.sum = new SimpleDoubleProperty(this, "sum", weight); 
+		this.dimension = new SimpleStringProperty(this, "dimension", "");
+		this.id = new SimpleIntegerProperty(this, "id", id); 
+		setQuantity(1);
 	}
-	
-	public Product(String name, double weight)
-	{ 
-		this.name = name; 
-		this.weight = weight; 
+
+	public Integer getId() {
+		return this.id.get(); 
 	}
-	
-	
-	public Product(String name, double weight, String measurement)
-	{
-		this.name = name; 
-		this.weight = weight; 	
+
+	public void setId(int id) {
+		this.id.set(id);
 	}
-	
-	public int getQuantity()
-	{
-		return this.quantity; 
+
+	public final IntegerProperty idProperty() {
+		return this.id; 
 	}
-	
-	public double getWeight()
-	{
-		return this.weight; 
+
+	public final String getDimension() {
+		return this.dimension.get(); 
 	}
-	
-	public void setQuantity(String quantity)
-	{
-		
-		this.quantity = Integer.valueOf(quantity); 
+
+	public void setDimension(String dimension) {
+		this.dimension.set(dimension);
 	}
-	
-	public void setName(String name)
-	{
-		this.name = name; 
+
+	public final StringProperty dimensionProperty() {
+		return this.dimension; 
 	}
-	
-	public String getName()
-	{
+
+	public final String getName() {
+		return this.name.get(); 
+	}
+
+	public void setName(String name) {
+		this.name.set(name);
+		updateRecord(); 
+	}
+
+	public final StringProperty nameProperty() {
 		return this.name; 
 	}
+
+	public final Double getWeight() {
+		return this.weight.get(); 
+	}
+
+	public void setWeight(double weight) {
+		this.weight.set(weight);
+		updateRecord(); 
+	}
+
+	public final DoubleProperty weightProperty() {
+		return this.weight; 
+	}
+
+
+
+
+
+
+
+
+	public final Double getSumWeight() {
+		return this.sum.get(); 
+	}
+
+	public final void setSumWeight(double weight) {
+		this.sum.set(weight);
+	}
+
+	public final DoubleProperty sumProperty() {
+		return this.sum; //Double.valueOf(String.format("%", null))
+	}
+
+	public final String getBoxType() {
+		return this.boxtype.get(); 
+	}
+
+	public final void setBoxType(String boxtype) {
+		this.boxtype.set(boxtype);
+	}
+
+	public final StringProperty boxtypeProperty() {
+		return this.boxtype; 
+	}
+
+	public Integer getQuantity() {
+		return this.quantity.get(); 
+	}
+
+	public void setQuantity(int number) {
+
+		System.out.println("< " +number + ">");
+		if(number <= 0) {
+			number = 1; 
+		}
+
+		if(number != 0) {
+	 
+			this.quantity.set(number);
+			setSumWeight(calcSum(number));
+		}
+		
+		String iname = "";
+		String bname = "";
+		int minimum = 0;
+		int maximum = 0;
+		
 	
-	
-	public String process()
-	{
-		switch(this.name)
-		{
-			case "Flare": 
-			{
-				if(this.quantity == 1)
-					return Boxtype.CH1EF4D.toString() + " | " + Boxtype.CH1EF4P.toString();  
-				else if(this.quantity >= 6 && this.quantity <= 15)
-					return Boxtype.PAC0005.toString(); 
-				else if(this.quantity == 20)
-					return Boxtype.PAC0019.toString(); 
-				else if(this.quantity == 45)
-					return Boxtype.PAC0025.toString(); 	
-				else if(this.quantity == 60)
-					return Boxtype.PAC0002.toString(); ; 
-			}
-			break; 
-			
-			case "Flare 6 pack": 
-			{
-				if(this.quantity >= 2 && this.quantity <= 7)
-					return Boxtype.PAC0002.toString(); 
-			}
-			break;
-			
-			case "Sir Beacon 60":
-			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0003.toString(); 
-				else if(this.quantity > 1 && this.quantity <= 4)
-					return Boxtype.PAC0010.toString(); 
-				else if(this.quantity >= 6 && this.quantity <= 10)
-					return Boxtype.PAC0005.toString(); 
-				else if(this.quantity == 10)
-					return Boxtype.PAC0004.toString();  
-				else if(this.quantity == 25)
-					return Boxtype.PAC0025.toString(); 
-			}
-			break; 
-			
-			case "Sir Beacon / portable":
-			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0018.toString(); 
-				else if(this.quantity == 6)
-					return Boxtype.PAC0019.toString(); 
-				else if(this.quantity == 10)
-					return Boxtype.PAC0025.toString(); 
-			}
-			break; 
-			
-			
-			case "Mono S":
-			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0018.toString(); 
-				else if(this.quantity == 6)
-					return Boxtype.PAC0019.toString(); 
-				else if(this.quantity == 10)
-					return Boxtype.PAC0025.toString(); 
-			}
-			break;
-			
-			case "Duplo s": 
-			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0005.toString(); 
-				else if(this.quantity == 6)
-					return Boxtype.PAC0025.toString(); 
-			}
-			
-			case "Mono/ Duplo Combo": 
-			{
-				if(this.quantity == 9)
-					return Boxtype.PAC0002.toString(); 
-				else if (this.quantity == 1)
-					return Boxtype.PAC0010.toString(); 
-				else if(this.quantity == 2)
-					return Boxtype.PAC0019.toString(); 
-				else if(this.quantity == 4)
-					return Boxtype.PAC0025.toString(); 
-			}
-			break;
-			
-			case "1500S": 
-			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0013.toString(); 
-				else if(this.quantity == 2) 
-					return  Boxtype.PAC0018.toString() + " | " + Boxtype.PAC0019.toString(); 
-			}
-			break;
-			
-			case "1500S Vert": 
-			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0009.toString(); 
-			}
-			break;
-			
-			case "2D": 
-			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0013.toString(); 
-				else if(this.quantity == 2)
-					return Boxtype.PAC0018.toString() + " | " + Boxtype.PAC0019.toString(); 
-			}
-			break;
-			
-			case "Hooter": 
-			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0010.toString() + " | " + Boxtype.PAC0011.toString(); 
-				if(this.quantity == 9)
-					return Boxtype.PAC0002.toString(); 
-				if(this.quantity == 2)
-					return Boxtype.PAC0018.toString();
-				else if(this.quantity == 4)
-					return Boxtype.PAC0025.toString();
-			}
-			break;
-			
-			case "Bell": 
-			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0018.toString();
-				else if(this.quantity == 6)
-					return Boxtype.PAC0019.toString(); 
-			}
-			break;
-			
-			
-			case "Ban Ex S1/S2": 
-			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0010.toString(); 
-			}
-			break;
-			
-			case "Ban EX Combo S1/S2": 
-			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0009.toString();
-			}
-			break;
-			
-			case "Ban EX S3": 
-			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0004.toString();
-				else if(this.quantity == 2)
-					return Boxtype.PAC0018.toString();
-			}
-			break;
-			
-			
-			case "Ban Ex S3 Light": 
-			{
-				if(this.quantity == 1)
-					return  Boxtype.PAC0018.toString();
-				else if(this.quantity == 6)
-					return  Boxtype.PAC0019.toString();
-			}
-			break;
-			
-			case "660HZ": 
-			{
-				if(this.quantity == 3)
-					return  Boxtype.PAC0003.toString();
-				else if(this.quantity == 1)
-					return Boxtype.PAC0010.toString() + " | " +  Boxtype.PAC0013.toString();
-			}
-			break;
-			
-			case "370HZ": 
-			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0009.toString() + " | " +  Boxtype.PAC0019.toString();
-				else if(this.quantity == 2)
-					return Boxtype.PAC0025.toString();
-			}
-			break;
-			
-			case "Blaster 300ml": 
-			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0030.toString();
-				else if(this.quantity == 16)
-					return Boxtype.PAC0004.toString();
-			}
-			break;
-			
-			case "Blaster 40/100/135mll": 
-			{
-				if(this.quantity == 16)
-					return Boxtype.PAC0004.toString();
-				else if(this.quantity == 20)
-					return Boxtype.PAC0018.toString();
-				else if(this.quantity == 1)
-					return Boxtype.PAC0031.toString();
-			}
-			break;
-			
-			case "A100": 
-			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0018.toString();
-				else if(this.quantity == 6)
-					return Boxtype.PAC0019.toString();
-				else if(this.quantity == 10)
-					return Boxtype.PAC0025.toString();
-			}
-			break;
-			
-			
-			case "A105": 
-			{
-				if(this.quantity == 6)
-					return Boxtype.PAC0018.toString();;
-			}
-			break;
-			
-			case "A112": 
-			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0013.toString();
-				else if(this.quantity == 2)
-					return Boxtype.PAC0018.toString();
-				else if(this.quantity == 4)
-					return Boxtype.PAC0025.toString();
-				else if(this.quantity == 6)
-					return Boxtype.PAC0002.toString();
-			}
-			break;
-			
-			
-			case "A121": 
-			{
-				if(this.quantity == 4)
-					return Boxtype.PAC0002.toString();
-				else if(this.quantity == 1)
-					return Boxtype.PAC0025.toString();
-			}
-			break;
-			
-			
-			case "AL100": 
-			{
-				if(this.quantity == 6)
-					return Boxtype.PAC0018.toString();
-			}
-			break;
-			
-			
-			case "AL105": 
-			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0021.toString() + " | "+ Boxtype.PAC0022.toString();
-				else if(this.quantity == 2)
-					return Boxtype.PAC0018.toString();
-				else if(this.quantity == 4)
-					return Boxtype.PAC0025.toString();
-				else if(this.quantity == 6)
-					return Boxtype.PAC0002.toString();
-			}
-			break;
-			
-			
-			case "AL112": 
-			{
-				if(this.quantity == 2)
-					return Boxtype.PAC0002.toString();
-				else if (this.quantity == 1)
-					return Boxtype.PAC0013.toString();
-				else if(this.quantity == 4)
-					return Boxtype.PAC0025.toString();
-			}
-			break;
-			
-			
-			case "AL121": 
-			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0009.toString();
-				else if(this.quantity == 2)
-					return Boxtype.PAC0002.toString() + " | " + Boxtype.PAC0018.toString();
-			}
-			break;
-			
-			
-			case "B300": 
-			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0018.toString(); 
-				else if(this.quantity == 4)
-					return Boxtype.PAC0019.toString();
-				else if(this.quantity == 10)
-					return  Boxtype.PAC0025.toString();
-			}
-			break;
-			
-			case "B400": 
-			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0013.toString();
-				else if(this.quantity == 2)
-					return Boxtype.PAC0025.toString();
-				else if(this.quantity == 4)
-					return Boxtype.PAC0002.toString(); 
-			}
-			break;
-			
-			case "H100": 
-			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0013.toString();
-				else if(this.quantity == 4)
-					return Boxtype.PAC0025.toString();
-				else if(this.quantity == 8)
-					return Boxtype.PAC0002.toString(); 
-			}
-			break;
-			
-			case "H150": 
-			{
+		try {
+			DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
+			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+			Connection connection = DriverManager.getConnection(jdbcURL);
+			Statement statement = connection.createStatement(); 
+
+			String query = "SELECT * FROM ItemBox WHERE iname = '" + getName() + "' and " + number + " between minimum and maximum"; 
+			ResultSet rs = statement.executeQuery(query); 
+
+			while(rs.next()) {
 				
+				iname = rs.getString("iname"); 
+				bname = rs.getString("bname"); 
+				minimum = Integer.valueOf(rs.getString("minimum")); 
+				maximum = Integer.valueOf(rs.getString("maximum")); 
 			}
-			break;
-			
-			case "H200": 
-			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0002.toString(); 
+	
+			System.out.println("minimum " + minimum);
+			System.out.println("maximum " + maximum);
+			System.out.println(getName().equals(iname));
+			if(number >= minimum && number <= maximum && getName().equals(iname)) {
+				
+				System.out.println("[ "+ number  +" ]");
+				String queryItem = "SELECT * FROM box WHERE name = '" + bname +"'"; 
+				ResultSet rx = statement.executeQuery(queryItem); 
+				while(rx.next()) {
+
+	
+					setBoxType(rx.getString("name"));
+					setDimension(rx.getString("length") + " x " + rx.getString("width") + " x " + rx.getString("height"));
+				}
+			} else {
+				setBoxType("-");
+				setDimension("-");
 			}
-			break;
+
+			/*String shutdown = "jdbc:derby:;shutdown=true";
+			DriverManager.getConnection(shutdown); 
 			
-			case "500SA":
-			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0018.toString();
-				else if(this.quantity == 6)
-					return Boxtype.PAC0019.toString();
-				else if(this.quantity == 10)
-					return Boxtype.PAC0025.toString();
-			}
-			break; 
-			
-			case "1000SA":
-			{
-				if(this.quantity == 1)
-					return Boxtype.PAC0018.toString();
-				else if(this.quantity == 6)
-					return Boxtype.PAC0019.toString();
-				else if (this.quantity == 10)
-					return Boxtype.PAC0025.toString();
-			}
-			break; 
-			
-			case "MA112":
-			{
-				if(this.quantity == 2)
-					return Boxtype.PAC0002.toString(); 
-				else if(this.quantity == 4)
-					return Boxtype.PAC0025.toString(); 
-			}
-			break; 
-			
-			case "MA121":
-			{
-				if(this.quantity == 2)
-					return Boxtype.PAC0002.toString(); 
+			*/
+		}  catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException ex) {
+			if(ex.getSQLState().equals("XJ015")) {
+				System.out.println("Derby shutdown normally");
+			} else {
+				ex.printStackTrace();
 			}
 		}
-		return "No box available";
 	}
+
+	private double calcSum(int number) {
+		return new BigDecimal(number * this.getWeight()).setScale(3, RoundingMode.HALF_UP).doubleValue();
+	}
+
+
+	public IntegerProperty quantityProperty() {
+		return this.quantity; 
+	}
+
+
+	private void updateRecord() {
+		try {
+			DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
+			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+			Connection connection = DriverManager.getConnection(jdbcURL);
+			Statement statement = connection.createStatement(); 
+			String query = "UPDATE item SET weight = " + getWeight() +  ", name = '" + getName() + "' WHERE id = " + getId(); 
+			int num = statement.executeUpdate(query); 
+			System.out.println("Number of record updated are: " + num);
+			String shutdown = "jdbc:derby:;shutdown=true";
+			DriverManager.getConnection(shutdown); 
+		}  catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException ex) {
+			if(ex.getSQLState().equals("XJ015")) {
+				System.out.println("Derby shutdown normally");
+			} else {
+				ex.printStackTrace();
+			}
+		}
+	}
+
+	private void joinIB(int quantity) {
+		String iname = "";
+		String bname = "";
+		int minimum = 0;
+		int maximum = 0;
+		
 	
-	public String getBoxType()
-	{ 
-		return this.boxType; 
-	}	
+		try {
+			DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
+			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+			Connection connection = DriverManager.getConnection(jdbcURL);
+			Statement statement = connection.createStatement(); 
+
+			String query = "SELECT * FROM ItemBox"; 
+			ResultSet rs = statement.executeQuery(query); 
+
+			while(rs.next()) {
+				
+				iname = rs.getString("iname"); 
+				bname = rs.getString("bname"); 
+				minimum = Integer.valueOf(rs.getString("minimum")); 
+				maximum = Integer.valueOf(rs.getString("maximum")); 
+			}
+	
+			System.out.println("[ "+ getQuantity()  +" ]");
+			if(minimum >= getQuantity() && getQuantity() <= maximum && getName().equals(iname)) {
+				
+				
+				String queryItem = "SELECT * FROM box WHERE name = '" + bname +"'"; 
+				ResultSet rx = statement.executeQuery(queryItem); 
+				while(rx.next()) {
+
+					System.out.println(rx.getString("name"));
+					System.out.println(rx.getString("length"));
+					System.out.println(rx.getString("width"));
+					System.out.println(rx.getString("height"));
+				}
+			}
+
+			/*String shutdown = "jdbc:derby:;shutdown=true";
+			DriverManager.getConnection(shutdown); 
+			
+			*/
+		}  catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException ex) {
+			if(ex.getSQLState().equals("XJ015")) {
+				System.out.println("Derby shutdown normally");
+			} else {
+				ex.printStackTrace();
+			}
+		}
+	}
 }
