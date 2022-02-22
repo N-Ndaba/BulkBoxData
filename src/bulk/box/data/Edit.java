@@ -11,9 +11,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Accordion;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TitledPane;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.GridPane;
@@ -24,21 +26,40 @@ import javafx.util.converter.NumberStringConverter;
 public class Edit {
 
 	private static ObservableList<BoxCode> boxes = null;
+	private static ObservableList<BoxType> boxtype = null;
 	private static ObservableList<Product> products = null;
 	private static String jdbcURL = "jdbc:derby:boxbulkdb;create=true";
-	
+
+	@SuppressWarnings("unchecked")
 	public static VBox editRecord(MenuBar menuBar) {
+		Accordion accordion = new Accordion();
+
+		TitledPane tpProduct = new TitledPane();
+		tpProduct.setText("Box & Bulk QTY");
+
+		TitledPane tpDimensions = new TitledPane();
+		tpDimensions.setText("Dimensions");
+
+		TitledPane tpLink = new TitledPane();
+		tpLink.setText("Assign");
+
+
 		TableView<Product> tableView = new TableView<>(); 
 		TableColumn<Product, String> productName = new TableColumn<>("Product");
 		TableColumn<Product, Number> productWeight = new TableColumn<>("Weight (kg)");
 
-		TableView<BoxCode> tableBox = new TableView<>(); 
-		TableColumn<BoxCode, String> boxName = new TableColumn<>("Box Code");
-		TableColumn<BoxCode, Number> boxLength = new TableColumn<>("Length");
-		TableColumn<BoxCode, Number> boxWidth = new TableColumn<>("Width");
-		TableColumn<BoxCode, Number> boxHeight = new TableColumn<>("Height ");
+		tableView.setEditable(true);
+		tableView.setPrefHeight(430);
+		
+		GridPane gridOne = new GridPane();
+		gridOne.setAlignment(Pos.CENTER);
+		gridOne.setPadding(new Insets(3, 12.5, 5, 14.5));
+		gridOne.setHgap(7);
+		gridOne.setVgap(3);
 
-
+		tableView.getColumns().addAll(productName, productWeight);
+		gridOne.add(tableView, 0, 0); 
+		
 		try {
 			DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
 			Connection connection = DriverManager.getConnection(jdbcURL);
@@ -49,10 +70,6 @@ public class Edit {
 			String query = "SELECT * FROM item"; 
 			ResultSet rs = statement.executeQuery(query); 
 			while(rs.next()) {
-				System.out.println("id" + rs.getString("id"));
-				System.out.println("name: " + rs.getString("name"));
-				System.out.println("weight: " + rs.getString("weight"));
-
 				products = FXCollections.observableArrayList(new Product(Integer.valueOf(rs.getString("id")), rs.getString("name"), Double.valueOf(rs.getString("weight"))));
 				for(Product p : products) {
 					tableView.getItems().add(p); 
@@ -70,6 +87,62 @@ public class Edit {
 				ex.printStackTrace();
 			}
 		}
+
+		//---------------------
+		productName.setMinWidth(160);
+		productName.setCellFactory(TextFieldTableCell.forTableColumn());
+		productName.setOnEditCommit(
+				(CellEditEvent<Product, String> n) ->{
+					((Product) n.getTableView().getItems().get(
+							n.getTablePosition().getRow())
+							).setName(n.getNewValue());
+				});
+		productName.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Product, String>, ObservableValue<String>>() {
+
+			@Override
+			public ObservableValue<String> call(TableColumn.CellDataFeatures<Product, String> param) {
+				// TODO Auto-generated method stub
+				return param.getValue().nameProperty();
+			}		
+		});
+
+		productWeight.setMinWidth(160);
+		productWeight.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
+		productWeight.setOnEditCommit(
+				(CellEditEvent<Product, Number> n) ->{
+					((Product) n.getTableView().getItems().get(
+							n.getTablePosition().getRow())
+							).setWeight(n.getNewValue().doubleValue());
+				});
+		productWeight.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Product, Number>, ObservableValue<Number>>() {
+
+			@Override
+			public ObservableValue<Number> call(TableColumn.CellDataFeatures<Product, Number> param) {
+				// TODO Auto-generated method stub
+				return param.getValue().sumProperty();
+			}
+		});
+
+		/**
+		 * 
+		 */
+
+		TableView<BoxCode> tableBox = new TableView<>(); 
+		TableColumn<BoxCode, String> boxName = new TableColumn<>("Box Code");
+		TableColumn<BoxCode, Number> boxLength = new TableColumn<>("Length");
+		TableColumn<BoxCode, Number> boxWidth = new TableColumn<>("Width");
+		TableColumn<BoxCode, Number> boxHeight = new TableColumn<>("Height ");
+
+		tableBox.setEditable(true);
+		tableBox.setPrefHeight(430);
+		
+		GridPane gridTwo = new GridPane();
+		gridTwo.setAlignment(Pos.CENTER);
+		gridTwo.setPadding(new Insets(3, 12.5, 5, 14.5));
+		gridTwo.setHgap(7);
+		gridTwo.setVgap(3);
+		tableBox.getColumns().addAll(boxName, boxLength, boxWidth, boxHeight);
+		gridTwo.add(tableBox, 0, 0); 
 
 		try {
 			DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
@@ -98,12 +171,6 @@ public class Edit {
 				ex.printStackTrace();
 			}
 		}
-
-		tableView.setEditable(true);
-		tableView.setPrefHeight(430);
-
-		tableBox.setEditable(true);
-		tableBox.setPrefHeight(430);
 
 		boxName.setMinWidth(160);
 		boxName.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -173,54 +240,149 @@ public class Edit {
 				return param.getValue().heightProperty();
 			}
 		});
-		//---------------------
-		productName.setMinWidth(160);
-		productName.setCellFactory(TextFieldTableCell.forTableColumn());
-		productName.setOnEditCommit(
-				(CellEditEvent<Product, String> n) ->{
-					((Product) n.getTableView().getItems().get(
+		
+		/**
+		 * 
+		 */
+		TableView<BoxType> tableAssign = new TableView<>(); 
+		TableColumn<BoxType, String> taProduct = new TableColumn<>("Product");
+		TableColumn<BoxType, String> taBoxCode = new TableColumn<>("Box Code");
+		TableColumn<BoxType, Number> taMinimum = new TableColumn<>("Minimum");
+		TableColumn<BoxType, Number> taMaximum = new TableColumn<>("Maximum");
+
+		tableAssign.setEditable(true);
+		tableAssign.setPrefHeight(430);
+		
+		GridPane gridThree = new GridPane();
+		gridThree.setAlignment(Pos.CENTER);
+		gridThree.setPadding(new Insets(3, 12.5, 5, 14.5));
+		gridThree.setHgap(7);
+		gridThree.setVgap(3);
+		tableAssign.getColumns().addAll(taProduct, taBoxCode, taMinimum, taMaximum);
+		gridThree.add(tableAssign, 0, 0);
+		
+		
+		try {
+			DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
+			Connection connection = DriverManager.getConnection(jdbcURL);
+			Statement statement = connection.createStatement(); 
+
+			String queryBox = "SELECT * FROM ItemBox"; 
+			ResultSet rs = statement.executeQuery(queryBox); 
+
+			while(rs.next()) {
+
+				boxtype = FXCollections.observableArrayList(new BoxType(Integer.valueOf(rs.getString("id")), rs.getString("iname"), rs.getString("bname"), Integer.valueOf(rs.getString("minimum")), Integer.valueOf(rs.getString("maximum"))));	
+				for(BoxType b : boxtype) {
+					tableAssign.getItems().add(b); 
+				}
+			}
+
+			String shutdown = "jdbc:derby:;shutdown=true";
+			DriverManager.getConnection(shutdown);
+			connection.close();
+			statement.close();
+		} catch (SQLException ex) {
+			if(ex.getSQLState().equals("XJ015")) {
+				System.out.println("Derby shutdown normally");
+			} else {
+				ex.printStackTrace();
+			}
+		}
+		
+		taProduct.setMinWidth(160);
+		taProduct.setCellFactory(TextFieldTableCell.forTableColumn());
+		taProduct.setOnEditCommit(
+				(CellEditEvent<BoxType, String> n) ->{
+					((BoxType) n.getTableView().getItems().get(
 							n.getTablePosition().getRow())
 							).setName(n.getNewValue());
 				});
-		productName.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Product, String>, ObservableValue<String>>() {
+		taProduct.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoxType, String>, ObservableValue<String>>() {
 
 			@Override
-			public ObservableValue<String> call(TableColumn.CellDataFeatures<Product, String> param) {
+			public ObservableValue<String> call(TableColumn.CellDataFeatures<BoxType, String> param) {
 				// TODO Auto-generated method stub
 				return param.getValue().nameProperty();
 			}		
 		});
 
-		productWeight.setMinWidth(160);
-		productWeight.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
-		productWeight.setOnEditCommit(
-				(CellEditEvent<Product, Number> n) ->{
-					((Product) n.getTableView().getItems().get(
+		taBoxCode.setMinWidth(160);
+		taBoxCode.setCellFactory(TextFieldTableCell.forTableColumn());
+		taBoxCode.setOnEditCommit(
+				(CellEditEvent<BoxType, String> n) ->{
+					((BoxType) n.getTableView().getItems().get(
 							n.getTablePosition().getRow())
-							).setWeight(n.getNewValue().doubleValue());
+							).setBoxcode(n.getNewValue());
 				});
-		productWeight.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Product, Number>, ObservableValue<Number>>() {
+		taBoxCode.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoxType, String>, ObservableValue<String>>() {
 
 			@Override
-			public ObservableValue<Number> call(TableColumn.CellDataFeatures<Product, Number> param) {
+			public ObservableValue<String> call(TableColumn.CellDataFeatures<BoxType, String> param) {
 				// TODO Auto-generated method stub
-				return param.getValue().sumProperty();
+				return param.getValue().boxcodeProperty();
 			}
 		});
 
 
-		GridPane grid = new GridPane();
-		grid.setAlignment(Pos.TOP_LEFT);
-		grid.setPadding(new Insets(3, 12.5, 5, 14.5));
-		grid.setHgap(7);
-		grid.setVgap(3);
-		tableBox.getColumns().addAll(boxName, boxLength, boxWidth, boxHeight);
-		tableView.getColumns().addAll(productName, productWeight);
-		grid.add(tableBox, 7, 5, 5, 5); 
-		grid.add(tableView, 1, 5, 5, 5); 
+		taMinimum.setMinWidth(160);
+		taMinimum.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
+		taMinimum.setOnEditCommit(
+				(CellEditEvent<BoxType, Number> n) ->{
+					((BoxType) n.getTableView().getItems().get(
+							n.getTablePosition().getRow())
+							).setMinimum(n.getNewValue().intValue());
+				});
+		taMinimum.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoxType, Number>, ObservableValue<Number>>() {
 
-		VBox vbox = new VBox(); 
-		vbox.getChildren().addAll(menuBar, grid); 
-		return vbox;
+			@Override
+			public ObservableValue<Number> call(TableColumn.CellDataFeatures<BoxType, Number> param) {
+				// TODO Auto-generated method stub
+				return param.getValue().minimumProperty();
+			}		
+		});
+
+		taMaximum.setMinWidth(160);
+		taMaximum.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
+		taMaximum.setOnEditCommit(
+				(CellEditEvent<BoxType, Number> n) ->{
+					((BoxType) n.getTableView().getItems().get(
+							n.getTablePosition().getRow())
+							).setMaximum(n.getNewValue().intValue());
+				});
+		taMaximum.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoxType, Number>, ObservableValue<Number>>() {
+
+			@Override
+			public ObservableValue<Number> call(TableColumn.CellDataFeatures<BoxType, Number> param) {
+				// TODO Auto-generated method stub
+				return param.getValue().maximumProperty();
+			}
+		});
+
+		
+		/**
+		 * 
+		 */
+
+		VBox vbOne = new VBox(); 
+		vbOne.getChildren().addAll(gridOne); 
+
+		VBox vbTwo = new VBox(); 
+		vbTwo.getChildren().addAll(gridTwo); 
+		
+		VBox vbThree = new VBox(); 
+		vbThree.getChildren().addAll(gridThree); 
+
+		tpProduct.setContent(vbOne);
+		tpDimensions.setContent(vbTwo);
+		tpLink.setContent(vbThree);
+
+		accordion.getPanes().add(tpProduct);
+		accordion.getPanes().add(tpDimensions);
+		accordion.getPanes().add(tpLink);
+
+		VBox screen = new VBox();
+		screen.getChildren().addAll(menuBar, accordion);
+		return screen;
 	}
 }

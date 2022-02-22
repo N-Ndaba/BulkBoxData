@@ -39,17 +39,14 @@ public class Home {
 
 	private static TextField txtSum = new TextField();
 	private static TextField txtFinalDimension = new TextField(); 
-	private static String jdbcURL = "jdbc:derby:boxbulkdb;create=true";
 	
 
+	@SuppressWarnings({ "unchecked" })
 	public static ScrollPane home(MenuBar menuBar) {
-
-
-
 		GridPane sideGrid = new GridPane(); 
 		sideGrid.setAlignment(Pos.TOP_LEFT);
-		sideGrid.setPadding(new Insets(3, 12.5, 5, 14.5));
-		sideGrid.setHgap(7);
+		sideGrid.setPadding(new Insets(0.5, 14, 2, 7));
+		sideGrid.setHgap(3);
 		sideGrid.setVgap(3);
 
 		VBox vbProduct = new VBox();
@@ -59,7 +56,6 @@ public class Home {
 		VBox paneForCheckBoxes = new VBox(20);
 		paneForCheckBoxes.setPadding(new Insets(5, 5, 5, 5));
 
-
 		ObservableList<Product> products = null;
 		TableView<Product> tableView = new TableView<>(); 
 		TableColumn<Product, String> productName = new TableColumn<>("Product");
@@ -68,12 +64,11 @@ public class Home {
 		TableColumn<Product, Number> productWeight = new TableColumn<>("Weight (kg)");
 		TableColumn<Product, Number> quantity = new TableColumn<Product, Number>("Quantity");
 
+		String jdbcURL = "jdbc:derby:boxbulkdb;create=true";
 		try {
 			DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
 			Connection connection = DriverManager.getConnection(jdbcURL);
 			Statement statement = connection.createStatement(); 
-
-
 
 			String query = "SELECT * FROM item"; 
 			ResultSet rs = statement.executeQuery(query); 
@@ -106,28 +101,17 @@ public class Home {
 			statement.close();
 		} catch (SQLException ex) {
 			if(ex.getSQLState().equals("XJ015")) {
-				System.out.println("Derby shutdown normally");
+				System.out.println("");
 			} else {
 				ex.printStackTrace();
 			}
 		}
 
-
-
-
-
-
-
-
-
-
-
-
 		tableView.setEditable(true);
 		tableView.setPrefHeight(430);
-		// table column for the name of the person 
-
+		
 		productName.setMinWidth(160);
+		productName.setReorderable(false);
 		productName.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Product, String>, ObservableValue<String>>() {
 
 			@Override
@@ -137,9 +121,8 @@ public class Home {
 			}		
 		});
 
-		// column for the size of the person
-
 		boxtype.setMinWidth(160);
+		boxtype.setReorderable(false);
 		boxtype.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Product, String>, ObservableValue<String>>() {
 
 			@Override
@@ -149,8 +132,8 @@ public class Home {
 			}
 		});
 
-
 		dimension.setMinWidth(160);
+		dimension.setReorderable(false);
 		dimension.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Product, String>, ObservableValue<String>>() {
 
 			@Override
@@ -160,9 +143,8 @@ public class Home {
 			}
 		});
 
-		// column for the size of the person
-
 		productWeight.setMinWidth(160);
+		productWeight.setReorderable(false);
 		productWeight.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Product, Number>, ObservableValue<Number>>() {
 
 			@Override
@@ -172,8 +154,8 @@ public class Home {
 			}
 		});
 
-
 		quantity.setMinWidth(160);
+		quantity.setReorderable(false);
 		quantity.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
 		quantity.setOnEditCommit(
 				(CellEditEvent<Product, Number> n) ->{
@@ -193,33 +175,28 @@ public class Home {
 			}
 		});
 
-
-
-
-
-
 		tableView.getColumns().addAll(productName,quantity, boxtype, dimension, productWeight);
 		vbGrid.getChildren().addAll(tableView); 
-
+		
 		pane.setLeft(paneForCheckBoxes);
 
 		vbProduct.getChildren().addAll(pane);
 		vbProduct.setPrefHeight(330);
 
 		ScrollPane scrollPane = new ScrollPane(vbProduct); 
-
+		sideGrid.setPrefWidth(5);
 		sideGrid.add(scrollPane, 0, 0, 2, 1); 
 		//-----
-
-		Label lblSum = new Label("Total Weight (kg):"); 
+		
+		Label lblSum = new Label("Total Weight:"); 
 		lblSum.setPrefWidth(125);
 		lblSum.setFont(Font.font("Arial", 13));
 		sideGrid.add(lblSum, 0, 10);
 
-
 		txtSum.setFont(Font.font("Arial", 13));
 		txtSum.setAlignment(Pos.CENTER);
-		txtSum.setId("txtS");
+		txtSum.setEditable(false);
+		txtSum.setText(null);
 		sideGrid.add(txtSum, 1, 10);
 
 		Label lblFinalDimension = new Label("Final Dimension:"); 
@@ -227,17 +204,11 @@ public class Home {
 		lblFinalDimension.setFont(Font.font("Arial", 13));
 		sideGrid.add(lblFinalDimension, 0, 12);
 
-
 		txtFinalDimension.setFont(Font.font("Arial", 13));
 		txtFinalDimension.setAlignment(Pos.CENTER);
-		txtFinalDimension.setId("txtFD");
+		txtFinalDimension.setEditable(false);	
+		txtFinalDimension.setText(null);
 		sideGrid.add(txtFinalDimension, 1, 12);
-
-
-
-		//ScrollPane sp = new ScrollPane(Lu); 
-		//???????/
-
 
 		ColumnConstraints column = new ColumnConstraints(100, 100, 300);
 		column.setHgrow(Priority.NEVER);
@@ -247,19 +218,17 @@ public class Home {
 
 		GridPane.setHalignment(lblFinalDimension, HPos.RIGHT);
 		GridPane.setHalignment(txtFinalDimension, HPos.RIGHT);
-
-		//Calc(vbGrid); 
+ 
 		VBox layout = new VBox(); 
-
-
-		HBox h = new HBox(); 
-		h.setPadding(new Insets(13, 8, 12, 8));
-		h.getChildren().addAll(sideGrid, vbGrid); 
-		layout.getChildren().addAll(menuBar, h); 
+		HBox horizontal = new HBox(); 
+		horizontal.setPadding(new Insets(13, 10, 12, 8));
+		horizontal.getChildren().addAll(sideGrid, vbGrid); 
+		layout.getChildren().addAll(menuBar, horizontal); 
 		ScrollPane sp = new ScrollPane(layout); 
 		return sp;
 	}
 
+	@SuppressWarnings("unchecked")
 	private static void calcSum(TableView<Product> tableView, TableColumn<Product, String> dimension, TableColumn<Product, Number> productWeight) {
 		double sum = 0; 
 		for(int i = 0; i < tableView.getItems().size(); ++i) {
@@ -268,7 +237,7 @@ public class Home {
 		if(sum == 0) {
 			txtSum.setText(""); 
 		} else {
-			txtSum.setText(String.valueOf(String.format("%.2f", sum)).replace(",", ".")); 
+			txtSum.setText(String.valueOf(String.format("%.2f", sum)).replace(",", ".") + " kg"); 
 		}
 
 

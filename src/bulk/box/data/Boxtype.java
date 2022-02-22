@@ -1,5 +1,10 @@
 package bulk.box.data;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -13,6 +18,8 @@ public class BoxType {
 	private IntegerProperty minimum;
 	private IntegerProperty maximum; 
 	
+	
+	private String jdbcURL = "jdbc:derby:boxbulkdb;create=true";
 
 	public BoxType(int id, String name, String boxcode, int minimum, int maximum) {
 		this.id = new SimpleIntegerProperty(this, "id", id); 
@@ -41,6 +48,7 @@ public class BoxType {
 
 	public void setName(String name) {
 		this.name.set(name);
+		updateRecord(); 
 	}
 
 	public final StringProperty nameProperty() {
@@ -53,6 +61,7 @@ public class BoxType {
 
 	public void setBoxcode(String boxcode) {
 		this.boxcode.set(boxcode);
+		updateRecord();
 	}
 
 	public final StringProperty boxcodeProperty() {
@@ -65,6 +74,7 @@ public class BoxType {
 
 	public void setMinimum(int minimum) {
 		this.minimum.set(minimum);
+		updateRecord(); 
 	}
 
 	public final IntegerProperty minimumProperty() {
@@ -77,9 +87,33 @@ public class BoxType {
 
 	public void setMaximum(int maximum) {
 		this.maximum.set(maximum);
+		updateRecord();
 	}
 
 	public final IntegerProperty maximumProperty() {
 		return this.maximum; 
+	}
+	
+	private void updateRecord() {
+		try {
+			DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
+			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+			Connection connection = DriverManager.getConnection(jdbcURL);
+			Statement statement = connection.createStatement(); 
+			String query = "UPDATE ItemBox SET iname = '" + getName() +  "', bname = '" + getBoxcode() + "', minimum = " +getMinimum()+ ", maximum = " + getMaximum() + "  WHERE id = " + getId(); 
+			int num = statement.executeUpdate(query); 
+			System.out.println("Number of record updated are: " + num);
+			String shutdown = "jdbc:derby:;shutdown=true";
+			DriverManager.getConnection(shutdown); 
+		}  catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException ex) {
+			if(ex.getSQLState().equals("XJ015")) {
+				System.out.println("Derby shutdown normally");
+			} else {
+				ex.printStackTrace();
+			}
+		}
 	}
 }

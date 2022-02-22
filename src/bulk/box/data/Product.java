@@ -152,7 +152,7 @@ public class Product {
 			Connection connection = DriverManager.getConnection(jdbcURL);
 			Statement statement = connection.createStatement(); 
 
-			String query = "SELECT * FROM ItemBox WHERE iname = '" + getName() + "' and minimum = " + number + " or maximum = " + number; 
+			String query = "SELECT * FROM ItemBox WHERE iname = '" + getName() + "' and " + number + " between minimum and maximum"; 
 			ResultSet rs = statement.executeQuery(query); 
 
 			while(rs.next()) {
