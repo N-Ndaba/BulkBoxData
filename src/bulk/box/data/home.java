@@ -42,7 +42,7 @@ public class Home {
 	
 
 	@SuppressWarnings({ "unchecked" })
-	public static ScrollPane home(MenuBar menuBar) {
+	public static ScrollPane home(HBox menuBar) {
 		GridPane sideGrid = new GridPane(); 
 		sideGrid.setAlignment(Pos.TOP_LEFT);
 		sideGrid.setPadding(new Insets(0.5, 14, 2, 7));

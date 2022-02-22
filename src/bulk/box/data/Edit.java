@@ -37,7 +37,7 @@ public class Edit {
 	private static String jdbcURL = "jdbc:derby:boxbulkdb;create=true";
 
 	@SuppressWarnings("unchecked")
-	public static VBox editRecord(MenuBar menuBar) {
+	public static VBox editRecord(HBox menuBar) {
 		Accordion accordion = new Accordion();
 
 		TitledPane tpProduct = new TitledPane();

@@ -22,12 +22,10 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
-import javafx.scene.control.TableColumn.CellEditEvent;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
-import javafx.util.converter.NumberStringConverter;
 
 public class Delete {
 
@@ -36,29 +34,34 @@ public class Delete {
 	private static ObservableList<Product> products = null;
 	private static String jdbcURL = "jdbc:derby:boxbulkdb;create=true";
 
-	@SuppressWarnings("unchecked")
-	public static VBox deleteRecord(MenuBar menuBar) {
+	public static VBox deleteRecord(HBox menuBar) {
 
 		Accordion accordion = new Accordion();
 
+		accordion.getPanes().add(bolkbox());
+		accordion.getPanes().add(dimensions());
+		accordion.getPanes().add(assign());
+
+		VBox screen = new VBox();
+		screen.getChildren().addAll(menuBar, accordion);
+
+		return screen;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	private static TitledPane bolkbox() {
 		TitledPane tpProduct = new TitledPane();
 		tpProduct.setText("Box & Bulk QTY");
 
-		TitledPane tpDimensions = new TitledPane();
-		tpDimensions.setText("Dimensions");
-
-		TitledPane tpLink = new TitledPane();
-		tpLink.setText("Assign");
-
 		ComboBox<String> cbProducts = new ComboBox<>();
-		ComboBox<String> cbBoxCode = new ComboBox<>();
-		ComboBox<String> cbcodetype = new ComboBox<>();
+		cbProducts.setMaxWidth(200);
 
 		TableView<Product> tableView = new TableView<>(); 
 		TableColumn<Product, String> productName = new TableColumn<>("Product");
 		TableColumn<Product, Number> productWeight = new TableColumn<>("Weight (kg)");
 
-		cbProducts.setMaxWidth(200);
+		
 		GridPane gridOne = new GridPane(); 
 		gridOne.setAlignment(Pos.CENTER);
 		gridOne.setPadding(new Insets(3, 12.5, 5, 14.5));
@@ -66,122 +69,18 @@ public class Delete {
 		gridOne.setVgap(3);	
 
 		gridOne.add(cbProducts, 0, 0, 2,1);
-
-
-		Button btn = new Button("Delete"); 
-		btn.setPrefWidth(200);
-		gridOne.add(btn, 0, 3, 2, 3);
+		Button btnDelete = new Button("Delete"); 
+		btnDelete.setPrefWidth(200);
+		gridOne.add(btnDelete, 0, 3, 2, 3);
 
 		tableView.getColumns().addAll(productName, productWeight);
 		gridOne.add(tableView, 4, 0, 1, 10); 
-
-		productName.setMinWidth(160);
-		productName.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Product, String>, ObservableValue<String>>() {
-
-			@Override
-			public ObservableValue<String> call(TableColumn.CellDataFeatures<Product, String> param) {
-				// TODO Auto-generated method stub
-				return param.getValue().nameProperty();
-			}		
-		});
-
-		productWeight.setMinWidth(160);
-		productWeight.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Product, Number>, ObservableValue<Number>>() {
-
-			@Override
-			public ObservableValue<Number> call(TableColumn.CellDataFeatures<Product, Number> param) {
-				// TODO Auto-generated method stub
-				return param.getValue().sumProperty();
-			}
-		});
-
-
-		/**
-		 * 
-		 */
-
-		TableView<BoxCode> tableBox = new TableView<>(); 
-		TableColumn<BoxCode, String> boxName = new TableColumn<>("Box Code");
-		TableColumn<BoxCode, Number> boxLength = new TableColumn<>("Length");
-		TableColumn<BoxCode, Number> boxWidth = new TableColumn<>("Width");
-		TableColumn<BoxCode, Number> boxHeight = new TableColumn<>("Height ");
-
-
-
-
-		cbBoxCode.setMaxWidth(200);
-		GridPane gridTwo = new GridPane(); 
-		gridTwo.setAlignment(Pos.CENTER);
-		gridTwo.setPadding(new Insets(3, 12.5, 5, 14.5));
-		gridTwo.setHgap(7);
-		gridTwo.setVgap(3);	
-
-		gridTwo.add(cbBoxCode, 0, 0, 2,1);
-
-		Button btnBox = new Button("Delete"); 
-		btnBox.setPrefWidth(200);
-		gridTwo.add(btnBox, 0, 2, 2, 3);
-
-
-
-		tableBox.getColumns().addAll(boxName, boxLength, boxWidth, boxHeight);
-		gridTwo.add(tableBox, 7, 0, 1, 10); 
-
-		ObservableList<String> ps = null;
-		ObservableList<String> bc = null;
-		ObservableList<String> bt = null;
-
+		getProducts(cbProducts); 	
 		try { 
 			DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
 			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
 			Connection connection = DriverManager.getConnection(jdbcURL);
 			Statement statement = connection.createStatement(); 
-
-
-
-			String query = "SELECT name FROM item"; 
-			ResultSet rs = statement.executeQuery(query); 
-			while(rs.next()) {
-				ps = FXCollections.observableArrayList(rs.getString("name"));
-				cbProducts.getItems().addAll(ps);
-			}
-
-			String queryBox = "SELECT name FROM box"; 
-			ResultSet rx = statement.executeQuery(queryBox); 
-			while(rx.next()) {
-				bc = FXCollections.observableArrayList(rx.getString("name"));
-				cbBoxCode.getItems().addAll(bc);
-			}
-
-			String queryBoxType = "SELECT iname FROM ItemBox"; 
-			ResultSet rc = statement.executeQuery(queryBoxType); 
-			while(rc.next()) {
-				bt = FXCollections.observableArrayList(rc.getString("iname"));
-				cbcodetype.getItems().addAll(bt);
-			}
-
-			String shutdown = "jdbc:derby:;shutdown=true";
-			DriverManager.getConnection(shutdown);
-			connection.close();
-			statement.close();
-		} catch(ClassNotFoundException ex) {
-			ex.printStackTrace();
-		}catch (SQLException ex) {
-			if(ex.getSQLState().equals("XJ015")) {
-				System.out.println("Derby shutdown normally");
-			} else {
-				ex.printStackTrace();
-			}
-		}
-
-
-		try { 
-			DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
-			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-			Connection connection = DriverManager.getConnection(jdbcURL);
-			Statement statement = connection.createStatement(); 
-
-
 
 			String query = "SELECT * FROM item"; 
 			ResultSet rs = statement.executeQuery(query); 
@@ -204,15 +103,154 @@ public class Delete {
 				ex.printStackTrace();
 			}
 		}
+		
+		btnDelete.setOnAction(e -> {
+
+			try {
+				DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
+				Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+				Connection connection = DriverManager.getConnection(jdbcURL);
+				Statement statement = connection.createStatement(); 
+
+				String sql = "DELETE from item WHERE name = '" + cbProducts.getSelectionModel().getSelectedItem() + "'"; 
+				products.clear(); 
+				tableView.getItems().clear();
+
+
+				int rows = statement.executeUpdate(sql);
+				if(rows > 0) {
+					System.out.println("A row created.");
+				}
+
+				String query = "SELECT * FROM item"; 
+				ResultSet rs = statement.executeQuery(query); 
+				while(rs.next()) {
+					products = FXCollections.observableArrayList(new Product(Integer.valueOf(rs.getString("id")), rs.getString("name"), Double.valueOf(rs.getString("weight"))));
+					for(Product p : products) {
+						tableView.getItems().add(p); 
+					}
+				}
+
+				String shutdown = "jdbc:derby:;shutdown=true";
+				DriverManager.getConnection(shutdown); 
+			} catch(ClassNotFoundException ex) {
+				ex.printStackTrace();
+			}
+			catch (SQLException ex) {
+				if(ex.getSQLState().equals("XJ015")) {
+					System.out.println("Derby shutdown normally");
+				} else {
+					ex.printStackTrace();
+				}
+			}
+			getProducts(cbProducts); 
+			cbProducts.getSelectionModel().clearSelection();
+		});
+		
+	
+
+		productName.setMinWidth(160);
+		productName.setReorderable(false);
+		productName.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Product, String>, ObservableValue<String>>() {
+
+			@Override
+			public ObservableValue<String> call(TableColumn.CellDataFeatures<Product, String> param) {
+				// TODO Auto-generated method stub
+				return param.getValue().nameProperty();
+			}		
+		});
+
+		productWeight.setMinWidth(160);
+		productWeight.setReorderable(false);
+		productWeight.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Product, Number>, ObservableValue<Number>>() {
+
+			@Override
+			public ObservableValue<Number> call(TableColumn.CellDataFeatures<Product, Number> param) {
+				// TODO Auto-generated method stub
+				return param.getValue().sumProperty();
+			}
+		});
+
+		VBox vbOne = new VBox(); 
+		vbOne.getChildren().addAll(gridOne); 
+
+		tpProduct.setContent(vbOne);
+	
+		return tpProduct; 
+	}
+	
+	
+	private static void getProducts(ComboBox<String> cbProducts) {
+		ObservableList<String> ps = null;
+		cbProducts.getItems().clear();
+		try { 
+			DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
+			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+			Connection connection = DriverManager.getConnection(jdbcURL);
+			Statement statement = connection.createStatement(); 
+			
+			String query = "SELECT name FROM item"; 
+			ResultSet rs = statement.executeQuery(query); 
+			while(rs.next()) {
+				ps = FXCollections.observableArrayList(rs.getString("name"));
+				cbProducts.getItems().addAll(ps);
+			}
+
+			String shutdown = "jdbc:derby:;shutdown=true";
+			DriverManager.getConnection(shutdown);
+			connection.close();
+			statement.close();
+		} catch(ClassNotFoundException ex) {
+			ex.printStackTrace();
+		}catch (SQLException ex) {
+			if(ex.getSQLState().equals("XJ015")) {
+				System.out.println("Derby shutdown normally");
+			} else {
+				ex.printStackTrace();
+			}
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static TitledPane dimensions() {
+
+		TitledPane tpDimensions = new TitledPane();
+		tpDimensions.setText("Dimensions");
+		
+		ComboBox<String> cbBoxCode = new ComboBox<>();
+		 
+		TableView<BoxCode> tableBox = new TableView<>(); 
+		TableColumn<BoxCode, String> boxName = new TableColumn<>("Box Code");
+		TableColumn<BoxCode, Number> boxLength = new TableColumn<>("Length");
+		TableColumn<BoxCode, Number> boxWidth = new TableColumn<>("Width");
+		TableColumn<BoxCode, Number> boxHeight = new TableColumn<>("Height ");
+
+
+
+
+		cbBoxCode.setMaxWidth(200);
+		GridPane gridTwo = new GridPane(); 
+		gridTwo.setAlignment(Pos.CENTER);
+		gridTwo.setPadding(new Insets(3, 12.5, 5, 14.5));
+		gridTwo.setHgap(7);
+		gridTwo.setVgap(3);	
+		
+		gridTwo.add(cbBoxCode, 0, 0, 2,1);
+
+		Button btnDeleteBox = new Button("Delete"); 
+		btnDeleteBox.setPrefWidth(200);
+		gridTwo.add(btnDeleteBox, 0, 2, 2, 3);
+
+		tableBox.getColumns().addAll(boxName, boxLength, boxWidth, boxHeight);
+		gridTwo.add(tableBox, 7, 0, 1, 10); 
+		getBoxes(cbBoxCode);
 
 		try { 
 			DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
 			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
 			Connection connection = DriverManager.getConnection(jdbcURL);
 			Statement statement = connection.createStatement(); 
-
-
-
+			
 			String query = "SELECT * FROM box"; 
 			ResultSet rs = statement.executeQuery(query); 
 			while(rs.next()) {
@@ -235,55 +273,7 @@ public class Delete {
 			}
 		}
 
-
-
-		btn.setOnAction(e -> {
-
-			try {
-				DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
-				Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-				Connection connection = DriverManager.getConnection(jdbcURL);
-				Statement statement = connection.createStatement(); 
-
-				String sql = "DELETE from item WHERE name = '" + cbProducts.getSelectionModel().getSelectedItem() + "'"; 
-				products.clear(); 
-				tableView.getItems().clear();
-
-
-				int rows = statement.executeUpdate(sql);
-				if(rows > 0) {
-					System.out.println("A row created.");
-				}
-
-				String query = "SELECT * FROM item"; 
-				ResultSet rs = statement.executeQuery(query); 
-				while(rs.next()) {
-					System.out.println("name: " + rs.getString("name"));
-					System.out.println("weight: " + rs.getString("weight"));
-
-					products = FXCollections.observableArrayList(new Product(Integer.valueOf(rs.getString("id")), rs.getString("name"), Double.valueOf(rs.getString("weight"))));
-					for(Product p : products) {
-						tableView.getItems().add(p); 
-					}
-				}
-
-				String shutdown = "jdbc:derby:;shutdown=true";
-				DriverManager.getConnection(shutdown); 
-			} catch(ClassNotFoundException ex) {
-				ex.printStackTrace();
-			}
-			catch (SQLException ex) {
-				if(ex.getSQLState().equals("XJ015")) {
-					System.out.println("Derby shutdown normally");
-				} else {
-					ex.printStackTrace();
-				}
-			}
-
-			cbProducts.getSelectionModel().clearSelection();
-		});
-
-		btnBox.setOnAction(e -> {
+		btnDeleteBox.setOnAction(e -> {
 
 			try {
 				DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
@@ -327,6 +317,7 @@ public class Delete {
 					ex.printStackTrace();
 				}
 			}
+			getBoxes(cbBoxCode);
 			cbBoxCode.getSelectionModel().clearSelection();
 		});
 
@@ -373,15 +364,51 @@ public class Delete {
 				return param.getValue().heightProperty();
 			}
 		});
+		
+		VBox vbTwo = new VBox(); 
+		vbTwo.getChildren().addAll(gridTwo); 
+		
+		tpDimensions.setContent(vbTwo);
 
-		/**
-		 * 
-		 */
+		return tpDimensions; 
+	}
+	
+	private static void getBoxes(ComboBox<String> cbBoxCode) {
+		ObservableList<String> bc = null;
+		cbBoxCode.getItems().clear();
+		try { 
+			DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
+			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+			Connection connection = DriverManager.getConnection(jdbcURL);
+			Statement statement = connection.createStatement(); 
 
+			String queryBox = "SELECT name FROM box"; 
+			ResultSet rx = statement.executeQuery(queryBox); 
+			while(rx.next()) {
+				bc = FXCollections.observableArrayList(rx.getString("name"));
+				cbBoxCode.getItems().addAll(bc);
+			}
 
-
-
-
+			String shutdown = "jdbc:derby:;shutdown=true";
+			DriverManager.getConnection(shutdown);
+			connection.close();
+			statement.close();
+		} catch(ClassNotFoundException ex) {
+			ex.printStackTrace();
+		}catch (SQLException ex) {
+			if(ex.getSQLState().equals("XJ015")) {
+				System.out.println("Derby shutdown normally");
+			} else {
+				ex.printStackTrace();
+			}
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static TitledPane assign() {
+		TitledPane tpLink = new TitledPane();
+		tpLink.setText("Assign");
+		
 		TableView<BoxType> tableAssign = new TableView<>(); 
 		TableColumn<BoxType, String> taProduct = new TableColumn<>("Product");
 		TableColumn<BoxType, String> taBoxCode = new TableColumn<>("Box Code");
@@ -391,34 +418,47 @@ public class Delete {
 		tableAssign.setEditable(true);
 		tableAssign.setPrefHeight(430);
 
-		cbcodetype.setMaxWidth(200);
 		GridPane gridThree = new GridPane();
 		gridThree.setAlignment(Pos.CENTER);
 		gridThree.setPadding(new Insets(3, 12.5, 5, 14.5));
 		gridThree.setHgap(7);
 		gridThree.setVgap(3);
 
+		Label lblName = new Label("Name: ");
 		TextField txtName = new TextField(); 
-		TextField txtBoxCode = new TextField(); 
-		TextField txtMinimum = new TextField(); 
-		TextField txtMaximum = new TextField(); 
 		txtName.setEditable(false);
-		gridThree.add(txtName, 0, 0, 2, 1);
+		Label lblBoxCode = new Label("Box Code: ");
+		TextField txtBoxCode = new TextField(); 
+		txtBoxCode.setEditable(false);
+		Label lblMinimum = new Label("Minimum: ");
+		TextField txtMinimum = new TextField(); 
+		txtMinimum.setEditable(false);
+		Label lblMaximum = new Label("Maximum: ");
+		TextField txtMaximum = new TextField(); 
+		txtMaximum.setEditable(false);
+		
+		gridThree.add(lblName, 0, 0);
+		gridThree.add(txtName, 1, 0);
+		gridThree.add(lblBoxCode, 0, 1);
+		gridThree.add(txtBoxCode, 1, 1);
+		gridThree.add(lblMinimum, 0, 2);
+		gridThree.add(txtMinimum, 1, 2);
+		gridThree.add(lblMaximum, 0, 3);
+		gridThree.add(txtMaximum, 1, 3);
+		
 
 		Button btnBoxType = new Button("Delete"); 
-		btnBoxType.setPrefWidth(200);
-		gridThree.add(btnBoxType, 0, 2, 2, 3);
+		btnBoxType.setPrefWidth(210);
+		gridThree.add(btnBoxType, 1, 6, 1, 3);
 
 		tableAssign.getColumns().addAll(taProduct, taBoxCode, taMinimum, taMaximum);
-		gridThree.add(tableAssign, 7, 0, 1, 10);
+		gridThree.add(tableAssign, 3, 0, 1, 10);
 
 		try { 
 			DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
 			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
 			Connection connection = DriverManager.getConnection(jdbcURL);
 			Statement statement = connection.createStatement(); 
-
-
 
 			String query = "SELECT * FROM ItemBox"; 
 			ResultSet rs = statement.executeQuery(query); 
@@ -499,7 +539,6 @@ public class Delete {
 					ex.printStackTrace();
 				}
 			}
-			cbBoxCode.getSelectionModel().clearSelection();
 		});
 
 		taProduct.setMinWidth(160);
@@ -547,28 +586,11 @@ public class Delete {
 			}
 		});
 
-
-
-		VBox vbOne = new VBox(); 
-		vbOne.getChildren().addAll(gridOne); 
-
-		VBox vbTwo = new VBox(); 
-		vbTwo.getChildren().addAll(gridTwo); 
-
 		VBox vbThree = new VBox(); 
 		vbThree.getChildren().addAll(gridThree); 
-
-		tpProduct.setContent(vbOne);
-		tpDimensions.setContent(vbTwo);
+		
 		tpLink.setContent(vbThree);
-
-		accordion.getPanes().add(tpProduct);
-		accordion.getPanes().add(tpDimensions);
-		accordion.getPanes().add(tpLink);
-
-		VBox screen = new VBox();
-		screen.getChildren().addAll(menuBar, accordion);
-
-		return screen;
+		
+		return tpLink; 
 	}
 }

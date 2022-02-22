@@ -22,6 +22,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
@@ -34,7 +35,7 @@ public class Add {
 	private static String jdbcURL = "jdbc:derby:boxbulkdb;create=true";
 
 	@SuppressWarnings("unchecked")
-	public static VBox addRecord(MenuBar menuBar) {
+	public static VBox addRecord(HBox menuBar) {
 		Accordion accordion = new Accordion();
 		
 		TitledPane tpProduct = new TitledPane();
