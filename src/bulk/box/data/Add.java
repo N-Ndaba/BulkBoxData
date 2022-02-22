@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -43,12 +44,12 @@ public class Add {
 		tpDimensions.setText("Dimensions");
 		
 		TitledPane tpLink = new TitledPane();
-		tpLink.setText("Assign");
-		
+		tpLink.setText("Assign");	
 		
 		/**
 		 * ----------------------------
 		 */
+		
 		TableView<Product> tableView = new TableView<>(); 
 		TableColumn<Product, String> productName = new TableColumn<>("Product");
 		TableColumn<Product, Number> productWeight = new TableColumn<>("Weight (kg)");
@@ -75,21 +76,21 @@ public class Add {
 		tableView.getColumns().addAll(productName, productWeight);
 		gridOne.add(tableView, 5, 0, 1, 14);
 		
+		btnItem.disableProperty().bind(
+				Bindings.isEmpty(txtName.textProperty()));
+		btnItem.disableProperty().bind(
+				Bindings.isEmpty(txtWeight.textProperty()));
+		
 		btnItem.setOnAction(e -> {
-
-
+			
 			try {
 				DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
 				Connection connection = DriverManager.getConnection(jdbcURL);
 				String sql = "Insert into item (name, weight) values ('" +txtName.getText()+ "', "+txtWeight.getText()+")";
 
 				Statement statement = connection.createStatement(); 
-
 				int rows = statement.executeUpdate(sql);
-				if(rows > 0) {
-					System.out.println("A row created.");
-				}
-
+		
 
 				String query = "SELECT * FROM item WHERE name = '" + txtName.getText() +"'"; 
 				ResultSet rs = statement.executeQuery(query); 
@@ -100,26 +101,21 @@ public class Add {
 					}
 				}
 
-
-
-
-
-
 				String shutdown = "jdbc:derby:;shutdown=true";
 				DriverManager.getConnection(shutdown); 
 			} catch (SQLException ex) {
 				if(ex.getSQLState().equals("XJ015")) {
-					System.out.println("Derby shutdown normally");
+					System.out.println("");
 				} else {
 					ex.printStackTrace();
 				}
 			}
-
 			txtName.setText(null);
 			txtWeight.setText(null); 
 		});
 		
 		productName.setMinWidth(160);
+		productName.setReorderable(false);
 		productName.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Product, String>, ObservableValue<String>>() {
 
 			@Override
@@ -130,6 +126,7 @@ public class Add {
 		});
 
 		productWeight.setMinWidth(160);
+		productWeight.setReorderable(false);
 		productWeight.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Product, Number>, ObservableValue<Number>>() {
 
 			@Override
@@ -154,9 +151,6 @@ public class Add {
 		Button btnDimensions = new Button("Add Item"); 
 		btnDimensions.setPrefWidth(210);
 
-
-		
-
 		TableView<BoxCode> tableBox = new TableView<>(); 
 		TableColumn<BoxCode, String> boxName = new TableColumn<>("Box Code");
 		TableColumn<BoxCode, Number> boxLength = new TableColumn<>("Length");
@@ -169,8 +163,6 @@ public class Add {
 		gridTwo.setHgap(7);
 		gridTwo.setVgap(3);
 		
-
-
 		gridTwo.add(lblBoxCode, 0, 0);
 		gridTwo.add(txtBoxCode, 1, 0);
 		gridTwo.add(lblLength, 0,1);
@@ -179,18 +171,21 @@ public class Add {
 		gridTwo.add(txtWidth, 1, 2); 
 		gridTwo.add(lblHeight, 0, 3);
 		gridTwo.add(txtHeight, 1, 3);
-		gridTwo.add(btnDimensions, 0, 4, 2, 3); 
+		gridTwo.add(btnDimensions, 0, 6, 2, 3); 
 
 
 		tableBox.getColumns().addAll(boxName, boxLength, boxWidth, boxHeight);
 		gridTwo.add(tableBox, 7, 0, 1, 14);
 		
-
-
-
-
+		btnDimensions.disableProperty().bind(
+				Bindings.isEmpty(txtBoxCode.textProperty()));
+		btnDimensions.disableProperty().bind(
+				Bindings.isEmpty(txtLength.textProperty()));
+		btnDimensions.disableProperty().bind(
+				Bindings.isEmpty(txtWidth.textProperty()));
+		btnDimensions.disableProperty().bind(
+				Bindings.isEmpty(txtHeight.textProperty()));
 		
-
 		btnDimensions.setOnAction(e -> {
 
 
@@ -203,11 +198,7 @@ public class Add {
 				Statement statement = connection.createStatement(); 
 
 				int rows = statement.executeUpdate(sql);
-				if(rows > 0) {
-					System.out.println("A row created.");
-				}
-
-
+				
 				String query = "SELECT * FROM box WHERE name = '" + txtBoxCode.getText() +"'"; 
 				ResultSet rs = statement.executeQuery(query); 
 				while(rs.next()) {
@@ -216,11 +207,6 @@ public class Add {
 						tableBox.getItems().add(b); 
 					}
 				}
-
-
-
-
-
 
 				String shutdown = "jdbc:derby:;shutdown=true";
 				DriverManager.getConnection(shutdown); 
@@ -241,6 +227,7 @@ public class Add {
 
 
 		boxName.setMinWidth(160);
+		boxName.setReorderable(false);
 		boxName.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoxCode, String>, ObservableValue<String>>() {
 
 			@Override
@@ -251,6 +238,7 @@ public class Add {
 		});
 
 		boxLength.setMinWidth(160);
+		boxLength.setReorderable(false);
 		boxLength.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoxCode, Number>, ObservableValue<Number>>() {
 
 			@Override
@@ -262,6 +250,7 @@ public class Add {
 
 
 		boxWidth.setMinWidth(160);
+		boxWidth.setReorderable(false);
 		boxWidth.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoxCode, Number>, ObservableValue<Number>>() {
 
 			@Override
@@ -272,6 +261,7 @@ public class Add {
 		});
 
 		boxHeight.setMinWidth(160);
+		boxHeight.setReorderable(false);
 		boxHeight.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoxCode, Number>, ObservableValue<Number>>() {
 
 			@Override
@@ -305,8 +295,8 @@ public class Add {
 		TextField txtMinimum = new TextField();
 		Label lblMaximum = new Label("Maximum:");
 		TextField txtMaximum = new TextField();
-		Button btnAdd = new Button("Add"); 
-		btnAdd.setPrefWidth(200);
+		Button btnAssign = new Button("Assign"); 
+		btnAssign.setPrefWidth(200);
 
 		cbProducts.setMaxWidth(200);
 		cbBoxCode.setMaxWidth(200);
@@ -314,24 +304,21 @@ public class Add {
 		txtMaximum.setPrefWidth(80);
 		gridThree.add(cbProducts, 0, 0, 2,1);
 		gridThree.add(cbBoxCode, 0, 2, 2, 1);
-		gridThree.add(lblMinimum, 0, 4);
-		gridThree.add(txtMinimum, 1, 4);
-		gridThree.add(lblMaximum, 0, 5);
-		gridThree.add(txtMaximum, 1, 5);
-		gridThree.add(btnAdd, 0, 6, 2, 3);
+		gridThree.add(lblMinimum, 0, 3);
+		gridThree.add(txtMinimum, 1, 3);
+		gridThree.add(lblMaximum, 0, 4);
+		gridThree.add(txtMaximum, 1, 4);
+		gridThree.add(btnAssign, 0, 6, 2, 3);
 
 		gridThree.add(tableLink, 7, 0, 1, 10); 
 		ObservableList<String> ps = null;
 		ObservableList<String> bc = null;
 	
-
 		try { 
 			DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
 			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
 			Connection connection = DriverManager.getConnection(jdbcURL);
 			Statement statement = connection.createStatement(); 
-
-
 
 			String query = "SELECT name FROM item"; 
 			ResultSet rs = statement.executeQuery(query); 
@@ -346,8 +333,7 @@ public class Add {
 				bc = FXCollections.observableArrayList(rx.getString("name"));
 				cbBoxCode.getItems().addAll(bc);
 			}
-
-
+			
 			String shutdown = "jdbc:derby:;shutdown=true";
 			DriverManager.getConnection(shutdown);
 			connection.close();
@@ -362,14 +348,17 @@ public class Add {
 			}
 		}
 		
-		btnAdd.setOnAction(e -> {
+		btnAssign.disableProperty().bind(
+				Bindings.isEmpty(txtMinimum.textProperty()));
+		btnAssign.disableProperty().bind(
+				Bindings.isEmpty(txtMaximum.textProperty()));
+		
+		btnAssign.setOnAction(e -> {
 			try { 
 				DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
 				Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
 				Connection connection = DriverManager.getConnection(jdbcURL);
 				Statement statement = connection.createStatement(); 
-
-
 
 				String sql = "Insert into ItemBox (iname, bname, minimum, maximum) values ('" + cbProducts.getSelectionModel().getSelectedItem() + "', '"+ cbBoxCode.getSelectionModel().getSelectedItem()+"', " + txtMinimum.getText() + ", " + txtMaximum.getText() + ")";
 
@@ -380,7 +369,7 @@ public class Add {
 				}
 
 
-				String query = "SELECT * FROM ItemBox"; 
+				String query = "SELECT * FROM ItemBox WHERE iname = '" +  cbProducts.getSelectionModel().getSelectedItem() + "' and bname = '" + cbBoxCode.getSelectionModel().getSelectedItem() + "' and minimum = " + txtMinimum.getText() + " and maximum = " + txtMaximum.getText(); 
 				ResultSet rs = statement.executeQuery(query); 
 				while(rs.next()) {
 					bt = FXCollections.observableArrayList(new BoxType(Integer.valueOf(rs.getString("id")), rs.getString("iname"), rs.getString("bname"), Integer.valueOf(rs.getString("minimum")), Integer.valueOf(rs.getString("maximum"))));	

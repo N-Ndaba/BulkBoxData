@@ -9,17 +9,23 @@ import java.sql.Statement;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Accordion;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.util.Callback;
 import javafx.util.converter.NumberStringConverter;
 
@@ -40,10 +46,7 @@ public class Edit {
 		TitledPane tpDimensions = new TitledPane();
 		tpDimensions.setText("Dimensions");
 
-		TitledPane tpLink = new TitledPane();
-		tpLink.setText("Assign");
-
-
+	
 		TableView<Product> tableView = new TableView<>(); 
 		TableColumn<Product, String> productName = new TableColumn<>("Product");
 		TableColumn<Product, Number> productWeight = new TableColumn<>("Weight (kg)");
@@ -60,6 +63,15 @@ public class Edit {
 		tableView.getColumns().addAll(productName, productWeight);
 		gridOne.add(tableView, 0, 0); 
 		
+		GridPane gridZ = new GridPane();
+		gridZ.setAlignment(Pos.CENTER);
+		gridZ.setPadding(new Insets(3, 12.5, 5, 14.5));
+		gridZ.setHgap(7);
+		gridZ.setVgap(3);
+		
+		BorderPane pane = new BorderPane(); 
+		VBox paneForCheckBoxes = new VBox(20);
+		paneForCheckBoxes.setPadding(new Insets(5, 5, 5, 5));
 		try {
 			DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
 			Connection connection = DriverManager.getConnection(jdbcURL);
@@ -72,7 +84,20 @@ public class Edit {
 			while(rs.next()) {
 				products = FXCollections.observableArrayList(new Product(Integer.valueOf(rs.getString("id")), rs.getString("name"), Double.valueOf(rs.getString("weight"))));
 				for(Product p : products) {
-					tableView.getItems().add(p); 
+					CheckBox chProduct = new CheckBox(p.getName());
+					chProduct.setFont(Font.font("Arial", 13));
+					chProduct.setAlignment(Pos.CENTER);
+					paneForCheckBoxes.getChildren().addAll(chProduct);
+
+					EventHandler<ActionEvent> handler = e -> {
+						if (chProduct.isSelected()) {
+							tableView.getItems().add(p);
+						} else	{
+							tableView.getItems().remove(p);
+						} 
+					};
+					chProduct.setOnAction(handler);
+					 
 				}
 			}
 
@@ -87,7 +112,8 @@ public class Edit {
 				ex.printStackTrace();
 			}
 		}
-
+		
+		pane.setCenter(paneForCheckBoxes);
 		//---------------------
 		productName.setMinWidth(160);
 		productName.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -144,6 +170,15 @@ public class Edit {
 		tableBox.getColumns().addAll(boxName, boxLength, boxWidth, boxHeight);
 		gridTwo.add(tableBox, 0, 0); 
 
+		GridPane gridX = new GridPane();
+		gridX.setAlignment(Pos.CENTER);
+		gridX.setPadding(new Insets(3, 12.5, 5, 14.5));
+		gridX.setHgap(7);
+		gridX.setVgap(3);
+		
+		BorderPane paneTwo = new BorderPane(); 
+		VBox paneForCheckBoxesTwo = new VBox(20);
+		paneForCheckBoxesTwo.setPadding(new Insets(5, 5, 5, 5));
 		try {
 			DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
 			Connection connection = DriverManager.getConnection(jdbcURL);
@@ -156,7 +191,20 @@ public class Edit {
 
 				boxes = FXCollections.observableArrayList(new BoxCode(Integer.valueOf(rs.getString("id")), rs.getString("name"), Integer.valueOf(rs.getString("length")), Integer.valueOf(rs.getString("width")), Integer.valueOf(rs.getString("height"))));	
 				for(BoxCode b : boxes) {
-					tableBox.getItems().add(b); 
+					CheckBox chProduct = new CheckBox(b.getName());
+					chProduct.setFont(Font.font("Arial", 13));
+					chProduct.setAlignment(Pos.CENTER);
+					paneForCheckBoxesTwo.getChildren().addAll(chProduct);
+
+					EventHandler<ActionEvent> handler = e -> {
+						if (chProduct.isSelected()) {
+							tableBox.getItems().add(b); 
+						} else	{
+							tableBox.getItems().remove(b); 
+						} 
+					};
+					chProduct.setOnAction(handler);
+					
 				}
 			}
 
@@ -171,6 +219,7 @@ public class Edit {
 				ex.printStackTrace();
 			}
 		}
+		paneTwo.setCenter(paneForCheckBoxesTwo);
 
 		boxName.setMinWidth(160);
 		boxName.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -244,142 +293,26 @@ public class Edit {
 		/**
 		 * 
 		 */
-		TableView<BoxType> tableAssign = new TableView<>(); 
-		TableColumn<BoxType, String> taProduct = new TableColumn<>("Product");
-		TableColumn<BoxType, String> taBoxCode = new TableColumn<>("Box Code");
-		TableColumn<BoxType, Number> taMinimum = new TableColumn<>("Minimum");
-		TableColumn<BoxType, Number> taMaximum = new TableColumn<>("Maximum");
-
-		tableAssign.setEditable(true);
-		tableAssign.setPrefHeight(430);
 		
-		GridPane gridThree = new GridPane();
-		gridThree.setAlignment(Pos.CENTER);
-		gridThree.setPadding(new Insets(3, 12.5, 5, 14.5));
-		gridThree.setHgap(7);
-		gridThree.setVgap(3);
-		tableAssign.getColumns().addAll(taProduct, taBoxCode, taMinimum, taMaximum);
-		gridThree.add(tableAssign, 0, 0);
-		
-		
-		try {
-			DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
-			Connection connection = DriverManager.getConnection(jdbcURL);
-			Statement statement = connection.createStatement(); 
-
-			String queryBox = "SELECT * FROM ItemBox"; 
-			ResultSet rs = statement.executeQuery(queryBox); 
-
-			while(rs.next()) {
-
-				boxtype = FXCollections.observableArrayList(new BoxType(Integer.valueOf(rs.getString("id")), rs.getString("iname"), rs.getString("bname"), Integer.valueOf(rs.getString("minimum")), Integer.valueOf(rs.getString("maximum"))));	
-				for(BoxType b : boxtype) {
-					tableAssign.getItems().add(b); 
-				}
-			}
-
-			String shutdown = "jdbc:derby:;shutdown=true";
-			DriverManager.getConnection(shutdown);
-			connection.close();
-			statement.close();
-		} catch (SQLException ex) {
-			if(ex.getSQLState().equals("XJ015")) {
-				System.out.println("Derby shutdown normally");
-			} else {
-				ex.printStackTrace();
-			}
-		}
-		
-		taProduct.setMinWidth(160);
-		taProduct.setCellFactory(TextFieldTableCell.forTableColumn());
-		taProduct.setOnEditCommit(
-				(CellEditEvent<BoxType, String> n) ->{
-					((BoxType) n.getTableView().getItems().get(
-							n.getTablePosition().getRow())
-							).setName(n.getNewValue());
-				});
-		taProduct.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoxType, String>, ObservableValue<String>>() {
-
-			@Override
-			public ObservableValue<String> call(TableColumn.CellDataFeatures<BoxType, String> param) {
-				// TODO Auto-generated method stub
-				return param.getValue().nameProperty();
-			}		
-		});
-
-		taBoxCode.setMinWidth(160);
-		taBoxCode.setCellFactory(TextFieldTableCell.forTableColumn());
-		taBoxCode.setOnEditCommit(
-				(CellEditEvent<BoxType, String> n) ->{
-					((BoxType) n.getTableView().getItems().get(
-							n.getTablePosition().getRow())
-							).setBoxcode(n.getNewValue());
-				});
-		taBoxCode.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoxType, String>, ObservableValue<String>>() {
-
-			@Override
-			public ObservableValue<String> call(TableColumn.CellDataFeatures<BoxType, String> param) {
-				// TODO Auto-generated method stub
-				return param.getValue().boxcodeProperty();
-			}
-		});
-
-
-		taMinimum.setMinWidth(160);
-		taMinimum.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
-		taMinimum.setOnEditCommit(
-				(CellEditEvent<BoxType, Number> n) ->{
-					((BoxType) n.getTableView().getItems().get(
-							n.getTablePosition().getRow())
-							).setMinimum(n.getNewValue().intValue());
-				});
-		taMinimum.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoxType, Number>, ObservableValue<Number>>() {
-
-			@Override
-			public ObservableValue<Number> call(TableColumn.CellDataFeatures<BoxType, Number> param) {
-				// TODO Auto-generated method stub
-				return param.getValue().minimumProperty();
-			}		
-		});
-
-		taMaximum.setMinWidth(160);
-		taMaximum.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
-		taMaximum.setOnEditCommit(
-				(CellEditEvent<BoxType, Number> n) ->{
-					((BoxType) n.getTableView().getItems().get(
-							n.getTablePosition().getRow())
-							).setMaximum(n.getNewValue().intValue());
-				});
-		taMaximum.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoxType, Number>, ObservableValue<Number>>() {
-
-			@Override
-			public ObservableValue<Number> call(TableColumn.CellDataFeatures<BoxType, Number> param) {
-				// TODO Auto-generated method stub
-				return param.getValue().maximumProperty();
-			}
-		});
-
 		
 		/**
 		 * 
 		 */
 
-		VBox vbOne = new VBox(); 
-		vbOne.getChildren().addAll(gridOne); 
-
-		VBox vbTwo = new VBox(); 
-		vbTwo.getChildren().addAll(gridTwo); 
 		
-		VBox vbThree = new VBox(); 
-		vbThree.getChildren().addAll(gridThree); 
+		
+		gridZ.add(pane, 0, 0);
+		gridZ.add(gridOne, 5, 0);
 
-		tpProduct.setContent(vbOne);
-		tpDimensions.setContent(vbTwo);
-		tpLink.setContent(vbThree);
+		gridX.add(paneTwo, 0, 0);
+		gridX.add(gridTwo, 5, 0);
+		
+		
+		tpProduct.setContent(gridZ);
+		tpDimensions.setContent(gridX);
 
 		accordion.getPanes().add(tpProduct);
 		accordion.getPanes().add(tpDimensions);
-		accordion.getPanes().add(tpLink);
 
 		VBox screen = new VBox();
 		screen.getChildren().addAll(menuBar, accordion);
