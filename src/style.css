@@ -24,3 +24,14 @@
 .table-view .table-column {
   -fx-alignment: center;
 }
+
+.button:hover {
+	 -fx-underline: true;
+	 -fx-font-weight: bold;
+}
+
+.label {
+	/*-fx-font-size: 10pt;*/
+	-fx-font-family: Arial;
+	-fx-text-align: left; 
+}

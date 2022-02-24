@@ -34,22 +34,29 @@ public class Add {
 	private static ObservableList<Product> products = null;
 	private static String jdbcURL = "jdbc:derby:boxbulkdb;create=true";
 
-	@SuppressWarnings("unchecked")
+	
+	private static ComboBox<String> cbProducts = new ComboBox<>();
+	private static ComboBox<String> cbBoxCode = new ComboBox<>();
+	private static ObservableList<String> ps = null;
+	private static ObservableList<String> bc = null;
+	
 	public static VBox addRecord(HBox menuBar) {
 		Accordion accordion = new Accordion();
 		
+		accordion.getPanes().add(addProducts());
+		accordion.getPanes().add(addDimensions());
+		accordion.getPanes().add(assign());
+		
+		VBox screen = new VBox();
+		screen.getChildren().addAll(menuBar, accordion);
+		
+		return screen;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static TitledPane addProducts() {
 		TitledPane tpProduct = new TitledPane();
 		tpProduct.setText("Box & Bulk QTY");
-		
-		TitledPane tpDimensions = new TitledPane();
-		tpDimensions.setText("Dimensions");
-		
-		TitledPane tpLink = new TitledPane();
-		tpLink.setText("Assign");	
-		
-		/**
-		 * ----------------------------
-		 */
 		
 		TableView<Product> tableView = new TableView<>(); 
 		TableColumn<Product, String> productName = new TableColumn<>("Product");
@@ -63,8 +70,10 @@ public class Add {
 		
 		Label lblName = new Label("Item:");
 		TextField txtName = new TextField();
+		txtName.setAlignment(Pos.CENTER);
 		Label lbLWeight = new Label("Weight:");
 		TextField txtWeight = new TextField(); 
+		txtWeight.setAlignment(Pos.CENTER);
 		Button btnItem = new Button("Add Item"); 
 		btnItem.setPrefWidth(200);
 		
@@ -113,6 +122,7 @@ public class Add {
 			}
 			txtName.setText(null);
 			txtWeight.setText(null); 
+			fillCombo(ps, bc, cbProducts, cbBoxCode);
 		});
 		
 		productName.setMinWidth(160);
@@ -137,20 +147,33 @@ public class Add {
 			}
 		});
 		
-		/**
-		 * ---------
-		 */
+		VBox vbOne = new VBox(); 
+		vbOne.getChildren().addAll(gridOne); 
+		
+		tpProduct.setContent(vbOne);
+		
+		return tpProduct; 
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static TitledPane addDimensions() {
+		TitledPane tpDimensions = new TitledPane();
+		tpDimensions.setText("Dimensions");
 		
 		Label lblBoxCode = new Label("Box Code:");
 		TextField txtBoxCode = new TextField();
+		txtBoxCode.setAlignment(Pos.CENTER);
 		Label lblLength = new Label("Length:");
 		TextField txtLength = new TextField(); 
+		txtLength.setAlignment(Pos.CENTER);
 		Label lblWidth = new Label("Width:");
 		TextField txtWidth = new TextField(); 
+		txtWidth.setAlignment(Pos.CENTER);
 		Label lblHeight = new Label("Hieght:");
 		TextField txtHeight = new TextField(); 
-		Button btnDimensions = new Button("Add Item"); 
-		btnDimensions.setPrefWidth(210);
+		txtHeight.setAlignment(Pos.CENTER);
+		Button btnDimensions = new Button("Add Box"); 
+		btnDimensions.setPrefWidth(220);
 
 		TableView<BoxCode> tableBox = new TableView<>(); 
 		TableColumn<BoxCode, String> boxName = new TableColumn<>("Box Code");
@@ -188,9 +211,7 @@ public class Add {
 				Bindings.isEmpty(txtHeight.textProperty()));
 		
 		btnDimensions.setOnAction(e -> {
-
-
-
+			
 			try {
 				DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
 				Connection connection = DriverManager.getConnection(jdbcURL);
@@ -213,7 +234,7 @@ public class Add {
 				DriverManager.getConnection(shutdown); 
 			} catch (SQLException ex) {
 				if(ex.getSQLState().equals("XJ015")) {
-					System.out.println("Derby shutdown normally");
+					System.out.println("");
 				} else {
 					ex.printStackTrace();
 				}
@@ -223,6 +244,7 @@ public class Add {
 			txtLength.setText(null); 
 			txtWidth.setText(null);
 			txtHeight.setText(null);
+			fillCombo(ps, bc, cbProducts, cbBoxCode);
 		});
 
 
@@ -272,13 +294,21 @@ public class Add {
 			}
 		});
 		
-		/**
-		 * ----------------
-		 */
+		VBox vbTwo = new VBox(); 
+		vbTwo.getChildren().addAll(gridTwo); 
+		
+		tpDimensions.setContent(vbTwo);
+		
+		return tpDimensions; 
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	private static TitledPane assign() {
+		TitledPane tpLink = new TitledPane();
+		tpLink.setText("Assign");			
 		
 		
-		ComboBox<String> cbProducts = new ComboBox<>();
-		ComboBox<String> cbBoxCode = new ComboBox<>();
 		TableView<BoxType> tableLink = new TableView<>(); 
 		TableColumn<BoxType, String> product = new TableColumn<>("Product");
 		TableColumn<BoxType, String> boxtype = new TableColumn<>("Box Code");
@@ -299,6 +329,8 @@ public class Add {
 		Button btnAssign = new Button("Assign"); 
 		btnAssign.setPrefWidth(200);
 
+		cbProducts.setPromptText("Select Item:");
+		cbBoxCode.setPromptText("Select Box Code:");
 		cbProducts.setMaxWidth(200);
 		cbBoxCode.setMaxWidth(200);
 		txtMinimum.setPrefWidth(80);
@@ -312,9 +344,111 @@ public class Add {
 		gridThree.add(btnAssign, 0, 6, 2, 3);
 
 		gridThree.add(tableLink, 7, 0, 1, 10); 
-		ObservableList<String> ps = null;
-		ObservableList<String> bc = null;
 	
+	
+		fillCombo(ps, bc, cbProducts, cbBoxCode);
+		
+		btnAssign.disableProperty().bind(
+				Bindings.isEmpty(txtMinimum.textProperty()));
+		btnAssign.disableProperty().bind(
+				Bindings.isEmpty(txtMaximum.textProperty()));
+		
+		btnAssign.setOnAction(e -> {
+			try { 
+				DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
+				Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+				Connection connection = DriverManager.getConnection(jdbcURL);
+				Statement statement = connection.createStatement(); 
+
+				String sql = "Insert into ItemBox (iname, bname, minimum, maximum) values ('" + cbProducts.getSelectionModel().getSelectedItem() + "', '"+ cbBoxCode.getSelectionModel().getSelectedItem()+"', " + txtMinimum.getText() + ", " + txtMaximum.getText() + ")";
+				int rows = statement.executeUpdate(sql);
+		
+				
+				String query = "SELECT * FROM ItemBox WHERE iname = '" +  cbProducts.getSelectionModel().getSelectedItem() + "' and bname = '" + cbBoxCode.getSelectionModel().getSelectedItem() + "' and minimum = " + txtMinimum.getText() + " and maximum = " + txtMaximum.getText(); 
+				ResultSet rs = statement.executeQuery(query); 
+				while(rs.next()) {
+					bt = FXCollections.observableArrayList(new BoxType(Integer.valueOf(rs.getString("id")), rs.getString("iname"), rs.getString("bname"), Integer.valueOf(rs.getString("minimum")), Integer.valueOf(rs.getString("maximum"))));	
+					for(BoxType b : bt) {
+						tableLink.getItems().add(b); 
+					}
+				}
+
+				String shutdown = "jdbc:derby:;shutdown=true";
+				DriverManager.getConnection(shutdown);
+				connection.close();
+				statement.close();
+			} catch(ClassNotFoundException ex) {
+				ex.printStackTrace();
+			}catch (SQLException ex) {
+				if(ex.getSQLState().equals("XJ015")) {
+					System.out.println("");
+				} else {
+					ex.printStackTrace();
+				}
+			}
+			txtMinimum.setText(null);
+			txtMaximum.setText(null);
+			fillCombo(ps, bc, cbProducts, cbBoxCode);
+		});
+
+		product.setMinWidth(160);
+		product.setReorderable(false);
+		product.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoxType, String>, ObservableValue<String>>() {
+
+			@Override
+			public ObservableValue<String> call(TableColumn.CellDataFeatures<BoxType, String> param) {
+				// TODO Auto-generated method stub
+				return param.getValue().nameProperty();
+			}		
+		});
+
+		boxtype.setMinWidth(160);
+		boxtype.setReorderable(false);
+		boxtype.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoxType, String>, ObservableValue<String>>() {
+
+			@Override
+			public ObservableValue<String> call(TableColumn.CellDataFeatures<BoxType, String> param) {
+				// TODO Auto-generated method stub
+				return param.getValue().boxcodeProperty();
+			}
+		});
+
+
+		minimum.setMinWidth(160);
+		minimum.setReorderable(false);
+		minimum.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoxType, Number>, ObservableValue<Number>>() {
+
+			@Override
+			public ObservableValue<Number> call(TableColumn.CellDataFeatures<BoxType, Number> param) {
+				// TODO Auto-generated method stub
+				return param.getValue().minimumProperty();
+			}		
+		});
+
+		maximum.setMinWidth(160);
+		maximum.setReorderable(false);
+		maximum.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoxType, Number>, ObservableValue<Number>>() {
+
+			@Override
+			public ObservableValue<Number> call(TableColumn.CellDataFeatures<BoxType, Number> param) {
+				// TODO Auto-generated method stub
+				return param.getValue().maximumProperty();
+			}
+		});
+		
+		VBox vbThree = new VBox(); 
+		vbThree.getChildren().addAll(gridThree); 
+
+		tpLink.setContent(vbThree);
+				
+		return tpLink;
+	}
+	
+	private static void fillCombo(ObservableList<String> ps, ObservableList<String> bc, ComboBox<String> cbProducts, ComboBox<String> cbBoxCode) {
+		cbProducts.getItems().clear();
+		cbBoxCode.getItems().clear();
+		cbProducts.setPromptText("Select Item:");
+		cbBoxCode.setPromptText("Select Box Code:");
 		try { 
 			DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
 			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
@@ -343,130 +477,10 @@ public class Add {
 			ex.printStackTrace();
 		}catch (SQLException ex) {
 			if(ex.getSQLState().equals("XJ015")) {
-				System.out.println("Derby shutdown normally");
+				System.out.println("");
 			} else {
 				ex.printStackTrace();
 			}
 		}
-		
-		btnAssign.disableProperty().bind(
-				Bindings.isEmpty(txtMinimum.textProperty()));
-		btnAssign.disableProperty().bind(
-				Bindings.isEmpty(txtMaximum.textProperty()));
-		
-		btnAssign.setOnAction(e -> {
-			try { 
-				DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
-				Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-				Connection connection = DriverManager.getConnection(jdbcURL);
-				Statement statement = connection.createStatement(); 
-
-				String sql = "Insert into ItemBox (iname, bname, minimum, maximum) values ('" + cbProducts.getSelectionModel().getSelectedItem() + "', '"+ cbBoxCode.getSelectionModel().getSelectedItem()+"', " + txtMinimum.getText() + ", " + txtMaximum.getText() + ")";
-
-
-				int rows = statement.executeUpdate(sql);
-				if(rows > 0) {
-					System.out.println("A row created.");
-				}
-
-
-				String query = "SELECT * FROM ItemBox WHERE iname = '" +  cbProducts.getSelectionModel().getSelectedItem() + "' and bname = '" + cbBoxCode.getSelectionModel().getSelectedItem() + "' and minimum = " + txtMinimum.getText() + " and maximum = " + txtMaximum.getText(); 
-				ResultSet rs = statement.executeQuery(query); 
-				while(rs.next()) {
-					bt = FXCollections.observableArrayList(new BoxType(Integer.valueOf(rs.getString("id")), rs.getString("iname"), rs.getString("bname"), Integer.valueOf(rs.getString("minimum")), Integer.valueOf(rs.getString("maximum"))));	
-					for(BoxType b : bt) {
-						tableLink.getItems().add(b); 
-					}
-				}
-
-				String shutdown = "jdbc:derby:;shutdown=true";
-				DriverManager.getConnection(shutdown);
-				connection.close();
-				statement.close();
-			} catch(ClassNotFoundException ex) {
-				ex.printStackTrace();
-			}catch (SQLException ex) {
-				if(ex.getSQLState().equals("XJ015")) {
-					System.out.println("Derby shutdown normally");
-				} else {
-					ex.printStackTrace();
-				}
-			}
-			
-			txtMinimum.setText(null);
-			txtMaximum.setText(null);
-		});
-
-		product.setMinWidth(160);
-		product.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoxType, String>, ObservableValue<String>>() {
-
-			@Override
-			public ObservableValue<String> call(TableColumn.CellDataFeatures<BoxType, String> param) {
-				// TODO Auto-generated method stub
-				return param.getValue().nameProperty();
-			}		
-		});
-
-		boxtype.setMinWidth(160);
-		boxtype.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoxType, String>, ObservableValue<String>>() {
-
-			@Override
-			public ObservableValue<String> call(TableColumn.CellDataFeatures<BoxType, String> param) {
-				// TODO Auto-generated method stub
-				return param.getValue().boxcodeProperty();
-			}
-		});
-
-
-		minimum.setMinWidth(160);
-		minimum.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoxType, Number>, ObservableValue<Number>>() {
-
-			@Override
-			public ObservableValue<Number> call(TableColumn.CellDataFeatures<BoxType, Number> param) {
-				// TODO Auto-generated method stub
-				return param.getValue().minimumProperty();
-			}		
-		});
-
-		maximum.setMinWidth(160);
-		maximum.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoxType, Number>, ObservableValue<Number>>() {
-
-			@Override
-			public ObservableValue<Number> call(TableColumn.CellDataFeatures<BoxType, Number> param) {
-				// TODO Auto-generated method stub
-				return param.getValue().maximumProperty();
-			}
-		});
-
-		
-
-		
-		
-		
-		/**
-		 * ----------------------
-		 */
-
-		VBox vbOne = new VBox(); 
-		vbOne.getChildren().addAll(gridOne); 
-
-		VBox vbTwo = new VBox(); 
-		vbTwo.getChildren().addAll(gridTwo); 
-		
-		VBox vbThree = new VBox(); 
-		vbThree.getChildren().addAll(gridThree); 
-		
-		tpProduct.setContent(vbOne);
-		tpDimensions.setContent(vbTwo);
-		tpLink.setContent(vbThree);
-		
-		accordion.getPanes().add(tpProduct);
-		accordion.getPanes().add(tpDimensions);
-		accordion.getPanes().add(tpLink);
-		
-		VBox screen = new VBox();
-		screen.getChildren().addAll(menuBar, accordion);
-		
-		return screen;
 	}
 }

@@ -108,7 +108,7 @@ public class Product {
 	}
 
 	public final DoubleProperty sumProperty() {
-		return this.sum; //Double.valueOf(String.format("%", null))
+		return this.sum; 
 	}
 
 	public final String getBoxType() {
@@ -129,7 +129,6 @@ public class Product {
 
 	public void setQuantity(int number) {
 
-		System.out.println("< " +number + ">");
 		if(number <= 0) {
 			number = 1; 
 		}
@@ -163,17 +162,11 @@ public class Product {
 				maximum = Integer.valueOf(rs.getString("maximum")); 
 			}
 	
-			System.out.println("minimum " + minimum);
-			System.out.println("maximum " + maximum);
-			System.out.println(getName().equals(iname));
 			if(number >= minimum && number <= maximum && getName().equals(iname)) {
 				
-				System.out.println("[ "+ number  +" ]");
 				String queryItem = "SELECT * FROM box WHERE name = '" + bname +"'"; 
 				ResultSet rx = statement.executeQuery(queryItem); 
 				while(rx.next()) {
-
-	
 					setBoxType(rx.getString("name"));
 					setDimension(rx.getString("length") + " x " + rx.getString("width") + " x " + rx.getString("height"));
 				}
@@ -182,16 +175,12 @@ public class Product {
 				setDimension("-");
 			}
 
-			/*String shutdown = "jdbc:derby:;shutdown=true";
-			DriverManager.getConnection(shutdown); 
-			
-			*/
 		}  catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SQLException ex) {
 			if(ex.getSQLState().equals("XJ015")) {
-				System.out.println("Derby shutdown normally");
+				System.out.println("");
 			} else {
 				ex.printStackTrace();
 			}
@@ -229,60 +218,5 @@ public class Product {
 				ex.printStackTrace();
 			}
 		}
-	}
-
-	private void joinIB(int quantity) {
-		String iname = "";
-		String bname = "";
-		int minimum = 0;
-		int maximum = 0;
-		
-	
-		try {
-			DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
-			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-			Connection connection = DriverManager.getConnection(jdbcURL);
-			Statement statement = connection.createStatement(); 
-
-			String query = "SELECT * FROM ItemBox"; 
-			ResultSet rs = statement.executeQuery(query); 
-
-			while(rs.next()) {
-				
-				iname = rs.getString("iname"); 
-				bname = rs.getString("bname"); 
-				minimum = Integer.valueOf(rs.getString("minimum")); 
-				maximum = Integer.valueOf(rs.getString("maximum")); 
-			}
-	
-			System.out.println("[ "+ getQuantity()  +" ]");
-			if(minimum >= getQuantity() && getQuantity() <= maximum && getName().equals(iname)) {
-				
-				
-				String queryItem = "SELECT * FROM box WHERE name = '" + bname +"'"; 
-				ResultSet rx = statement.executeQuery(queryItem); 
-				while(rx.next()) {
-
-					System.out.println(rx.getString("name"));
-					System.out.println(rx.getString("length"));
-					System.out.println(rx.getString("width"));
-					System.out.println(rx.getString("height"));
-				}
-			}
-
-			/*String shutdown = "jdbc:derby:;shutdown=true";
-			DriverManager.getConnection(shutdown); 
-			
-			*/
-		}  catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException ex) {
-			if(ex.getSQLState().equals("XJ015")) {
-				System.out.println("Derby shutdown normally");
-			} else {
-				ex.printStackTrace();
-			}
-		}
-	}
+	}	
 }

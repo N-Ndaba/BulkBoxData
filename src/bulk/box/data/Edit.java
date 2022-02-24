@@ -15,7 +15,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.MenuBar;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TitledPane;
@@ -32,21 +32,25 @@ import javafx.util.converter.NumberStringConverter;
 public class Edit {
 
 	private static ObservableList<BoxCode> boxes = null;
-	private static ObservableList<BoxType> boxtype = null;
 	private static ObservableList<Product> products = null;
 	private static String jdbcURL = "jdbc:derby:boxbulkdb;create=true";
 
-	@SuppressWarnings("unchecked")
 	public static VBox editRecord(HBox menuBar) {
 		Accordion accordion = new Accordion();
 
+		accordion.getPanes().add(editProducts());
+		accordion.getPanes().add(editDimensions());
+
+		VBox screen = new VBox();
+		screen.getChildren().addAll(menuBar, accordion);
+		return screen;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static TitledPane editProducts() {
 		TitledPane tpProduct = new TitledPane();
 		tpProduct.setText("Box & Bulk QTY");
-
-		TitledPane tpDimensions = new TitledPane();
-		tpDimensions.setText("Dimensions");
-
-	
+		
 		TableView<Product> tableView = new TableView<>(); 
 		TableColumn<Product, String> productName = new TableColumn<>("Product");
 		TableColumn<Product, Number> productWeight = new TableColumn<>("Weight (kg)");
@@ -56,7 +60,7 @@ public class Edit {
 		
 		GridPane gridOne = new GridPane();
 		gridOne.setAlignment(Pos.CENTER);
-		gridOne.setPadding(new Insets(3, 12.5, 5, 14.5));
+		gridOne.setPadding(new Insets(6, 10.5, 5, 6.5));
 		gridOne.setHgap(7);
 		gridOne.setVgap(3);
 
@@ -69,9 +73,66 @@ public class Edit {
 		gridZ.setHgap(7);
 		gridZ.setVgap(3);
 		
+		
+		VBox vbProduct = new VBox();
 		BorderPane pane = new BorderPane(); 
 		VBox paneForCheckBoxes = new VBox(20);
 		paneForCheckBoxes.setPadding(new Insets(5, 5, 5, 5));
+		fillSide(paneForCheckBoxes, tableView);
+		
+		pane.setCenter(paneForCheckBoxes);
+		//---------------------
+		productName.setMinWidth(160);
+		productName.setReorderable(false);
+		productName.setCellFactory(TextFieldTableCell.forTableColumn());
+		productName.setOnEditCommit(
+				(CellEditEvent<Product, String> n) ->{
+					((Product) n.getTableView().getItems().get(
+							n.getTablePosition().getRow())
+							).setName(n.getNewValue());
+					fillSide(paneForCheckBoxes, tableView);
+				});
+		productName.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Product, String>, ObservableValue<String>>() {
+
+			@Override
+			public ObservableValue<String> call(TableColumn.CellDataFeatures<Product, String> param) {
+				// TODO Auto-generated method stub
+				return param.getValue().nameProperty();
+			}		
+		});
+
+		productWeight.setMinWidth(160);
+		productWeight.setReorderable(false);
+		productWeight.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
+		productWeight.setOnEditCommit(
+				(CellEditEvent<Product, Number> n) ->{
+					((Product) n.getTableView().getItems().get(
+							n.getTablePosition().getRow())
+							).setWeight(n.getNewValue().doubleValue());
+					fillSide(paneForCheckBoxes, tableView);
+				});
+		productWeight.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Product, Number>, ObservableValue<Number>>() {
+
+			@Override
+			public ObservableValue<Number> call(TableColumn.CellDataFeatures<Product, Number> param) {
+				// TODO Auto-generated method stub
+				return param.getValue().sumProperty();
+			}
+		});
+		
+		vbProduct.getChildren().add(pane);
+		ScrollPane scrollPane = new ScrollPane(vbProduct); 
+		scrollPane.setPrefSize(210, 250);
+		gridZ.add(scrollPane, 0, 2, 2, 1);
+		gridZ.add(gridOne, 2, 0, 1, 10);
+		
+		tpProduct.setContent(gridZ);
+		
+		return tpProduct; 
+	}
+	
+	private static void fillSide(VBox paneForCheckBoxes, TableView<Product> tableView) {
+		paneForCheckBoxes.getChildren().clear();
 		try {
 			DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
 			Connection connection = DriverManager.getConnection(jdbcURL);
@@ -107,51 +168,17 @@ public class Edit {
 			statement.close();
 		} catch (SQLException ex) {
 			if(ex.getSQLState().equals("XJ015")) {
-				System.out.println("Derby shutdown normally");
+				System.out.println("");
 			} else {
 				ex.printStackTrace();
 			}
 		}
-		
-		pane.setCenter(paneForCheckBoxes);
-		//---------------------
-		productName.setMinWidth(160);
-		productName.setCellFactory(TextFieldTableCell.forTableColumn());
-		productName.setOnEditCommit(
-				(CellEditEvent<Product, String> n) ->{
-					((Product) n.getTableView().getItems().get(
-							n.getTablePosition().getRow())
-							).setName(n.getNewValue());
-				});
-		productName.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Product, String>, ObservableValue<String>>() {
-
-			@Override
-			public ObservableValue<String> call(TableColumn.CellDataFeatures<Product, String> param) {
-				// TODO Auto-generated method stub
-				return param.getValue().nameProperty();
-			}		
-		});
-
-		productWeight.setMinWidth(160);
-		productWeight.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
-		productWeight.setOnEditCommit(
-				(CellEditEvent<Product, Number> n) ->{
-					((Product) n.getTableView().getItems().get(
-							n.getTablePosition().getRow())
-							).setWeight(n.getNewValue().doubleValue());
-				});
-		productWeight.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Product, Number>, ObservableValue<Number>>() {
-
-			@Override
-			public ObservableValue<Number> call(TableColumn.CellDataFeatures<Product, Number> param) {
-				// TODO Auto-generated method stub
-				return param.getValue().sumProperty();
-			}
-		});
-
-		/**
-		 * 
-		 */
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static TitledPane editDimensions() {
+		TitledPane tpDimensions = new TitledPane();
+		tpDimensions.setText("Dimensions");
 
 		TableView<BoxCode> tableBox = new TableView<>(); 
 		TableColumn<BoxCode, String> boxName = new TableColumn<>("Box Code");
@@ -164,7 +191,7 @@ public class Edit {
 		
 		GridPane gridTwo = new GridPane();
 		gridTwo.setAlignment(Pos.CENTER);
-		gridTwo.setPadding(new Insets(3, 12.5, 5, 14.5));
+		gridTwo.setPadding(new Insets(6, 10.5, 5, 6.5));
 		gridTwo.setHgap(7);
 		gridTwo.setVgap(3);
 		tableBox.getColumns().addAll(boxName, boxLength, boxWidth, boxHeight);
@@ -179,6 +206,101 @@ public class Edit {
 		BorderPane paneTwo = new BorderPane(); 
 		VBox paneForCheckBoxesTwo = new VBox(20);
 		paneForCheckBoxesTwo.setPadding(new Insets(5, 5, 5, 5));
+		fillCombo(paneForCheckBoxesTwo, tableBox);
+		paneTwo.setCenter(paneForCheckBoxesTwo);
+
+		boxName.setMinWidth(160);
+		boxName.setReorderable(false);
+		boxName.setCellFactory(TextFieldTableCell.forTableColumn());
+		boxName.setOnEditCommit(
+				(CellEditEvent<BoxCode, String> n) ->{
+					((BoxCode) n.getTableView().getItems().get(
+							n.getTablePosition().getRow())
+							).setName(n.getNewValue());
+					fillCombo(paneForCheckBoxesTwo, tableBox);
+				});
+		boxName.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoxCode, String>, ObservableValue<String>>() {
+
+			@Override
+			public ObservableValue<String> call(TableColumn.CellDataFeatures<BoxCode, String> param) {
+				// TODO Auto-generated method stub
+				return param.getValue().nameProperty();
+			}		
+		});
+
+		boxLength.setMinWidth(160);
+		boxLength.setReorderable(false);
+		boxLength.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
+		boxLength.setOnEditCommit(
+				(CellEditEvent<BoxCode, Number> n) ->{
+					((BoxCode) n.getTableView().getItems().get(
+							n.getTablePosition().getRow())
+							).setLength(n.getNewValue().intValue());
+					fillCombo(paneForCheckBoxesTwo, tableBox);
+				});
+		boxLength.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoxCode, Number>, ObservableValue<Number>>() {
+
+			@Override
+			public ObservableValue<Number> call(TableColumn.CellDataFeatures<BoxCode, Number> param) {
+				// TODO Auto-generated method stub
+				return param.getValue().lengthProperty();
+			}
+		});
+
+
+		boxWidth.setMinWidth(160);
+		boxWidth.setReorderable(false);
+		boxWidth.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
+		boxWidth.setOnEditCommit(
+				(CellEditEvent<BoxCode, Number> n) ->{
+					((BoxCode) n.getTableView().getItems().get(
+							n.getTablePosition().getRow())
+							).setWidth(n.getNewValue().intValue());
+					fillCombo(paneForCheckBoxesTwo, tableBox);
+				});
+		boxWidth.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoxCode, Number>, ObservableValue<Number>>() {
+
+			@Override
+			public ObservableValue<Number> call(TableColumn.CellDataFeatures<BoxCode, Number> param) {
+				// TODO Auto-generated method stub
+				return param.getValue().widthProperty();
+			}		
+		});
+
+		boxHeight.setMinWidth(160);
+		boxHeight.setReorderable(false);
+		boxHeight.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
+		boxHeight.setOnEditCommit(
+				(CellEditEvent<BoxCode, Number> n) ->{
+					((BoxCode) n.getTableView().getItems().get(
+							n.getTablePosition().getRow())
+							).setHeight(n.getNewValue().intValue());
+					
+					fillCombo(paneForCheckBoxesTwo, tableBox);
+				});
+		boxHeight.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoxCode, Number>, ObservableValue<Number>>() {
+
+			@Override
+			public ObservableValue<Number> call(TableColumn.CellDataFeatures<BoxCode, Number> param) {
+				// TODO Auto-generated method stub
+				return param.getValue().heightProperty();
+			}
+		});
+
+		VBox vbProduct = new VBox(); 
+		vbProduct.getChildren().add(paneTwo);
+		ScrollPane scrollPane = new ScrollPane(vbProduct); 
+		scrollPane.setPrefSize(210, 250);
+		gridX.add(scrollPane, 0, 2, 2, 1);
+		gridX.add(gridTwo, 2, 0, 1, 10);
+		
+		tpDimensions.setContent(gridX);
+		
+		return tpDimensions; 
+	}
+	
+	private static void fillCombo(VBox paneForCheckBoxesTwo, TableView<BoxCode> tableBox) {
+		paneForCheckBoxesTwo.getChildren().clear();
 		try {
 			DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
 			Connection connection = DriverManager.getConnection(jdbcURL);
@@ -214,108 +336,10 @@ public class Edit {
 			statement.close();
 		} catch (SQLException ex) {
 			if(ex.getSQLState().equals("XJ015")) {
-				System.out.println("Derby shutdown normally");
+				System.out.println("");
 			} else {
 				ex.printStackTrace();
 			}
 		}
-		paneTwo.setCenter(paneForCheckBoxesTwo);
-
-		boxName.setMinWidth(160);
-		boxName.setCellFactory(TextFieldTableCell.forTableColumn());
-		boxName.setOnEditCommit(
-				(CellEditEvent<BoxCode, String> n) ->{
-					((BoxCode) n.getTableView().getItems().get(
-							n.getTablePosition().getRow())
-							).setName(n.getNewValue());
-				});
-		boxName.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoxCode, String>, ObservableValue<String>>() {
-
-			@Override
-			public ObservableValue<String> call(TableColumn.CellDataFeatures<BoxCode, String> param) {
-				// TODO Auto-generated method stub
-				return param.getValue().nameProperty();
-			}		
-		});
-
-		boxLength.setMinWidth(160);
-		boxLength.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
-		boxLength.setOnEditCommit(
-				(CellEditEvent<BoxCode, Number> n) ->{
-					((BoxCode) n.getTableView().getItems().get(
-							n.getTablePosition().getRow())
-							).setLength(n.getNewValue().intValue());
-				});
-		boxLength.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoxCode, Number>, ObservableValue<Number>>() {
-
-			@Override
-			public ObservableValue<Number> call(TableColumn.CellDataFeatures<BoxCode, Number> param) {
-				// TODO Auto-generated method stub
-				return param.getValue().lengthProperty();
-			}
-		});
-
-
-		boxWidth.setMinWidth(160);
-		boxWidth.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
-		boxWidth.setOnEditCommit(
-				(CellEditEvent<BoxCode, Number> n) ->{
-					((BoxCode) n.getTableView().getItems().get(
-							n.getTablePosition().getRow())
-							).setWidth(n.getNewValue().intValue());
-				});
-		boxWidth.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoxCode, Number>, ObservableValue<Number>>() {
-
-			@Override
-			public ObservableValue<Number> call(TableColumn.CellDataFeatures<BoxCode, Number> param) {
-				// TODO Auto-generated method stub
-				return param.getValue().widthProperty();
-			}		
-		});
-
-		boxHeight.setMinWidth(160);
-		boxHeight.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
-		boxHeight.setOnEditCommit(
-				(CellEditEvent<BoxCode, Number> n) ->{
-					((BoxCode) n.getTableView().getItems().get(
-							n.getTablePosition().getRow())
-							).setHeight(n.getNewValue().intValue());
-				});
-		boxHeight.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoxCode, Number>, ObservableValue<Number>>() {
-
-			@Override
-			public ObservableValue<Number> call(TableColumn.CellDataFeatures<BoxCode, Number> param) {
-				// TODO Auto-generated method stub
-				return param.getValue().heightProperty();
-			}
-		});
-		
-		/**
-		 * 
-		 */
-		
-		
-		/**
-		 * 
-		 */
-
-		
-		
-		gridZ.add(pane, 0, 0);
-		gridZ.add(gridOne, 5, 0);
-
-		gridX.add(paneTwo, 0, 0);
-		gridX.add(gridTwo, 5, 0);
-		
-		
-		tpProduct.setContent(gridZ);
-		tpDimensions.setContent(gridX);
-
-		accordion.getPanes().add(tpProduct);
-		accordion.getPanes().add(tpDimensions);
-
-		VBox screen = new VBox();
-		screen.getChildren().addAll(menuBar, accordion);
-		return screen;
 	}
 }

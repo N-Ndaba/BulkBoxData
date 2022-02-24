@@ -25,6 +25,7 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.util.Callback;
 
 public class Delete {
@@ -56,7 +57,7 @@ public class Delete {
 
 		ComboBox<String> cbProducts = new ComboBox<>();
 		cbProducts.setMaxWidth(200);
-
+		cbProducts.setPromptText("Select Item: ");
 		TableView<Product> tableView = new TableView<>(); 
 		TableColumn<Product, String> productName = new TableColumn<>("Product");
 		TableColumn<Product, Number> productWeight = new TableColumn<>("Weight (kg)");
@@ -98,7 +99,7 @@ public class Delete {
 			ex.printStackTrace();
 		}catch (SQLException ex) {
 			if(ex.getSQLState().equals("XJ015")) {
-				System.out.println("Derby shutdown normally");
+				System.out.println("");
 			} else {
 				ex.printStackTrace();
 			}
@@ -118,9 +119,6 @@ public class Delete {
 
 
 				int rows = statement.executeUpdate(sql);
-				if(rows > 0) {
-					System.out.println("A row created.");
-				}
 
 				String query = "SELECT * FROM item"; 
 				ResultSet rs = statement.executeQuery(query); 
@@ -138,7 +136,7 @@ public class Delete {
 			}
 			catch (SQLException ex) {
 				if(ex.getSQLState().equals("XJ015")) {
-					System.out.println("Derby shutdown normally");
+					System.out.println("");
 				} else {
 					ex.printStackTrace();
 				}
@@ -204,7 +202,7 @@ public class Delete {
 			ex.printStackTrace();
 		}catch (SQLException ex) {
 			if(ex.getSQLState().equals("XJ015")) {
-				System.out.println("Derby shutdown normally");
+				System.out.println("");
 			} else {
 				ex.printStackTrace();
 			}
@@ -227,7 +225,7 @@ public class Delete {
 
 
 
-
+		cbBoxCode.setPromptText("Select Box Code:");
 		cbBoxCode.setMaxWidth(200);
 		GridPane gridTwo = new GridPane(); 
 		gridTwo.setAlignment(Pos.CENTER);
@@ -267,7 +265,7 @@ public class Delete {
 			ex.printStackTrace();
 		}catch (SQLException ex) {
 			if(ex.getSQLState().equals("XJ015")) {
-				System.out.println("Derby shutdown normally");
+				System.out.println("");
 			} else {
 				ex.printStackTrace();
 			}
@@ -290,9 +288,7 @@ public class Delete {
 
 
 				int rows = statement.executeUpdate(sql);
-				if(rows > 0) {
-					System.out.println("A row created.");
-				}
+	
 
 				String query = "SELECT * FROM box"; 
 				ResultSet rs = statement.executeQuery(query); 
@@ -312,7 +308,7 @@ public class Delete {
 			}
 			catch (SQLException ex) {
 				if(ex.getSQLState().equals("XJ015")) {
-					System.out.println("Derby shutdown normally");
+					System.out.println("");
 				} else {
 					ex.printStackTrace();
 				}
@@ -325,6 +321,7 @@ public class Delete {
 		tableBox.setPrefHeight(430);
 
 		boxName.setMinWidth(160);
+		boxName.setReorderable(false);
 		boxName.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoxCode, String>, ObservableValue<String>>() {
 
 			@Override
@@ -335,6 +332,7 @@ public class Delete {
 		});
 
 		boxLength.setMinWidth(160);
+		boxLength.setReorderable(false);
 		boxLength.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoxCode, Number>, ObservableValue<Number>>() {
 
 			@Override
@@ -346,6 +344,7 @@ public class Delete {
 
 
 		boxWidth.setMinWidth(160);
+		boxWidth.setReorderable(false);
 		boxWidth.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoxCode, Number>, ObservableValue<Number>>() {
 
 			@Override
@@ -356,6 +355,7 @@ public class Delete {
 		});
 
 		boxHeight.setMinWidth(160);
+		boxHeight.setReorderable(false);
 		boxHeight.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoxCode, Number>, ObservableValue<Number>>() {
 
 			@Override
@@ -397,7 +397,7 @@ public class Delete {
 			ex.printStackTrace();
 		}catch (SQLException ex) {
 			if(ex.getSQLState().equals("XJ015")) {
-				System.out.println("Derby shutdown normally");
+				System.out.println("");
 			} else {
 				ex.printStackTrace();
 			}
@@ -407,7 +407,7 @@ public class Delete {
 	@SuppressWarnings("unchecked")
 	private static TitledPane assign() {
 		TitledPane tpLink = new TitledPane();
-		tpLink.setText("Assign");
+		tpLink.setText("Assigned");
 		
 		TableView<BoxType> tableAssign = new TableView<>(); 
 		TableColumn<BoxType, String> taProduct = new TableColumn<>("Product");
@@ -425,17 +425,29 @@ public class Delete {
 		gridThree.setVgap(3);
 
 		Label lblName = new Label("Name: ");
+		lblName.setFont(Font.font("Arial", 13));
 		TextField txtName = new TextField(); 
+		txtName.setFont(Font.font("Arial", 13));
 		txtName.setEditable(false);
+		txtName.setAlignment(Pos.CENTER);
 		Label lblBoxCode = new Label("Box Code: ");
+		lblBoxCode.setFont(Font.font("Arial", 13));
 		TextField txtBoxCode = new TextField(); 
+		txtBoxCode.setFont(Font.font("Arial", 13));
 		txtBoxCode.setEditable(false);
+		txtBoxCode.setAlignment(Pos.CENTER);
 		Label lblMinimum = new Label("Minimum: ");
+		lblMinimum.setFont(Font.font("Arial", 13));
 		TextField txtMinimum = new TextField(); 
 		txtMinimum.setEditable(false);
+		txtMinimum.setAlignment(Pos.CENTER);
+		txtMinimum.setFont(Font.font("Arial", 13));
 		Label lblMaximum = new Label("Maximum: ");
+		lblMaximum.setFont(Font.font("Arial", 13));
 		TextField txtMaximum = new TextField(); 
 		txtMaximum.setEditable(false);
+		txtMaximum.setAlignment(Pos.CENTER);
+		txtMaximum.setFont(Font.font("Arial", 13));
 		
 		gridThree.add(lblName, 0, 0);
 		gridThree.add(txtName, 1, 0);
@@ -476,7 +488,7 @@ public class Delete {
 			ex.printStackTrace();
 		}catch (SQLException ex) {
 			if(ex.getSQLState().equals("XJ015")) {
-				System.out.println("Derby shutdown normally");
+				System.out.println("");
 			} else {
 				ex.printStackTrace();
 			}
@@ -512,10 +524,7 @@ public class Delete {
 
 
 				int rows = statement.executeUpdate(sql);
-				if(rows > 0) {
-					System.out.println("A row created.");
-				}
-
+				
 				String query = "SELECT * FROM ItemBox"; 
 				ResultSet rs = statement.executeQuery(query); 
 				while(rs.next()) {
@@ -534,11 +543,16 @@ public class Delete {
 			}
 			catch (SQLException ex) {
 				if(ex.getSQLState().equals("XJ015")) {
-					System.out.println("Derby shutdown normally");
+					System.out.println("");
 				} else {
 					ex.printStackTrace();
 				}
 			}
+			
+			txtName.setText(null);
+			txtBoxCode.setText(null);
+			txtMinimum.setText(null);
+			txtMaximum.setText(null);
 		});
 
 		taProduct.setMinWidth(160);

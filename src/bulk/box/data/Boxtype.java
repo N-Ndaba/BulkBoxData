@@ -18,7 +18,6 @@ public class BoxType {
 	private IntegerProperty minimum;
 	private IntegerProperty maximum; 
 	
-	
 	private String jdbcURL = "jdbc:derby:boxbulkdb;create=true";
 
 	public BoxType(int id, String name, String boxcode, int minimum, int maximum) {
@@ -27,7 +26,6 @@ public class BoxType {
 		this.boxcode = new SimpleStringProperty(this, "boxcode", boxcode); 		
 		this.minimum = new SimpleIntegerProperty(this, "minimum", minimum);
 		this.maximum = new SimpleIntegerProperty(this, "maximum", maximum); 
-		
 	}
 
 	public Integer getId() {
@@ -102,7 +100,6 @@ public class BoxType {
 			Statement statement = connection.createStatement(); 
 			String query = "UPDATE ItemBox SET iname = '" + getName() +  "', bname = '" + getBoxcode() + "', minimum = " +getMinimum()+ ", maximum = " + getMaximum() + "  WHERE id = " + getId(); 
 			int num = statement.executeUpdate(query); 
-			System.out.println("Number of record updated are: " + num);
 			String shutdown = "jdbc:derby:;shutdown=true";
 			DriverManager.getConnection(shutdown); 
 		}  catch (ClassNotFoundException e) {
@@ -110,7 +107,7 @@ public class BoxType {
 			e.printStackTrace();
 		} catch (SQLException ex) {
 			if(ex.getSQLState().equals("XJ015")) {
-				System.out.println("Derby shutdown normally");
+				System.out.println("");
 			} else {
 				ex.printStackTrace();
 			}

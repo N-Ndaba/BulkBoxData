@@ -18,8 +18,6 @@ public class BoxCode {
 	private IntegerProperty width;
 	private IntegerProperty height;
 
-
-
 	public BoxCode(int id, String name, int length, int width, int height) {
 		this.id = new SimpleIntegerProperty(this, "id", id); 
 		this.name = new SimpleStringProperty(this, "name", name); 
@@ -93,7 +91,6 @@ public class BoxCode {
 			Statement statement = connection.createStatement(); 
 			String query = "UPDATE box SET name = '" + getName() +  "', length = " + getLength() + ", width = " + getWidth() + ", height = " + getHeight() +  " WHERE id = " + getId(); 
 			int num = statement.executeUpdate(query); 
-			System.out.println("Number of record updated are: " + num);
 			String shutdown = "jdbc:derby:;shutdown=true";
 			DriverManager.getConnection(shutdown); 
 		}  catch (ClassNotFoundException e) {
@@ -101,7 +98,7 @@ public class BoxCode {
 			e.printStackTrace();
 		} catch (SQLException ex) {
 			if(ex.getSQLState().equals("XJ015")) {
-				System.out.println("Derby shutdown normally");
+				System.out.println("");
 			} else {
 				ex.printStackTrace();
 			}
